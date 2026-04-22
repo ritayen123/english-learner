@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useApp } from "../../lib/context/AppContext";
 import { srsService } from "../../lib/services/srs-service";
 import { statsService } from "../../lib/services/stats-service";
 import { articleService } from "../../lib/services/article-service";
+import { db } from "../../lib/db";
 import BottomNav from "../../components/ui/BottomNav";
 import StreakBadge from "../../components/ui/StreakBadge";
 import {
@@ -35,6 +36,38 @@ export default function MePage() {
     daysActive: 0,
   });
   const [articlesCompleted, setArticlesCompleted] = useState(0);
+  const [exportStatus, setExportStatus] = useState<"idle" | "copying" | "copied">("idle");
+
+  const handleExport = useCallback(async () => {
+    setExportStatus("copying");
+    const [userWords, userArticles, dailyStats] = await Promise.all([
+      db.userWords.toArray(),
+      db.userArticles.toArray(),
+      db.dailyStats.toArray(),
+    ]);
+    const data = {
+      exportedAt: new Date().toISOString(),
+      userWords,
+      userArticles,
+      dailyStats,
+    };
+    const json = JSON.stringify(data, null, 2);
+    try {
+      await navigator.clipboard.writeText(json);
+      setExportStatus("copied");
+    } catch {
+      // Fallback: download as file
+      const blob = new Blob([json], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `learning-data-${new Date().toISOString().slice(0, 10)}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+      setExportStatus("copied");
+    }
+    setTimeout(() => setExportStatus("idle"), 2000);
+  }, []);
 
   useEffect(() => {
     if (!initialized) return;
@@ -180,6 +213,18 @@ export default function MePage() {
           icon={<SettingsIcon size={20} />}
           label="設定"
         />
+        <button
+          onClick={handleExport}
+          disabled={exportStatus !== "idle"}
+          className="w-full flex items-center gap-3 bg-bg-card border border-border rounded-xl p-3.5 transition-transform active:scale-[0.98] text-left"
+        >
+          <span className="text-text-secondary">
+            <BarChartIcon size={20} />
+          </span>
+          <span className="text-sm font-medium text-text-primary">
+            {exportStatus === "copied" ? "已複製到剪貼簿！" : "匯出學習資料"}
+          </span>
+        </button>
       </div>
 
       <BottomNav />
