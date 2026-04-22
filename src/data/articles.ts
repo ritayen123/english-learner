@@ -2279,4 +2279,1026 @@ The empirical evidence clearly shows that biodiversity loss threatens not only t
       },
     ],
   },
+
+  // ===== DAILY ARTICLES (art-d03 to art-d16) =====
+  {
+    id: "art-d03",
+    title: "Mastering the Art of Street Food",
+    content: `Street food is one of the greatest pleasures of traveling. From bustling night markets in Taiwan to vibrant food stalls in Bangkok, street food offers an authentic taste of local culture that you simply cannot find in restaurants. For many travelers, eating street food is the highlight of their trip.
+
+One of the best things about street food is its affordability. You can enjoy a delicious meal for a fraction of the price you would pay at a sit-down restaurant. In many countries, locals eat street food daily because it is both cheap and convenient. A bowl of pho in Vietnam might cost less than two dollars, while a plate of pad thai in Thailand can be yours for about one dollar and fifty cents.
+
+However, many first-time travelers worry about food safety. Here are some practical tips to help you enjoy street food without getting sick. First, look for stalls with long lines of local customers. If the locals trust it, that is usually a good sign. Second, choose vendors who cook your food fresh in front of you rather than those selling pre-made dishes that have been sitting out for hours. Third, pay attention to the general cleanliness of the stall and whether the vendor uses gloves or utensils.
+
+Street food also gives you a wonderful opportunity to interact with local people. Many vendors are happy to explain their dishes and share the stories behind their recipes. Even if you do not speak the local language, pointing at menu items and smiling can go a long way. These small exchanges often become some of the most memorable moments of a trip.
+
+Some of the world's most famous street food destinations include Singapore, Mexico City, Istanbul, and Marrakech. Each city has its own unique specialties. Singapore is known for its chicken rice and laksa, while Mexico City is famous for tacos al pastor and elote. No matter where you go, being adventurous with street food will reward you with unforgettable flavors and experiences.`,
+    domain: "daily" as const,
+    difficulty: 1,
+    wordCount: 310,
+    targetWords: ["authentic", "affordable", "fraction", "convenient", "vendor", "utensils", "adventurous"],
+    questions: [
+      {
+        question: "According to the article, why do locals in many countries eat street food daily?",
+        options: ["A. Because it is cheap and convenient", "B. Because restaurants are always closed", "C. Because street food is healthier", "D. Because they do not know how to cook"],
+        correctIndex: 0,
+      },
+      {
+        question: "Which of the following is NOT a tip for eating street food safely?",
+        options: ["A. Look for stalls with long lines of locals", "B. Choose vendors who cook food fresh", "C. Always eat food that has been sitting out", "D. Pay attention to the cleanliness of the stall"],
+        correctIndex: 2,
+      },
+      {
+        question: "What does the article say about interacting with street food vendors?",
+        options: ["A. You must speak the local language fluently", "B. Vendors usually refuse to talk to tourists", "C. Pointing and smiling can help communication", "D. You should avoid talking to vendors"],
+        correctIndex: 2,
+      },
+    ],
+  },
+  {
+    id: "art-d04",
+    title: "A Beginner's Guide to Coffee Culture",
+    content: `Coffee is more than just a drink. It is a global culture that connects people across continents. Whether you are grabbing a quick espresso in Italy or sipping a slow pour-over in a trendy cafe in Tokyo, understanding coffee culture can enrich your daily life and travel experiences.
+
+Let us start with the basics. The most common types of coffee drinks include espresso, americano, latte, cappuccino, and mocha. An espresso is a small, strong shot of coffee that forms the base for most other drinks. An americano is simply espresso with hot water added, making it similar to drip coffee. A latte combines espresso with steamed milk, while a cappuccino has equal parts espresso, steamed milk, and foam. A mocha adds chocolate to the mix for those with a sweet tooth.
+
+Ordering coffee can be confusing, especially when you travel to different countries. In Italy, asking for a "latte" will get you a glass of plain milk because "latte" means milk in Italian. You should ask for a "caffe latte" instead. In Australia, you might encounter a "flat white," which is similar to a latte but with less foam and a stronger coffee flavor. In Taiwan, coffee culture has grown rapidly, with independent cafes and specialty roasters appearing in every neighborhood.
+
+Coffee shop etiquette also varies around the world. In some European cafes, sitting at a table costs more than standing at the bar. In Japan, many cafes have a quiet, library-like atmosphere where loud conversations are discouraged. In the United States, coffee shops are popular places to work on laptops and hold casual meetings.
+
+If you are new to coffee, do not be afraid to ask the barista for recommendations. Most coffee professionals love to share their knowledge and help you find a drink that suits your taste. Start with something mild like a latte, and gradually explore stronger options as your palate develops. Coffee is a journey, and every cup teaches you something new.`,
+    domain: "daily" as const,
+    difficulty: 1,
+    wordCount: 320,
+    targetWords: ["espresso", "etiquette", "atmosphere", "discouraged", "barista", "palate", "gradually"],
+    questions: [
+      {
+        question: "What is the difference between a latte and a cappuccino?",
+        options: ["A. A latte has chocolate but a cappuccino does not", "B. A cappuccino has equal parts espresso, steamed milk, and foam", "C. A latte uses cold milk while a cappuccino uses hot milk", "D. There is no difference between them"],
+        correctIndex: 1,
+      },
+      {
+        question: "Why might ordering a 'latte' in Italy cause confusion?",
+        options: ["A. Because Italians do not drink coffee", "B. Because 'latte' means milk in Italian", "C. Because lattes are very expensive in Italy", "D. Because Italian cafes do not serve lattes"],
+        correctIndex: 1,
+      },
+      {
+        question: "What does the article suggest for people who are new to coffee?",
+        options: ["A. Start with the strongest espresso available", "B. Avoid asking the barista questions", "C. Start with something mild and explore gradually", "D. Only drink coffee at home"],
+        correctIndex: 2,
+      },
+    ],
+  },
+  {
+    id: "art-d05",
+    title: "How to Make Friends in a New City",
+    content: `Moving to a new city can be both exciting and lonely. You might love exploring new neighborhoods and trying new restaurants, but without friends to share these experiences with, the excitement can fade quickly. Making friends as an adult takes effort, but it is absolutely possible with the right approach.
+
+The first step is to put yourself in social situations. Join a club, take a class, or attend local events. Many cities have community groups for hiking, cooking, book clubs, or language exchange. These activities give you a natural reason to meet people who share your interests. Apps like Meetup can help you find events near you, and many cities have Facebook groups for newcomers.
+
+Volunteering is another excellent way to meet kind and like-minded people. Whether you help at a local food bank, animal shelter, or community garden, working alongside others toward a common goal creates strong bonds. Volunteering also helps you feel connected to your new community and gives you a sense of purpose.
+
+Once you meet someone you get along with, take the initiative to suggest a follow-up activity. This is where many people struggle. It can feel awkward to ask someone to hang out, almost like asking someone on a date. But most people appreciate the effort and are happy to say yes. A simple message like "I really enjoyed our conversation. Would you like to grab coffee sometime?" goes a long way.
+
+Being a good listener is also important. People love talking about themselves, so ask questions and show genuine interest in their stories. Remember small details they share and bring them up in future conversations. This shows that you care and are paying attention.
+
+Finally, be patient. Building meaningful friendships takes time. You will not find your best friend overnight, and that is perfectly normal. Focus on being open, friendly, and consistent. Show up regularly to the same activities, and over time, familiar faces will become real friends.`,
+    domain: "daily" as const,
+    difficulty: 1,
+    wordCount: 315,
+    targetWords: ["approach", "volunteering", "initiative", "awkward", "genuine", "consistent", "meaningful"],
+    questions: [
+      {
+        question: "According to the article, what is the first step to making friends in a new city?",
+        options: ["A. Wait for people to approach you", "B. Put yourself in social situations", "C. Post on social media about being lonely", "D. Move to a different city"],
+        correctIndex: 1,
+      },
+      {
+        question: "Why does the article recommend volunteering?",
+        options: ["A. Because it pays well", "B. Because it helps you meet like-minded people", "C. Because it is required by law in some cities", "D. Because it looks good on your resume"],
+        correctIndex: 1,
+      },
+      {
+        question: "What does the article say about building meaningful friendships?",
+        options: ["A. It happens quickly if you try hard enough", "B. It only works if you are naturally outgoing", "C. It takes time and patience", "D. It is impossible for adults"],
+        correctIndex: 2,
+      },
+    ],
+  },
+  {
+    id: "art-d06",
+    title: "The Joy of Weekend Markets",
+    content: `Weekend markets are a beloved tradition in cities around the world. From farmers markets selling fresh produce to flea markets offering vintage treasures, these open-air gatherings are a wonderful way to spend a Saturday or Sunday morning. They offer something that shopping malls and online stores simply cannot: a personal connection between buyers and sellers.
+
+Farmers markets are particularly popular among people who care about eating fresh, locally grown food. At a farmers market, you can buy fruits, vegetables, eggs, honey, and bread directly from the people who produce them. The food is often harvested just a day or two before, which means it is much fresher than what you find at a supermarket. Many farmers are happy to explain how they grow their crops and even share recipes for cooking with their products.
+
+Flea markets, on the other hand, are paradise for bargain hunters and collectors. You can find everything from antique furniture and old records to handmade jewelry and secondhand clothing. The thrill of flea market shopping is the hunt itself. You never know what hidden gems you might discover among the piles of merchandise. Negotiating prices is also part of the experience, and many vendors expect buyers to haggle a little.
+
+Night markets, especially popular in Asia, combine the best of both worlds. In Taiwan, night markets like Shilin and Raohe are famous for their incredible variety of street food, clothing, games, and accessories. These markets are not just places to shop. They are social gathering spots where families and friends come together to enjoy the lively atmosphere.
+
+Whether you prefer browsing organic vegetables, searching for vintage clothing, or simply people-watching while enjoying a snack, weekend markets offer a unique experience. They support local businesses, reduce packaging waste, and bring communities together. Next weekend, skip the shopping mall and visit a market near you. You might be surprised by what you find.`,
+    domain: "daily" as const,
+    difficulty: 1,
+    wordCount: 310,
+    targetWords: ["produce", "vintage", "harvested", "antique", "negotiate", "haggle", "merchandise"],
+    questions: [
+      {
+        question: "Why is food at farmers markets often fresher than supermarket food?",
+        options: ["A. Because it is imported from other countries", "B. Because it is harvested just a day or two before selling", "C. Because it contains more preservatives", "D. Because farmers markets are open every day"],
+        correctIndex: 1,
+      },
+      {
+        question: "What does the article describe as 'the thrill' of flea market shopping?",
+        options: ["A. Finding the lowest prices", "B. The hunt for hidden gems", "C. Meeting famous collectors", "D. Buying brand-new products"],
+        correctIndex: 1,
+      },
+      {
+        question: "According to the article, what do weekend markets offer that shopping malls cannot?",
+        options: ["A. Lower taxes on purchases", "B. Free parking for visitors", "C. A personal connection between buyers and sellers", "D. Air conditioning and comfortable seating"],
+        correctIndex: 2,
+      },
+    ],
+  },
+  {
+    id: "art-d07",
+    title: "Smart Phone Habits for Better Sleep",
+    content: `If you find yourself lying in bed scrolling through your phone late at night, you are not alone. Studies show that over seventy percent of adults use their smartphones within an hour of going to sleep. While this habit might seem harmless, it can seriously affect the quality of your rest and your overall health.
+
+The main problem is the blue light emitted by phone screens. This type of light interferes with your body's production of melatonin, a hormone that signals your brain it is time to sleep. When you stare at your phone before bed, your brain thinks it is still daytime, making it harder to fall asleep. Research has shown that people who use their phones before bed take longer to fall asleep and experience less deep sleep throughout the night.
+
+Social media and news apps create another problem. They are designed to keep you engaged and scrolling, which stimulates your brain at a time when it should be winding down. Reading an upsetting news story or getting caught up in a social media debate right before bed can increase anxiety and make it even more difficult to relax.
+
+So what can you do to improve your sleep habits? First, try to establish a "digital curfew." Put your phone away at least thirty minutes before bedtime, and ideally an hour. Replace screen time with calming activities like reading a physical book, journaling, or doing gentle stretches.
+
+Second, use your phone's built-in tools to help. Most smartphones now have night mode or blue light filter settings that reduce the amount of blue light your screen produces. You can also set a bedtime reminder that automatically dims your screen and silences notifications.
+
+Third, keep your phone out of the bedroom entirely if possible. Buy an inexpensive alarm clock so you do not need your phone as your morning alarm. If you must keep your phone nearby, place it face down on the other side of the room so you are not tempted to check it during the night.
+
+Small changes to your phone habits can lead to dramatically better sleep, more energy during the day, and improved mental health over time.`,
+    domain: "daily" as const,
+    difficulty: 1,
+    wordCount: 340,
+    targetWords: ["scrolling", "emitted", "melatonin", "stimulates", "curfew", "notifications", "tempted"],
+    questions: [
+      {
+        question: "How does blue light from phone screens affect sleep?",
+        options: ["A. It makes your eyes tired so you fall asleep faster", "B. It interferes with melatonin production", "C. It has no effect on sleep quality", "D. It only affects children, not adults"],
+        correctIndex: 1,
+      },
+      {
+        question: "What is a 'digital curfew' as described in the article?",
+        options: ["A. A law that limits phone use at night", "B. A time to put your phone away before bedtime", "C. A phone setting that blocks all apps", "D. A timer that turns off your phone automatically"],
+        correctIndex: 1,
+      },
+      {
+        question: "Which of the following is suggested as a replacement for screen time before bed?",
+        options: ["A. Watching television instead", "B. Playing video games on a console", "C. Reading a physical book", "D. Listening to a podcast on your phone"],
+        correctIndex: 2,
+      },
+    ],
+  },
+  {
+    id: "art-d08",
+    title: "Navigating Public Transportation Abroad",
+    content: `One of the biggest challenges for international travelers is figuring out public transportation in an unfamiliar city. The metro systems, bus routes, and ticketing procedures can vary dramatically from country to country. However, mastering local transit is one of the most rewarding skills you can develop as a traveler, as it saves money, reduces your environmental footprint, and lets you experience a city the way locals do.
+
+Before you arrive at your destination, take some time to research the public transportation system online. Most major cities have official transit websites and apps that provide route maps, schedules, and fare information in English. Download the local transit app before your trip, and save offline maps in case you lose internet access. Google Maps is also remarkably accurate for public transit directions in most cities around the world.
+
+When you arrive, your first task should be figuring out the ticketing system. Many cities now use rechargeable smart cards similar to Taiwan's EasyCard. London has the Oyster card, Tokyo has Suica and Pasmo, Hong Kong has the Octopus card, and Seoul has T-money. These cards typically offer discounted fares compared to buying single-journey tickets and can usually be purchased at any station. In some cities, you can simply tap your credit card or smartphone directly at the turnstile.
+
+Understanding the etiquette of public transportation is equally important. In Japan, talking on your phone while riding the train is considered extremely rude, and eating or drinking is frowned upon. In many European cities, you must validate your ticket by stamping it in a machine before boarding. Failure to do so can result in a hefty fine, even if you have a valid ticket. On escalators, most cities follow the convention of standing on one side and leaving the other side open for people who wish to walk.
+
+Safety is another consideration. Keep your belongings close to you, especially in crowded stations and during rush hour. Wear your backpack on your front in packed carriages, and be aware of pickpockets in heavily touristed areas. Avoid empty carriages late at night, and always know which stop you need to get off at so you can position yourself near the doors in advance.
+
+Learning to navigate public transportation abroad might seem intimidating at first, but with a little preparation and an open mind, it quickly becomes second nature. You will gain confidence with each journey, and before long, you will be helping other confused tourists find their way.`,
+    domain: "daily" as const,
+    difficulty: 2,
+    wordCount: 380,
+    targetWords: ["navigating", "transit", "rechargeable", "etiquette", "validate", "hefty", "intimidating", "pickpockets"],
+    questions: [
+      {
+        question: "What does the article recommend doing before arriving at your destination?",
+        options: ["A. Book a private car service", "B. Research the public transportation system and download apps", "C. Memorize the entire metro map", "D. Hire a local guide for transportation"],
+        correctIndex: 1,
+      },
+      {
+        question: "In some European cities, what can happen if you do not validate your ticket?",
+        options: ["A. Nothing, the ticket is still valid", "B. You will be banned from the metro system", "C. You can receive a hefty fine", "D. The ticket machine will not let you through"],
+        correctIndex: 2,
+      },
+      {
+        question: "Which safety tip does the article mention for crowded transit?",
+        options: ["A. Always stand near the doors", "B. Wear your backpack on your front", "C. Avoid using public transit during rush hour", "D. Only use taxis in touristed areas"],
+        correctIndex: 1,
+      },
+    ],
+  },
+  {
+    id: "art-d09",
+    title: "Understanding Food Labels and Nutrition",
+    content: `Walking through a grocery store, you are surrounded by products claiming to be "natural," "organic," "low-fat," or "sugar-free." But what do these labels actually mean, and how can you make informed choices about what you put into your body? Understanding food labels is an essential skill for anyone who wants to eat healthier and avoid being misled by clever marketing.
+
+The nutrition facts panel, usually found on the back or side of a package, is the most reliable source of information about a food product. It lists the serving size, total calories, and the amounts of key nutrients including fat, sodium, carbohydrates, fiber, sugar, and protein. One common mistake people make is ignoring the serving size. A bag of chips might seem reasonable at 150 calories, but if the serving size is only ten chips and the bag contains five servings, you are actually consuming 750 calories if you eat the whole bag.
+
+The ingredients list is equally important and often more revealing. Ingredients are listed in order of quantity, meaning the first ingredient makes up the largest proportion of the product. If sugar appears as one of the first three ingredients, the product is likely very sweet, regardless of what the front of the package claims. Be aware that sugar goes by many names, including high-fructose corn syrup, dextrose, maltose, and sucrose. Some products contain multiple types of sugar, which allows manufacturers to list each one separately so that none of them appears as the top ingredient.
+
+Terms like "natural" and "all-natural" are surprisingly unregulated in many countries. A product labeled "natural" might still contain preservatives, artificial flavors, or heavily processed ingredients. "Organic," on the other hand, is a regulated term that requires certification, meaning the product was grown or produced without synthetic pesticides, fertilizers, or genetically modified organisms.
+
+Understanding the difference between "low-fat" and "reduced-fat" also matters. "Low-fat" means the product contains three grams of fat or less per serving. "Reduced-fat" simply means the product has at least twenty-five percent less fat than the original version, which could still be quite high. Many low-fat products compensate for the lack of flavor by adding extra sugar or sodium.
+
+Armed with this knowledge, you can become a more discerning shopper. Take a few extra seconds to read the nutrition facts and ingredients list before tossing items into your cart. Over time, this habit will help you build a healthier diet and avoid the traps set by misleading labels.`,
+    domain: "daily" as const,
+    difficulty: 2,
+    wordCount: 390,
+    targetWords: ["nutrition", "sodium", "proportion", "preservatives", "synthetic", "compensate", "discerning", "misleading"],
+    questions: [
+      {
+        question: "Why is the serving size on a nutrition label important?",
+        options: ["A. It tells you how much the product costs", "B. It determines the actual amount of calories and nutrients you consume", "C. It shows how long the product will last", "D. It indicates the recommended number of meals per day"],
+        correctIndex: 1,
+      },
+      {
+        question: "Why might a product contain multiple types of sugar?",
+        options: ["A. To make the product taste better", "B. Because different sugars have different health benefits", "C. So that no single sugar appears as the top ingredient", "D. Because the law requires listing all sugar types"],
+        correctIndex: 2,
+      },
+      {
+        question: "What is the difference between 'natural' and 'organic' according to the article?",
+        options: ["A. They mean the same thing", "B. 'Natural' is more strictly regulated than 'organic'", "C. 'Organic' is a regulated term requiring certification while 'natural' is often unregulated", "D. 'Organic' products are always more expensive"],
+        correctIndex: 2,
+      },
+    ],
+  },
+  {
+    id: "art-d10",
+    title: "The Rise of Remote Work Culture",
+    content: `The way we work has undergone a dramatic transformation in recent years. What was once considered a rare perk reserved for freelancers and tech workers has become mainstream. Remote work, whether from home, a coffee shop, or a co-working space, is now a permanent fixture of the modern professional landscape. This shift has created both exciting opportunities and unexpected challenges.
+
+The benefits of remote work are substantial. Workers save time and money by eliminating their daily commute. A person who used to spend an hour each way on the train now has two extra hours per day for exercise, family time, or personal projects. Studies have consistently shown that remote workers report higher job satisfaction and lower stress levels compared to their office-bound counterparts. Companies also benefit from reduced overhead costs, as they need less office space, fewer supplies, and lower utility bills.
+
+However, remote work is not without its difficulties. Many people struggle with isolation and the blurring of boundaries between their professional and personal lives. When your office is your living room, it can be hard to "switch off" at the end of the day. Some remote workers find themselves working longer hours because they feel the need to prove they are productive, leading to burnout. The lack of face-to-face interaction can also make it harder to build relationships with colleagues and can sometimes lead to miscommunication.
+
+To thrive in a remote work environment, experts recommend establishing a dedicated workspace, even if it is just a specific corner of your apartment. Maintaining a consistent daily routine helps create structure and signals to your brain when it is time to work and when it is time to relax. Taking regular breaks, getting dressed as if you were going to an office, and scheduling virtual coffee chats with colleagues can all help combat the sense of isolation.
+
+The rise of co-working spaces has provided another solution. These shared offices offer the social atmosphere of a traditional workplace without the rigidity. Many digital nomads and remote professionals use co-working spaces to stay productive and meet like-minded individuals. Cities around the world, from Lisbon to Chiang Mai to Taipei, have developed vibrant co-working communities that attract international professionals.
+
+As technology continues to advance and companies become more comfortable with distributed teams, remote work is likely to keep growing. The key to success lies in finding the balance that works best for you, combining the freedom of remote work with the discipline needed to stay focused and connected.`,
+    domain: "daily" as const,
+    difficulty: 2,
+    wordCount: 380,
+    targetWords: ["mainstream", "commute", "overhead", "isolation", "boundaries", "burnout", "dedicated", "rigidity"],
+    questions: [
+      {
+        question: "What is one major benefit of remote work mentioned in the article?",
+        options: ["A. Workers receive higher salaries", "B. Workers save time by eliminating their daily commute", "C. Workers get promoted more quickly", "D. Workers never have to attend meetings"],
+        correctIndex: 1,
+      },
+      {
+        question: "Why do some remote workers experience burnout?",
+        options: ["A. Because remote jobs are more demanding", "B. Because they feel the need to prove they are productive and work longer hours", "C. Because their internet connection is unreliable", "D. Because their managers give them more tasks"],
+        correctIndex: 1,
+      },
+      {
+        question: "What solution does the article mention for combating isolation?",
+        options: ["A. Going back to a traditional office permanently", "B. Working in a different country every month", "C. Using co-working spaces for social atmosphere", "D. Avoiding all contact with colleagues"],
+        correctIndex: 2,
+      },
+    ],
+  },
+  {
+    id: "art-d11",
+    title: "Budget Travel: Seeing the World Without Breaking the Bank",
+    content: `Traveling the world does not have to be expensive. With careful planning, smart choices, and a willingness to step outside your comfort zone, you can explore incredible destinations without draining your savings account. Budget travel is not about sacrificing quality or comfort entirely. It is about being resourceful and prioritizing experiences over luxury.
+
+The biggest expense for most travelers is airfare, but there are many strategies to reduce this cost. Booking flights well in advance, being flexible with your travel dates, and using fare comparison websites can save you hundreds of dollars. Many budget airlines offer extremely low base fares, though you should watch out for hidden fees on luggage, seat selection, and meals. Setting up price alerts on apps like Skyscanner or Google Flights will notify you when prices drop for your desired route.
+
+Accommodation is another area where budget travelers can save significantly. Hostels have evolved far beyond the basic dormitories of the past. Many modern hostels offer private rooms, stylish common areas, and organized social events. Platforms like Airbnb can be economical, especially if you are traveling in a group and can split the cost of an apartment. For the truly adventurous, house-sitting websites connect travelers with homeowners who need someone to look after their property and pets while they are away, providing free accommodation in exchange.
+
+Eating like a local is both the cheapest and most rewarding approach to food while traveling. Skip the tourist restaurants near major attractions and walk a few blocks to where the locals eat. Street food, market stalls, and small family-run eateries offer authentic cuisine at a fraction of the cost. If your accommodation has a kitchen, shopping at local grocery stores and cooking some of your own meals can stretch your food budget even further.
+
+Transportation within your destination also offers savings opportunities. Walking is free and lets you discover hidden corners of a city that you would miss from a taxi window. Many cities offer day passes or weekly passes for public transit that are much cheaper than buying individual tickets. Renting a bicycle is another affordable and enjoyable way to explore a new place.
+
+Finally, take advantage of free activities. Most cities have free walking tours, public parks, museums with free admission days, and cultural festivals throughout the year. Some of the best travel experiences cost nothing at all: watching a sunset from a hilltop, wandering through a historic neighborhood, or striking up a conversation with a local at a coffee shop. Budget travel teaches you that the richest experiences are rarely the most expensive ones.`,
+    domain: "daily" as const,
+    difficulty: 2,
+    wordCount: 390,
+    targetWords: ["resourceful", "prioritizing", "accommodation", "dormitories", "economical", "authentic", "cuisine", "admission"],
+    questions: [
+      {
+        question: "What does the article say budget travel is really about?",
+        options: ["A. Staying in the cheapest hotels possible", "B. Being resourceful and prioritizing experiences over luxury", "C. Traveling only to developing countries", "D. Avoiding all tourist attractions"],
+        correctIndex: 1,
+      },
+      {
+        question: "How does the article suggest saving money on food while traveling?",
+        options: ["A. Skip meals to save money", "B. Only eat at international fast-food chains", "C. Eat like a local at street food stalls and small eateries", "D. Bring all your food from home"],
+        correctIndex: 2,
+      },
+      {
+        question: "What free activities does the article mention?",
+        options: ["A. Free hotel upgrades and complimentary breakfasts", "B. Free walking tours, public parks, and museums with free admission days", "C. Free airplane tickets on certain days of the week", "D. Free shopping at weekend markets"],
+        correctIndex: 1,
+      },
+    ],
+  },
+  {
+    id: "art-d12",
+    title: "The Psychology of First Impressions",
+    content: `It takes only seven seconds to form a first impression. In that brief window, people evaluate your confidence, trustworthiness, and likability based on a combination of visual cues, body language, and verbal communication. Whether you are attending a job interview, meeting a new colleague, or going on a first date, understanding the psychology behind first impressions can give you a significant advantage in social situations.
+
+Research in social psychology has revealed that nonverbal communication plays a far greater role in first impressions than most people realize. Your posture, facial expressions, eye contact, and handshake all send powerful signals before you even speak a word. Standing tall with your shoulders back conveys confidence, while crossed arms or avoiding eye contact can suggest defensiveness or discomfort. A genuine smile, one that reaches your eyes, is universally recognized as a sign of warmth and approachability.
+
+The "halo effect" is a well-documented cognitive bias that heavily influences first impressions. When we perceive one positive quality in a person, we tend to assume they possess other positive qualities as well. For example, if someone is well-dressed and articulate, we are more likely to assume they are also intelligent, competent, and kind, even without evidence. This bias works in reverse too: a negative first impression can cause people to view your subsequent actions through a critical lens, regardless of your actual abilities.
+
+Your voice also matters more than you might think. Research shows that people who speak at a moderate pace with varied intonation are perceived as more credible and engaging. Speaking too quickly can signal nervousness, while speaking too slowly might suggest a lack of enthusiasm. Mirroring the other person's speech patterns and energy level can create an unconscious sense of rapport and connection.
+
+Cultural context also shapes how first impressions are formed. In some cultures, a firm handshake demonstrates confidence, while in others, a gentle grip or a slight bow is more appropriate. Direct eye contact is valued in Western cultures but can be considered confrontational in certain Asian cultures. Being aware of these cultural differences is especially important in international business settings and when traveling abroad.
+
+While first impressions are powerful, they are not permanent. If you feel you have made a poor initial impression, consistent positive behavior over time can gradually change how others perceive you. The most important thing is to be authentic. People are remarkably good at detecting insincerity, and trying too hard to impress often backfires. Focus instead on being genuinely interested in others, listening actively, and letting your natural personality shine through.`,
+    domain: "daily" as const,
+    difficulty: 2,
+    wordCount: 390,
+    targetWords: ["evaluate", "nonverbal", "cognitive bias", "articulate", "intonation", "rapport", "confrontational", "authentic"],
+    questions: [
+      {
+        question: "According to the article, how long does it take to form a first impression?",
+        options: ["A. About one minute", "B. About seven seconds", "C. About thirty seconds", "D. About five minutes"],
+        correctIndex: 1,
+      },
+      {
+        question: "What is the 'halo effect' described in the article?",
+        options: ["A. A lighting technique that makes people look better", "B. A tendency to assume positive qualities based on one positive trait", "C. A type of handshake used in business meetings", "D. A psychological test for measuring intelligence"],
+        correctIndex: 1,
+      },
+      {
+        question: "What does the article recommend if you make a poor first impression?",
+        options: ["A. Avoid that person in the future", "B. Immediately apologize and explain yourself", "C. Show consistent positive behavior over time", "D. Try to make a joke to lighten the mood"],
+        correctIndex: 2,
+      },
+    ],
+  },
+  {
+    id: "art-d13",
+    title: "Sustainable Living in Modern Cities",
+    content: `As urban populations continue to swell worldwide, the environmental impact of city living has become an urgent topic of discussion. Modern cities consume enormous amounts of energy, generate vast quantities of waste, and contribute significantly to greenhouse gas emissions. Yet paradoxically, cities also hold the key to a more sustainable future. With their density and infrastructure, urban areas offer unique opportunities for implementing eco-friendly practices at scale, and individuals can make a meaningful difference through the choices they make every day.
+
+One of the most impactful changes a city dweller can make is rethinking their transportation habits. Private automobiles are among the largest sources of carbon emissions in urban areas. Switching to public transit, cycling, or walking for daily commutes can dramatically reduce your personal carbon footprint. The proliferation of electric scooters, bike-sharing programs, and ride-sharing services in many cities has made car-free living more feasible than ever. Some progressive cities like Amsterdam, Copenhagen, and Taipei have invested heavily in cycling infrastructure, making two-wheeled transportation not only practical but also pleasant.
+
+Reducing household waste is another critical component of sustainable urban living. The average person generates approximately one kilogram of solid waste per day, much of which ends up in landfills where it decomposes and releases methane, a potent greenhouse gas. Adopting a zero-waste mindset begins with the familiar hierarchy: refuse what you do not need, reduce what you consume, reuse what you can, recycle what remains, and rot the rest through composting. Many cities now offer curbside composting programs, and community gardens provide spaces where residents can compost organic waste and grow their own vegetables simultaneously.
+
+Conscious consumption extends beyond waste management to the products we purchase. Fast fashion, for instance, is one of the most environmentally destructive industries on the planet, responsible for approximately ten percent of global carbon emissions and enormous water pollution. Choosing secondhand clothing, supporting sustainable brands, and simply buying fewer but higher-quality garments can significantly mitigate your environmental impact. Similarly, being mindful about food choices matters: reducing meat consumption, choosing locally sourced produce, and minimizing food waste all contribute to a lighter ecological footprint.
+
+Energy consumption in the home represents yet another frontier for sustainability. Simple measures like switching to LED lighting, unplugging electronics when not in use, using programmable thermostats, and properly insulating your living space can reduce household energy consumption by twenty to thirty percent. For renters who cannot make structural modifications, portable solutions like thermal curtains and smart power strips offer accessible alternatives.
+
+The transition to sustainable living does not require perfection or radical lifestyle overhaul. It is about making incremental improvements and recognizing that millions of individuals making small changes collectively produce enormous impact. By treating sustainability not as a sacrifice but as an opportunity for creativity and intentional living, urban residents can help shape cities that are healthier, more resilient, and more equitable for future generations.`,
+    domain: "daily" as const,
+    difficulty: 3,
+    wordCount: 430,
+    targetWords: ["proliferation", "feasible", "decompose", "methane", "hierarchy", "mitigate", "incremental", "resilient", "equitable"],
+    questions: [
+      {
+        question: "Why does the article describe cities as paradoxically important for sustainability?",
+        options: ["A. Because cities produce more waste but also recycle more", "B. Because cities consume enormous resources yet their density enables eco-friendly practices at scale", "C. Because city residents earn more money to invest in green technology", "D. Because cities have more parks and green spaces than rural areas"],
+        correctIndex: 1,
+      },
+      {
+        question: "What hierarchy does the article describe for reducing waste?",
+        options: ["A. Reduce, reuse, recycle", "B. Buy less, sell more, donate the rest", "C. Refuse, reduce, reuse, recycle, and rot", "D. Sort, wash, compress, and recycle"],
+        correctIndex: 2,
+      },
+      {
+        question: "According to the article, what is the best approach to sustainable living?",
+        options: ["A. Making radical lifestyle changes immediately", "B. Waiting for governments to enforce environmental laws", "C. Making incremental improvements that collectively produce enormous impact", "D. Moving out of cities to reduce your carbon footprint"],
+        correctIndex: 2,
+      },
+    ],
+  },
+  {
+    id: "art-d14",
+    title: "The Science Behind a Good Morning Routine",
+    content: `The first hour of your day can set the tone for everything that follows. While the concept of a morning routine might sound like just another self-help cliche, there is substantial scientific evidence supporting the idea that how you start your morning profoundly influences your cognitive performance, emotional regulation, and overall productivity throughout the day. Understanding the neuroscience and chronobiology behind morning habits can help you design a routine that genuinely works for your body and mind.
+
+When you wake up, your body undergoes a complex hormonal transition. Cortisol, often called the "stress hormone," naturally peaks within thirty to forty-five minutes of waking in a phenomenon known as the cortisol awakening response. This surge is not harmful; it is your body's way of mobilizing energy and preparing you for the day ahead. Exposing yourself to natural sunlight within the first hour of waking amplifies this response and simultaneously suppresses melatonin production, helping you feel alert and energized. Research from Stanford University's neuroscience department has demonstrated that even ten minutes of morning sunlight exposure can significantly improve nighttime sleep quality and daytime wakefulness.
+
+Physical movement in the morning offers compounding benefits that extend well beyond the exercise itself. Even moderate activity like a brisk walk, yoga session, or brief bodyweight workout triggers the release of endorphins, dopamine, and serotonin, neurotransmitters collectively responsible for mood regulation, motivation, and a sense of well-being. Exercise also increases blood flow to the prefrontal cortex, the brain region responsible for executive functions such as decision-making, focus, and impulse control. Studies published in the British Journal of Sports Medicine found that morning exercise improved attention, visual learning, and decision-making for up to ten hours afterward.
+
+The decision about when to consume caffeine also has a scientific basis. Drinking coffee immediately upon waking, as many people do, may actually diminish its effectiveness. Since cortisol levels are already elevated in the morning, adding caffeine on top creates a redundancy that can lead to increased tolerance over time. Sleep scientists recommend waiting sixty to ninety minutes after waking before having your first cup, allowing cortisol to peak and decline naturally. This timing maximizes the stimulant effect of caffeine precisely when your body begins to experience its first energy dip.
+
+Nutrition plays an equally pivotal role. Skipping breakfast triggers a cascade of metabolic responses, including elevated cortisol levels and blood sugar instability, that can impair concentration and increase irritability later in the morning. A balanced breakfast containing protein, healthy fats, and complex carbohydrates provides sustained energy and prevents the mid-morning crash associated with high-sugar or highly processed options. Emerging research in nutritional psychiatry suggests that breakfast composition may also influence mood and anxiety levels throughout the day.
+
+Perhaps the most underappreciated element of an effective morning routine is intentional cognitive engagement before reactive consumption. Checking emails, social media, or news immediately upon waking places your brain in a reactive state, responding to other people's priorities rather than establishing your own. Psychologists recommend dedicating the first portion of your morning to proactive activities such as journaling, meditation, planning your day, or working on a meaningful personal project. This practice strengthens your sense of agency and internal locus of control, psychological factors strongly correlated with long-term success and life satisfaction.`,
+    domain: "daily" as const,
+    difficulty: 3,
+    wordCount: 480,
+    targetWords: ["chronobiology", "cortisol", "suppress", "compounding", "neurotransmitters", "redundancy", "cascade", "proactive", "locus"],
+    questions: [
+      {
+        question: "What is the cortisol awakening response described in the article?",
+        options: ["A. A harmful stress reaction that should be avoided", "B. A natural cortisol peak within thirty to forty-five minutes of waking that mobilizes energy", "C. A condition caused by drinking coffee too early in the morning", "D. An allergic reaction triggered by morning sunlight"],
+        correctIndex: 1,
+      },
+      {
+        question: "Why does the article recommend waiting before drinking coffee in the morning?",
+        options: ["A. Because coffee is harmful on an empty stomach", "B. Because caffeine during peak cortisol creates redundancy and increases tolerance", "C. Because coffee tastes better later in the day", "D. Because morning coffee causes dehydration"],
+        correctIndex: 1,
+      },
+      {
+        question: "What does the article say about checking emails first thing in the morning?",
+        options: ["A. It is an efficient way to start your day", "B. It has no effect on your mental state", "C. It places your brain in a reactive state responding to others' priorities", "D. It is only problematic if you spend more than an hour doing it"],
+        correctIndex: 2,
+      },
+    ],
+  },
+  {
+    id: "art-d15",
+    title: "Cultural Etiquette Around the World",
+    content: `Navigating the unwritten rules of social behavior in foreign countries is one of the most challenging yet rewarding aspects of international travel. What is considered perfectly polite in one culture can be deeply offensive in another, and even well-intentioned travelers can inadvertently cause misunderstandings if they are unaware of local customs. Developing cultural sensitivity does not require memorizing an encyclopedia of rules; rather, it demands a genuine curiosity about why different societies have developed different norms and a willingness to adapt your behavior accordingly.
+
+Dining etiquette provides some of the most striking examples of cultural variation. In Japan, slurping your noodles loudly is not only acceptable but actually expected, as it signals to the chef that you are enjoying the meal. Conversely, making any slurping sounds while eating in Western countries is generally considered rude and unsophisticated. In many Middle Eastern and South Asian cultures, eating with your left hand is taboo because the left hand is traditionally associated with personal hygiene. In Ethiopia, feeding someone with your hands during a meal, a practice called "gursha," is a profound gesture of friendship and respect. Tipping customs also vary enormously: in the United States, a fifteen to twenty percent tip is virtually mandatory, while in Japan, leaving a tip can be perceived as insulting, implying that the server's employer does not pay them adequately.
+
+Physical greetings represent another minefield of cultural differences. While a firm handshake is standard in most Western business contexts, the appropriate pressure and duration vary significantly. In France, the custom of kissing cheeks, known as "la bise," ranges from one kiss to four depending on the region, and getting it wrong can create an awkward encounter. In Thailand, the traditional greeting is the "wai," a slight bow with palms pressed together, and the height of your hands indicates the level of respect being shown. In New Zealand, the Maori people greet visitors with the "hongi," a pressing together of noses and foreheads that symbolizes the sharing of breath and life force.
+
+The concept of personal space and physical contact varies dramatically across cultures. People from Northern European countries, Scandinavia in particular, tend to maintain larger personal space bubbles and may feel uncomfortable with excessive physical proximity during conversations. In contrast, Mediterranean and Latin American cultures tend to stand closer together and use more tactile communication, with frequent touching of arms, shoulders, and backs considered perfectly normal. Misinterpreting these spatial norms can lead to the false impression that someone is either cold and distant or inappropriately intimate.
+
+Gift-giving protocols carry their own set of complex rules. In China, presenting a gift wrapped in white paper is inauspicious because white is the color of mourning. In many Asian cultures, gifts are not opened in front of the giver to avoid any expression of disappointment. The number four is considered unlucky in Chinese, Japanese, and Korean cultures because it sounds similar to the word for death, so giving gifts in sets of four should be avoided. In Russia, bringing an even number of flowers is reserved exclusively for funerals, making an odd-numbered bouquet the appropriate choice for social occasions.
+
+Ultimately, the most important piece of cultural etiquette is not any specific rule but rather the attitude you bring to cross-cultural encounters. Demonstrating humility, asking questions when unsure, observing local behavior before acting, and graciously accepting corrections will earn you goodwill in virtually any culture. Most people around the world appreciate sincere effort from visitors, even when the execution is imperfect. The willingness to learn and respect local customs transforms a tourist into a genuinely welcome guest.`,
+    domain: "daily" as const,
+    difficulty: 3,
+    wordCount: 530,
+    targetWords: ["inadvertently", "taboo", "mandatory", "proximity", "tactile", "inauspicious", "protocol", "humility", "graciously"],
+    questions: [
+      {
+        question: "Why is slurping noodles considered appropriate in Japan but rude in Western countries?",
+        options: ["A. Because Japanese noodles are served hotter", "B. Because in Japan it signals enjoyment to the chef while in the West it is considered unsophisticated", "C. Because Japanese restaurants are louder", "D. Because Western noodles are made differently"],
+        correctIndex: 1,
+      },
+      {
+        question: "According to the article, why should gifts in sets of four be avoided in some Asian cultures?",
+        options: ["A. Because four is an odd number", "B. Because four sounds similar to the word for death", "C. Because four items are too few for a proper gift", "D. Because the number four represents bad weather"],
+        correctIndex: 1,
+      },
+      {
+        question: "What does the article identify as the most important piece of cultural etiquette?",
+        options: ["A. Memorizing every cultural rule before traveling", "B. Avoiding all physical contact in foreign countries", "C. The attitude of humility and willingness to learn you bring to cross-cultural encounters", "D. Speaking the local language fluently"],
+        correctIndex: 2,
+      },
+    ],
+  },
+  {
+    id: "art-d16",
+    title: "How Music Affects Your Mood and Productivity",
+    content: `Music is a universal human experience that transcends linguistic and cultural boundaries. Every known civilization throughout history has produced some form of music, suggesting that our relationship with rhythm, melody, and harmony is deeply embedded in our neurobiology. Modern neuroscience has begun to unravel exactly how music exerts its profound influence on our emotional states, cognitive function, and even physical performance, revealing mechanisms that are far more complex and fascinating than most people realize.
+
+When you listen to music you enjoy, your brain releases dopamine, the same neurotransmitter associated with eating delicious food, receiving social validation, or achieving a long-pursued goal. Remarkably, neuroimaging studies have shown that dopamine is released not only when the pleasurable musical moment occurs but also during the anticipation of that moment. This anticipatory response explains why a familiar song can trigger emotional reactions before the climactic passage even arrives. The nucleus accumbens, a brain structure central to the reward circuit, lights up during peak musical moments, creating a neurochemical experience of pleasure that can be genuinely comparable to other forms of reward.
+
+The relationship between music and productivity is nuanced and depends heavily on the nature of the task being performed. For repetitive or monotonous tasks such as data entry, filing, or assembly-line work, music with a moderate tempo and upbeat character has been consistently shown to improve both speed and accuracy. The music provides external stimulation that compensates for the lack of inherent interest in the task, maintaining arousal levels in an optimal range. However, for tasks requiring deep concentration, complex problem-solving, or language processing, music with lyrics can actually impair performance. The linguistic content of songs competes with the language-processing demands of the work, creating cognitive interference. This is why many researchers and writers prefer instrumental music, ambient soundscapes, or complete silence when engaged in their most demanding intellectual work.
+
+The tempo and modality of music also influence physiological responses in measurable ways. Fast-tempo music in a major key tends to increase heart rate, elevate blood pressure slightly, and stimulate the sympathetic nervous system, producing feelings of excitement and energy. Slow-tempo music in a minor key activates the parasympathetic nervous system, reducing heart rate and cortisol levels, and inducing states of relaxation or melancholy. Athletes and fitness enthusiasts have long exploited these effects: research published in the Journal of Sports Medicine found that listening to high-tempo music during exercise increased endurance by up to fifteen percent and reduced the perceived effort of physical exertion.
+
+Music therapy has emerged as a legitimate clinical discipline with applications ranging from pain management and rehabilitation to mental health treatment and palliative care. Patients recovering from strokes have shown improved motor function when rehabilitation exercises are synchronized with rhythmic musical cues. Individuals with Alzheimer's disease, who may have lost most of their autobiographical memories, can often still recognize and respond emotionally to music from their youth, suggesting that musical memories are stored in brain regions that are among the last to be affected by neurodegenerative disease.
+
+Understanding these mechanisms empowers you to use music more strategically in your daily life. Create different playlists for different purposes: high-energy instrumental tracks for exercise, lo-fi beats or classical music for focused work sessions, and calming ambient music for winding down in the evening. Pay attention to how different genres and tempos affect your own mood and performance, as individual responses to music vary considerably based on personality, musical training, and personal associations. By treating music as a deliberate tool rather than mere background noise, you can harness its remarkable power to enhance virtually every aspect of your daily experience.`,
+    domain: "daily" as const,
+    difficulty: 3,
+    wordCount: 540,
+    targetWords: ["neurobiology", "dopamine", "anticipatory", "cognitive interference", "parasympathetic", "exertion", "palliative", "neurodegenerative", "harness"],
+    questions: [
+      {
+        question: "Why can music with lyrics impair performance on complex tasks?",
+        options: ["A. Because lyrics make people want to sing along instead of working", "B. Because the linguistic content competes with language-processing demands of the work", "C. Because songs with lyrics are always louder than instrumental music", "D. Because lyrics distract people by reminding them of personal memories"],
+        correctIndex: 1,
+      },
+      {
+        question: "How does fast-tempo music in a major key affect the body?",
+        options: ["A. It decreases heart rate and promotes relaxation", "B. It has no measurable physiological effect", "C. It increases heart rate and stimulates the sympathetic nervous system", "D. It causes drowsiness and reduced alertness"],
+        correctIndex: 2,
+      },
+      {
+        question: "What does the article reveal about music and Alzheimer's disease?",
+        options: ["A. Music therapy can cure Alzheimer's disease", "B. Patients with Alzheimer's cannot process any form of music", "C. Musical memories may be stored in brain regions that are among the last affected by the disease", "D. Only classical music has therapeutic benefits for Alzheimer's patients"],
+        correctIndex: 2,
+      },
+    ],
+  },
+
+  // ===== DAILY ARTICLES (art-d17 to art-d30) =====
+  {
+    id: "art-d17",
+    title: "The Art of Meal Prepping",
+    content: `Meal prepping has become one of the most popular lifestyle trends in recent years, and for good reason. By dedicating a few hours on the weekend to preparing meals for the upcoming week, people can save time, reduce stress, and make healthier eating choices. For busy professionals and students alike, meal prepping offers a practical solution to the daily question: "What should I eat today?"
+
+The basic concept of meal prepping is simple. You choose several recipes, buy all the necessary ingredients at once, and then cook everything in one session. The prepared meals are stored in containers in the refrigerator or freezer, ready to be reheated whenever you need them. This approach eliminates the temptation to order expensive takeout or grab unhealthy fast food when you are too tired to cook after a long day.
+
+One of the greatest benefits of meal prepping is portion control. When you prepare your meals in advance, you can measure exact amounts of protein, vegetables, and carbohydrates. This is especially helpful for people who are trying to maintain a balanced diet or lose weight. Instead of mindlessly eating whatever is available, you have a nutritious meal already waiting for you.
+
+Getting started with meal prepping does not require fancy equipment or advanced cooking skills. A few basic containers, a cutting board, a good knife, and a reliable oven or stove are all you need. Beginners should start with simple recipes like grilled chicken with roasted vegetables, fried rice with eggs, or pasta with homemade tomato sauce. As you become more comfortable, you can experiment with more complex dishes and diverse cuisines.
+
+However, meal prepping is not without its challenges. Some people find eating the same meal multiple days in a row to be boring. To avoid this, experienced meal preppers recommend preparing two or three different main dishes each week and rotating them. Adding different sauces or seasonings to the same base ingredients can also create variety without much extra effort.
+
+Another important tip is to pay attention to food safety. Cooked meals should be refrigerated within two hours of preparation and consumed within three to four days. If you want meals to last longer, freezing them is a great option. Most properly stored frozen meals remain safe and delicious for up to three months.`,
+    domain: "daily" as const,
+    difficulty: 2,
+    wordCount: 340,
+    targetWords: ["meal prepping", "ingredients", "portion", "nutritious", "containers", "temptation", "carbohydrates"],
+    questions: [
+      {
+        question: "What is the main advantage of meal prepping mentioned in the article?",
+        options: ["A. It saves time and helps people eat healthier", "B. It makes cooking more enjoyable", "C. It allows people to learn professional cooking skills", "D. It is the cheapest way to eat"],
+        correctIndex: 0,
+      },
+      {
+        question: "How can meal preppers avoid getting bored with their food?",
+        options: ["A. By cooking only one meal per week", "B. By preparing two or three different dishes and rotating them", "C. By ordering takeout on alternate days", "D. By skipping meals occasionally"],
+        correctIndex: 1,
+      },
+      {
+        question: "According to the article, how long can properly frozen meals last?",
+        options: ["A. Up to one week", "B. Up to one month", "C. Up to three months", "D. Up to six months"],
+        correctIndex: 2,
+      },
+    ],
+  },
+  {
+    id: "art-d18",
+    title: "Pet Ownership: More Than Just Companionship",
+    content: `When people think about owning a pet, they often focus on the joy of having a cute animal around the house. While companionship is certainly a major benefit, research has shown that pet ownership offers far more than just having a furry friend. From physical health improvements to mental well-being, pets can transform their owners' lives in remarkable ways.
+
+Studies have consistently demonstrated that pet owners tend to have lower blood pressure and reduced levels of stress hormones compared to non-pet owners. Dog owners, in particular, benefit from regular physical activity since dogs need daily walks. This routine exercise helps owners maintain a healthy weight and improves cardiovascular health. Even the simple act of petting a cat or dog has been shown to release oxytocin, a hormone associated with feelings of happiness and relaxation.
+
+Beyond physical health, pets provide significant mental health benefits. For people living alone, a pet can reduce feelings of loneliness and isolation. Many therapists now recommend emotional support animals for patients dealing with anxiety, depression, or post-traumatic stress disorder. The unconditional love that pets offer creates a sense of purpose and responsibility that can be incredibly therapeutic.
+
+Pets also play an important role in social connections. Dog owners frequently meet and interact with other dog owners during walks in the park or visits to the veterinarian. These casual encounters often develop into meaningful friendships. For children, growing up with pets teaches empathy, responsibility, and compassion. Kids who care for animals learn to consider the needs of others and develop stronger emotional intelligence.
+
+However, pet ownership is a serious commitment that should not be taken lightly. Animals require time, money, and consistent care. Veterinary bills, food costs, and grooming expenses can add up quickly. Potential pet owners should honestly evaluate their lifestyle, living situation, and financial capacity before bringing an animal home.
+
+Adoption from shelters is an excellent option for those ready to welcome a pet into their lives. Millions of healthy, loving animals in shelters are waiting for forever homes. By choosing adoption over purchasing from breeders, new owners not only save a life but also help reduce the problem of animal overpopulation.`,
+    domain: "daily" as const,
+    difficulty: 2,
+    wordCount: 330,
+    targetWords: ["companionship", "cardiovascular", "oxytocin", "therapeutic", "empathy", "commitment", "adoption"],
+    questions: [
+      {
+        question: "According to the article, what hormone is released when petting an animal?",
+        options: ["A. Oxytocin", "B. Adrenaline", "C. Cortisol", "D. Insulin"],
+        correctIndex: 0,
+      },
+      {
+        question: "What do children learn from growing up with pets?",
+        options: ["A. How to train animals professionally", "B. Empathy, responsibility, and compassion", "C. How to become veterinarians", "D. How to breed animals"],
+        correctIndex: 1,
+      },
+      {
+        question: "What does the article recommend for people who want a new pet?",
+        options: ["A. Buying from a professional breeder", "B. Getting a pet from a friend", "C. Adopting from a shelter", "D. Catching a stray animal"],
+        correctIndex: 2,
+      },
+    ],
+  },
+  {
+    id: "art-d19",
+    title: "Understanding Your City's Hidden Gems",
+    content: `Every city, no matter how small or large, has hidden gems waiting to be discovered. These are the places that do not appear on typical tourist guides or popular travel websites. They are the quiet cafes tucked away in narrow alleys, the family-run restaurants serving recipes passed down through generations, and the small parks where locals go to escape the noise of everyday life. Finding these spots can transform the way you experience the place you call home.
+
+Many people live in a city for years without truly exploring it. They follow the same routes to work and visit the same shopping centers on weekends. However, taking the time to wander through unfamiliar neighborhoods can reveal surprising treasures. A bookshop with rare second-hand titles, a rooftop garden with a stunning view of the skyline, or a street art mural painted by a talented local artist might be just a few blocks away from your usual path.
+
+One of the best ways to discover hidden gems is to talk to long-time residents. Elderly neighbors, shopkeepers, and taxi drivers often have a wealth of knowledge about their city that cannot be found online. They can point you toward the best breakfast spot that only locals know about or tell you the history behind an old building that most people walk past without noticing.
+
+Social media can also be a useful tool for urban exploration. Many cities have online communities dedicated to sharing lesser-known attractions and off-the-beaten-path experiences. Searching for hashtags related to your city on Instagram or joining local Facebook groups can lead you to places you never knew existed.
+
+Another approach is to attend local events such as weekend farmers markets, community festivals, or neighborhood walking tours. These gatherings not only introduce you to new places but also connect you with people who share your curiosity about the city.
+
+Exploring your own city like a tourist can reignite your appreciation for where you live. Instead of dreaming about faraway destinations, you might find that the most memorable adventures are hiding in plain sight, just around the corner from your home.`,
+    domain: "daily" as const,
+    difficulty: 2,
+    wordCount: 340,
+    targetWords: ["hidden gems", "wander", "unfamiliar", "mural", "urban", "curiosity", "reignite", "appreciation"],
+    questions: [
+      {
+        question: "What are 'hidden gems' according to the article?",
+        options: ["A. Lesser-known places not found in typical tourist guides", "B. Expensive jewelry shops in the city center", "C. Famous landmarks that attract millions of visitors", "D. Underground caves beneath the city"],
+        correctIndex: 0,
+      },
+      {
+        question: "Who does the article suggest talking to for local knowledge?",
+        options: ["A. Foreign tourists visiting the city", "B. Long-time residents such as elderly neighbors and shopkeepers", "C. Travel agents at booking offices", "D. City government officials"],
+        correctIndex: 1,
+      },
+      {
+        question: "What is one benefit of exploring your own city mentioned in the article?",
+        options: ["A. You can earn money as a tour guide", "B. You will become famous on social media", "C. It can reignite your appreciation for where you live", "D. You can avoid traveling to other countries"],
+        correctIndex: 2,
+      },
+    ],
+  },
+  {
+    id: "art-d20",
+    title: "Digital Detox: A Weekend Without Screens",
+    content: `In today's hyperconnected world, most people spend an astonishing amount of time staring at screens. Between smartphones, laptops, tablets, and televisions, the average adult spends over seven hours a day interacting with digital devices. While technology has made life more convenient, this constant connectivity comes at a cost. Many experts now recommend taking a regular digital detox — a deliberate break from screens — to restore balance in our lives.
+
+The idea of spending an entire weekend without screens might sound intimidating, or even impossible, to some people. How would you check the weather? What about staying in touch with friends? Could you survive without streaming your favorite shows? These concerns are understandable, but people who have tried a digital detox often report surprising results. They feel more relaxed, sleep better, and have more meaningful conversations with the people around them.
+
+One of the most immediate benefits of stepping away from screens is improved sleep quality. The blue light emitted by phones and computers interferes with the production of melatonin, a hormone that regulates sleep. By putting devices away at least an hour before bedtime, or better yet for an entire weekend, many people notice they fall asleep faster and wake up feeling more refreshed.
+
+A digital detox also creates space for activities that screens often replace. Reading a physical book, cooking a new recipe, going for a hike, or simply sitting in a park and observing the world around you can be deeply satisfying experiences. Without the constant distraction of notifications and social media feeds, people rediscover hobbies they had forgotten about and find new ways to enjoy their free time.
+
+If a full weekend without screens feels too extreme, you can start with smaller steps. Try designating certain hours as screen-free time, such as during meals or the first hour after waking up. You can also create tech-free zones in your home, like the bedroom or dining room. The goal is not to reject technology entirely but to develop a healthier relationship with it.
+
+Over time, regular digital detoxes can help you become more mindful about how and why you use your devices. Instead of reaching for your phone out of habit, you begin to use technology with intention and purpose.`,
+    domain: "daily" as const,
+    difficulty: 2,
+    wordCount: 355,
+    targetWords: ["hyperconnected", "deliberate", "intimidating", "melatonin", "notifications", "designating", "mindful"],
+    questions: [
+      {
+        question: "How many hours does the average adult spend on digital devices per day according to the article?",
+        options: ["A. Over seven hours", "B. About three hours", "C. Exactly five hours", "D. Less than two hours"],
+        correctIndex: 0,
+      },
+      {
+        question: "Why does screen use before bedtime affect sleep quality?",
+        options: ["A. Screens make noise that keeps people awake", "B. Blue light from screens interferes with melatonin production", "C. Screens make the room too bright to sleep", "D. People get too excited reading the news"],
+        correctIndex: 1,
+      },
+      {
+        question: "What does the article suggest for people who find a full weekend detox too extreme?",
+        options: ["A. They should give up and not try at all", "B. They should throw away their devices", "C. They can start with smaller steps like screen-free hours or zones", "D. They should only use their phone for emergencies"],
+        correctIndex: 2,
+      },
+    ],
+  },
+  {
+    id: "art-d21",
+    title: "The Changing Face of Modern Relationships",
+    content: `The way people form and maintain relationships has changed dramatically over the past two decades. The rise of social media, dating apps, and instant messaging has transformed how we meet new people, keep in touch with old friends, and even navigate romantic partnerships. While these digital tools have made connecting with others easier than ever, they have also introduced new challenges that previous generations never had to face.
+
+Friendship in the digital age looks quite different from what it used to be. In the past, friendships were built primarily through face-to-face interactions at school, work, or community gatherings. Today, many people maintain friendships almost entirely through text messages, voice notes, and social media comments. While this allows people to stay connected across great distances, some researchers worry that these digital interactions lack the depth and emotional richness of in-person conversations.
+
+The dating landscape has been perhaps the most dramatically altered. Dating apps have become the primary way that young adults meet potential romantic partners. A recent survey found that nearly forty percent of couples who got together in the last five years met through an app or website. These platforms offer convenience and access to a wider pool of people, but they can also create a paradox of choice where having too many options makes it harder to commit to any single person.
+
+Social media also plays a complicated role in modern relationships. On one hand, it allows couples and friends to share experiences, celebrate milestones, and feel connected even when physically apart. On the other hand, the pressure to present a perfect relationship online can create unrealistic expectations. Comparing your own relationships to the carefully curated images others post can lead to dissatisfaction and insecurity.
+
+Despite these challenges, many people are finding ways to build meaningful connections in the modern era. Some set boundaries around technology use during quality time with loved ones. Others make conscious efforts to schedule regular in-person meetups rather than relying solely on digital communication. The key seems to be using technology as a supplement to, rather than a replacement for, genuine human connection.
+
+Ultimately, the fundamentals of strong relationships remain the same regardless of the era: trust, communication, mutual respect, and the willingness to invest time and effort into the people who matter most.`,
+    domain: "daily" as const,
+    difficulty: 2,
+    wordCount: 365,
+    targetWords: ["navigate", "interactions", "landscape", "paradox", "curated", "insecurity", "supplement", "fundamentals"],
+    questions: [
+      {
+        question: "What percentage of recent couples met through an app or website according to the article?",
+        options: ["A. Nearly forty percent", "B. About twenty percent", "C. Over sixty percent", "D. Exactly fifty percent"],
+        correctIndex: 0,
+      },
+      {
+        question: "What is the 'paradox of choice' mentioned in the article?",
+        options: ["A. People cannot find any dating apps to use", "B. Having too many options makes it harder to commit to one person", "C. There are not enough single people available", "D. Dating apps are too expensive for most users"],
+        correctIndex: 1,
+      },
+      {
+        question: "According to the article, what is the key to building meaningful connections today?",
+        options: ["A. Avoiding all technology completely", "B. Only communicating through social media", "C. Using technology as a supplement to genuine human connection", "D. Meeting as many new people as possible online"],
+        correctIndex: 2,
+      },
+    ],
+  },
+  {
+    id: "art-d22",
+    title: "How Weather Affects Your Daily Decisions",
+    content: `Weather is one of the most powerful yet often overlooked factors that influence our daily decisions. From what we wear in the morning to what we eat for dinner, the temperature, humidity, and sky conditions quietly shape our choices throughout the day. Understanding how weather affects behavior can help us make more conscious decisions and better prepare for the day ahead.
+
+The most obvious way weather influences us is through our clothing choices. On cold winter mornings, we reach for thick coats, scarves, and boots. On hot summer days, we choose light fabrics and open shoes. But weather also affects deeper decisions. Research shows that people tend to eat heavier, more calorie-rich foods during cold weather and prefer lighter salads and cold drinks when temperatures rise. This is partly biological — our bodies naturally crave more energy to stay warm in colder conditions.
+
+Weather also has a significant impact on our mood and energy levels. Studies have found that sunlight exposure is directly linked to the production of serotonin, a brain chemical that promotes feelings of happiness and well-being. This explains why many people feel more cheerful and energetic on sunny days and more sluggish or melancholy during long stretches of cloudy, rainy weather. In extreme cases, a lack of sunlight during winter months can lead to Seasonal Affective Disorder, a form of depression that affects millions of people worldwide.
+
+Our travel and commuting decisions are heavily influenced by weather as well. Rain and snow can cause people to choose driving over cycling or walking. Severe weather warnings might lead us to cancel outdoor plans or postpone trips entirely. In cities with unpredictable weather patterns, residents learn to always carry an umbrella or check the forecast multiple times a day.
+
+Consumer behavior also shifts with the weather. Retailers have long known that sunny weather drives more foot traffic to shopping areas, while rainy days increase online shopping. Ice cream shops see sales spike during heat waves, and coffee shops benefit from cold, drizzly afternoons.
+
+By paying attention to how weather affects your habits, you can make more intentional choices. Planning outdoor exercise on sunny days, preparing comforting meals when it is cold, and adjusting your schedule around weather patterns can lead to a more enjoyable and productive daily routine.`,
+    domain: "daily" as const,
+    difficulty: 2,
+    wordCount: 360,
+    targetWords: ["humidity", "conscious", "serotonin", "sluggish", "melancholy", "commuting", "intentional"],
+    questions: [
+      {
+        question: "Why do people tend to eat heavier foods in cold weather?",
+        options: ["A. Their bodies naturally crave more energy to stay warm", "B. Heavy food is cheaper in winter", "C. Restaurants only serve warm food in winter", "D. Cold weather kills appetite for light food"],
+        correctIndex: 0,
+      },
+      {
+        question: "What is Seasonal Affective Disorder?",
+        options: ["A. A type of allergy caused by pollen", "B. A form of depression linked to lack of sunlight in winter", "C. A physical injury caused by icy weather", "D. A fear of storms and extreme weather"],
+        correctIndex: 1,
+      },
+      {
+        question: "According to the article, how does rainy weather affect consumer behavior?",
+        options: ["A. People stop buying things altogether", "B. People buy more umbrellas at physical stores", "C. Online shopping tends to increase on rainy days", "D. People prefer to eat at restaurants instead of shopping"],
+        correctIndex: 2,
+      },
+    ],
+  },
+  {
+    id: "art-d23",
+    title: "The Science of Habit Formation",
+    content: `Why is it so easy to scroll through social media for hours but so difficult to maintain a regular exercise routine? The answer lies in the science of habit formation, a field that has attracted considerable attention from psychologists and neuroscientists in recent years. Understanding how habits are formed, maintained, and changed can give you a powerful advantage in shaping your daily behavior and ultimately your life.
+
+At the core of every habit is a neurological pattern known as the habit loop. This loop consists of three components: a cue, a routine, and a reward. The cue is a trigger that tells your brain to initiate the behavior. The routine is the behavior itself. The reward is the benefit your brain receives, which reinforces the loop and makes the behavior more likely to be repeated. For example, feeling stressed (cue) might lead you to eat a piece of chocolate (routine), which provides a temporary feeling of pleasure (reward).
+
+Research suggests that it takes an average of sixty-six days for a new behavior to become automatic, although this varies widely depending on the person and the complexity of the habit. Simple habits, like drinking a glass of water every morning, might become automatic within a few weeks. More complex habits, like exercising for thirty minutes daily, can take several months to solidify.
+
+One of the most effective strategies for building new habits is a technique called habit stacking. This involves attaching a new habit to an existing one. For instance, if you already have a well-established habit of making coffee every morning, you might stack a new habit onto it by doing five minutes of stretching while the coffee brews. By linking the new behavior to something you already do automatically, you reduce the mental effort required to remember and perform the new habit.
+
+Environment design is another crucial factor in habit formation. People who want to read more often place books on their nightstand where they are easily visible. Those who want to eat healthier stock their kitchen with fruits and vegetables while keeping junk food out of sight. By designing your environment to make good habits convenient and bad habits inconvenient, you dramatically increase your chances of success.
+
+Breaking bad habits requires a different approach. Simply trying to stop a behavior through willpower alone rarely works in the long term. Instead, experts recommend identifying the cue and reward associated with the unwanted habit and then substituting a healthier routine that provides a similar reward. For example, if stress triggers snacking, you might replace the snacking with a short walk or deep breathing exercises, both of which can also relieve stress.
+
+The science of habit formation teaches us that we are not simply victims of our impulses. With knowledge, patience, and the right strategies, anyone can reshape their daily behaviors and build a life that reflects their true priorities and values.`,
+    domain: "daily" as const,
+    difficulty: 3,
+    wordCount: 435,
+    targetWords: ["neurological", "cue", "reinforce", "solidify", "habit stacking", "willpower", "substitute", "impulses"],
+    questions: [
+      {
+        question: "What are the three components of the habit loop?",
+        options: ["A. A cue, a routine, and a reward", "B. A goal, an action, and a result", "C. A thought, a feeling, and a behavior", "D. A plan, an execution, and a review"],
+        correctIndex: 0,
+      },
+      {
+        question: "How long does it typically take for a new behavior to become automatic?",
+        options: ["A. Exactly seven days", "B. An average of sixty-six days", "C. At least one full year", "D. Only two to three days"],
+        correctIndex: 1,
+      },
+      {
+        question: "What does the article recommend for breaking bad habits?",
+        options: ["A. Using willpower alone to stop the behavior", "B. Ignoring the habit until it goes away", "C. Substituting a healthier routine that provides a similar reward", "D. Punishing yourself every time you perform the habit"],
+        correctIndex: 2,
+      },
+    ],
+  },
+  {
+    id: "art-d24",
+    title: "Exploring Night Markets: A Taiwanese Tradition",
+    content: `For visitors and locals alike, night markets are one of the most vibrant and essential parts of Taiwanese culture. These bustling open-air markets come alive after sunset, offering an extraordinary sensory experience that combines delicious food, affordable shopping, and lively entertainment. With hundreds of night markets spread across the island, they represent a tradition that has been cherished for generations and continues to evolve with modern tastes.
+
+The food at Taiwanese night markets is legendary. Stall after stall offers an incredible variety of dishes, from classic favorites like stinky tofu, oyster omelets, and bubble tea to more adventurous options like grilled squid and pepper buns. Each night market has its own signature specialties that draw devoted fans from across the city. The prices are remarkably affordable, allowing visitors to sample dozens of different items in a single evening without spending much money. This accessibility is one reason why night markets remain popular across all income levels and age groups.
+
+Beyond food, night markets offer a wide range of merchandise and entertainment. Vendors sell clothing, accessories, phone cases, souvenirs, and household items at bargain prices. Many markets also feature carnival-style games where visitors can try their luck at ring toss, balloon darts, or claw machines. Some larger night markets even have small amusement rides for children, making them a popular destination for family outings.
+
+The social atmosphere of night markets is equally important. They serve as informal gathering places where friends meet after work, families enjoy a casual dinner out, and couples stroll hand in hand through the crowded lanes. The energy is contagious — the sizzling sounds from cooking stalls, the bright neon lights, and the cheerful chatter of vendors calling out to passersby create an atmosphere that is uniquely Taiwanese.
+
+In recent years, night markets have faced challenges from changing consumer habits and increased competition from convenience stores and delivery apps. Some traditional markets have struggled with declining foot traffic, while others have successfully adapted by improving hygiene standards, accepting mobile payments, and incorporating social media marketing to attract younger customers.
+
+Despite these pressures, night markets remain a cornerstone of daily life in Taiwan. Government initiatives to promote night market culture as a tourist attraction have helped sustain interest both domestically and internationally. For many Taiwanese people, a trip to the night market is not just about eating or shopping — it is a cherished ritual that connects them to their community and cultural identity.`,
+    domain: "daily" as const,
+    difficulty: 3,
+    wordCount: 380,
+    targetWords: ["vibrant", "sensory", "signature", "accessibility", "merchandise", "contagious", "cornerstone", "ritual"],
+    questions: [
+      {
+        question: "What makes night market food popular across all income levels?",
+        options: ["A. The affordable prices allow visitors to sample many items", "B. The government provides free food coupons", "C. All stalls serve the same dishes at fixed prices", "D. The food is only available once a year"],
+        correctIndex: 0,
+      },
+      {
+        question: "How have some night markets adapted to modern challenges?",
+        options: ["A. By closing permanently and moving online", "B. By accepting mobile payments and using social media marketing", "C. By raising prices to attract wealthier customers", "D. By banning traditional foods"],
+        correctIndex: 1,
+      },
+      {
+        question: "According to the article, what role do night markets play beyond commerce?",
+        options: ["A. They serve as government offices", "B. They function as schools for cooking", "C. They connect people to their community and cultural identity", "D. They are used primarily for political gatherings"],
+        correctIndex: 2,
+      },
+    ],
+  },
+  {
+    id: "art-d25",
+    title: "The Evolution of Social Media Communication",
+    content: `Social media has undergone a remarkable transformation since the early days of platforms like MySpace and Friendster. What began as simple profile pages where users could share basic information about themselves has evolved into a complex ecosystem of communication tools that shape how billions of people interact, share information, and perceive the world around them. Tracing this evolution reveals important insights about human communication and the direction in which our digital conversations are heading.
+
+The first generation of social media focused primarily on connecting people who already knew each other. Facebook's original appeal was its ability to help college students stay in touch with classmates. Twitter emerged as a microblogging platform where users shared brief text updates about their daily lives. These early platforms were predominantly text-based, and communication was relatively straightforward — you posted something, and your friends responded with comments or reactions.
+
+The introduction of smartphones and high-quality cameras fundamentally shifted social media toward visual communication. Instagram's launch in 2010 marked the beginning of the image-first era. Suddenly, a carefully composed photograph could communicate more than a lengthy written post. This visual turn accelerated with the rise of Snapchat's disappearing messages and Instagram Stories, which introduced the concept of ephemeral content that vanishes after twenty-four hours.
+
+The most recent evolution has been driven by short-form video content, with TikTok leading the revolution. Unlike earlier platforms that relied on users following specific accounts, TikTok's algorithm-driven feed introduces users to content from complete strangers based on their viewing habits. This fundamentally changed the dynamics of online interaction, making it possible for ordinary individuals to reach millions of viewers overnight without having an established following.
+
+The way people communicate on these platforms has also evolved significantly. Early social media encouraged lengthy personal updates and deep comment threads. Today, communication tends to be faster and more fragmented. Reactions have replaced thoughtful comments. Sharing a meme or short video clip has become a primary form of expression. Private group chats and direct messages now carry much of the meaningful conversation that used to happen in public comment sections.
+
+These changes have raised important questions about the quality of human communication. Critics argue that the shift toward shorter, more visual, and more algorithm-driven content has reduced our attention spans and diminished the depth of online discourse. Supporters counter that new formats have democratized communication, giving voices to people and communities that were previously marginalized in traditional media.
+
+Looking ahead, emerging technologies like augmented reality, artificial intelligence, and virtual reality spaces promise to transform social media communication once again. The challenge for society will be ensuring that these new tools enhance genuine human connection rather than further fragmenting it.`,
+    domain: "daily" as const,
+    difficulty: 3,
+    wordCount: 410,
+    targetWords: ["ecosystem", "perceive", "predominantly", "ephemeral", "algorithm", "fragmented", "democratized", "marginalized", "augmented"],
+    questions: [
+      {
+        question: "What was the original appeal of early social media platforms like Facebook?",
+        options: ["A. Connecting people who already knew each other", "B. Sharing professional business content", "C. Watching short video clips", "D. Playing online games with strangers"],
+        correctIndex: 0,
+      },
+      {
+        question: "How did TikTok change the dynamics of social media interaction?",
+        options: ["A. It required users to pay for content", "B. Its algorithm-driven feed shows content from strangers based on viewing habits", "C. It only allowed users over thirty years old", "D. It eliminated all video content"],
+        correctIndex: 1,
+      },
+      {
+        question: "What do supporters of new social media formats argue?",
+        options: ["A. That social media should be banned completely", "B. That only text-based platforms are valuable", "C. That new formats have democratized communication and given voice to marginalized communities", "D. That algorithms should decide all human interactions"],
+        correctIndex: 2,
+      },
+    ],
+  },
+  {
+    id: "art-d26",
+    title: "Mindfulness in Everyday Life",
+    content: `In an era of constant distractions, the practice of mindfulness has emerged as a powerful antidote to the stress and anxiety that characterize modern living. Mindfulness, at its core, is the practice of paying deliberate attention to the present moment without judgment. While it has roots in ancient Buddhist meditation traditions, it has been adapted and embraced by mainstream psychology and is now practiced by millions of people worldwide who seek greater peace and clarity in their daily lives.
+
+The concept of mindfulness might sound abstract, but it can be applied to the most ordinary activities. Consider the simple act of eating breakfast. Most people eat while simultaneously checking their phones, reading the news, or mentally planning their day. A mindful approach to breakfast means focusing entirely on the experience of eating — noticing the texture of the food, savoring each flavor, and being aware of the physical sensations of chewing and swallowing. This seemingly small shift in attention can transform a routine activity into a moment of genuine pleasure and awareness.
+
+Scientific research has provided compelling evidence for the benefits of regular mindfulness practice. Studies conducted at leading universities have shown that mindfulness meditation can reduce cortisol levels, the hormone primarily responsible for stress responses in the body. Regular practitioners report decreased anxiety, improved concentration, better emotional regulation, and even enhanced immune function. Brain imaging studies have revealed that consistent meditation practice can actually change the structure of the brain, increasing gray matter density in areas associated with memory, empathy, and self-awareness.
+
+Incorporating mindfulness into daily life does not require setting aside large blocks of time for formal meditation, although that can certainly be beneficial. Simple practices like taking three conscious breaths before starting a meeting, paying full attention to the person speaking during a conversation, or spending two minutes observing your surroundings during a lunch break can cultivate a more mindful disposition throughout the day.
+
+One popular technique is the body scan, in which you systematically direct your attention to different parts of your body, noticing sensations without trying to change them. This practice helps develop interoceptive awareness — the ability to sense what is happening inside your body — which is closely linked to emotional intelligence and self-regulation.
+
+Walking meditation is another accessible practice that combines physical movement with mindful attention. Instead of walking while lost in thought, you focus on the sensation of each step — the feel of your foot lifting, moving forward, and making contact with the ground. This can be practiced anywhere, whether you are walking to the office, through a park, or even down a hallway.
+
+Critics of the mindfulness movement point out that it has become overly commercialized, with expensive retreats, apps, and branded merchandise sometimes diluting its deeper philosophical teachings. However, the fundamental practice remains free and universally accessible: simply pause, breathe, and notice what is happening right now.`,
+    domain: "daily" as const,
+    difficulty: 3,
+    wordCount: 430,
+    targetWords: ["antidote", "deliberate", "cortisol", "disposition", "interoceptive", "self-regulation", "commercialized", "universally"],
+    questions: [
+      {
+        question: "How does the article define mindfulness?",
+        options: ["A. Paying deliberate attention to the present moment without judgment", "B. Thinking constantly about the future to plan ahead", "C. Analyzing past events to learn from mistakes", "D. Ignoring all thoughts and feelings completely"],
+        correctIndex: 0,
+      },
+      {
+        question: "What physical change has brain imaging revealed in regular meditators?",
+        options: ["A. Decreased brain activity overall", "B. Increased gray matter density in areas linked to memory and empathy", "C. Smaller brain size due to relaxation", "D. No measurable changes at all"],
+        correctIndex: 1,
+      },
+      {
+        question: "What criticism of the mindfulness movement does the article mention?",
+        options: ["A. It is too difficult for most people to practice", "B. It has no scientific evidence supporting it", "C. It has become overly commercialized with expensive products", "D. It is only effective for children under twelve"],
+        correctIndex: 2,
+      },
+    ],
+  },
+  {
+    id: "art-d27",
+    title: "The Impact of Architecture on Our Well-being",
+    content: `Most people rarely stop to consider how the buildings they live and work in affect their mental and physical health. Yet a growing body of research in environmental psychology demonstrates that architecture plays a profound role in shaping our emotions, productivity, and overall sense of well-being. From the height of ceilings to the amount of natural light that enters a room, every architectural decision has the potential to influence how we feel and how effectively we function.
+
+Natural light is perhaps the single most important architectural element affecting human well-being. Studies have consistently shown that workers in offices with ample natural light report higher levels of job satisfaction, experience fewer headaches, and sleep an average of forty-six minutes more per night than their counterparts in windowless environments. This is because natural light helps regulate our circadian rhythm, the internal biological clock that governs our sleep-wake cycle. Buildings designed with large windows, skylights, and open floor plans that allow sunlight to penetrate deep into interior spaces create healthier and more pleasant environments.
+
+Ceiling height has also been shown to influence cognitive function. Research published in the Journal of Consumer Research found that higher ceilings promote abstract thinking and creativity, while lower ceilings encourage more detail-oriented, focused work. This finding has practical implications for architectural design — creative studios and brainstorming rooms might benefit from soaring ceilings, while accounting offices and testing centers might function better with more intimate proportions.
+
+The presence of natural elements within built environments, a concept known as biophilic design, has gained significant attention in recent years. Incorporating plants, water features, natural materials like wood and stone, and views of nature into buildings has been shown to reduce stress, improve air quality, and enhance occupants' emotional states. Some of the world's most innovative companies have embraced biophilic design principles, creating offices that feature indoor gardens, living walls covered in vegetation, and workspaces that overlook natural landscapes.
+
+Color also plays a crucial role in how architecture affects our psychological state. Warm colors like red and orange can stimulate energy and appetite, which is why they are commonly used in restaurants. Cool colors like blue and green tend to promote calmness and concentration, making them popular choices for hospitals and educational institutions. The strategic use of color in architectural design can subtly guide behavior and influence emotional responses.
+
+Urban planning at a broader scale also impacts community well-being. Neighborhoods designed with walkable streets, accessible green spaces, and mixed-use developments that combine residential, commercial, and recreational areas tend to foster stronger social connections and healthier lifestyles. In contrast, sprawling suburbs that require car travel for every errand can contribute to social isolation and sedentary behavior.
+
+As our understanding of the relationship between architecture and well-being deepens, architects and urban planners have an increasing responsibility to design spaces that nurture human health and happiness rather than merely serving functional or aesthetic purposes.`,
+    domain: "daily" as const,
+    difficulty: 3,
+    wordCount: 440,
+    targetWords: ["profound", "circadian", "cognitive", "biophilic", "vegetation", "strategic", "sprawling", "sedentary", "aesthetic"],
+    questions: [
+      {
+        question: "Why is natural light important in building design according to the article?",
+        options: ["A. It helps regulate our circadian rhythm and improves sleep", "B. It makes buildings cheaper to construct", "C. It eliminates the need for heating systems", "D. It makes rooms look more colorful"],
+        correctIndex: 0,
+      },
+      {
+        question: "What is biophilic design?",
+        options: ["A. A style of architecture that uses only metal and glass", "B. Incorporating natural elements like plants, water, and wood into buildings", "C. Designing buildings to look like animals", "D. A method of construction that eliminates all natural materials"],
+        correctIndex: 1,
+      },
+      {
+        question: "How do sprawling suburbs negatively affect residents according to the article?",
+        options: ["A. They are too noisy for comfortable living", "B. They have too many parks and green spaces", "C. They can contribute to social isolation and sedentary behavior", "D. They attract too many tourists to residential areas"],
+        correctIndex: 2,
+      },
+    ],
+  },
+  {
+    id: "art-d28",
+    title: "Learning to Say No: Setting Healthy Boundaries",
+    content: `For many people, saying "no" is one of the most difficult things to do. Whether it is a colleague asking for help with extra work, a friend inviting you to an event you have no interest in, or a family member making demands on your time, the pressure to say "yes" to everything can feel overwhelming. However, learning to set healthy boundaries is not a sign of selfishness — it is an essential skill for maintaining your mental health, protecting your energy, and building more authentic relationships.
+
+The difficulty of saying no often stems from deep-seated psychological patterns. Many of us were taught from childhood that being a good person means always being available and accommodating. We fear that declining a request will make others think we are rude, uncaring, or unhelpful. This fear of disapproval can lead to chronic people-pleasing, a pattern in which we consistently prioritize others' needs over our own until we reach a point of exhaustion and resentment.
+
+Understanding why boundaries matter requires recognizing that time and energy are finite resources. Every time you say yes to something that does not align with your values or priorities, you are effectively saying no to something that does. Agreeing to work overtime every evening means saying no to exercise, family dinners, or personal hobbies. Attending every social event means sacrificing the quiet time you need to recharge. When viewed from this perspective, setting boundaries is not about rejecting others but about protecting what matters most to you.
+
+Establishing boundaries effectively requires clear and respectful communication. Instead of making excuses or giving vague responses, it is better to be honest and direct. A simple statement like "I appreciate the invitation, but I need to rest this weekend" or "I would love to help, but I am committed to another project right now" conveys your decision without unnecessary drama. Most reasonable people will respect a clearly stated boundary, and those who do not may need to be reconsidered as part of your inner circle.
+
+It is also important to recognize that boundaries are not rigid walls but flexible guidelines that can be adjusted as circumstances change. A boundary you set during a particularly stressful period might be relaxed when things calm down. The key is regularly checking in with yourself to assess whether your current commitments align with your capacity and values.
+
+Practicing boundary-setting often begins with small situations before progressing to more significant ones. You might start by declining a minor request that you would normally agree to reluctantly. Each time you successfully set a boundary and experience the relief that follows, your confidence in this skill grows. Over time, saying no becomes less anxiety-inducing and more empowering.
+
+Therapists and psychologists emphasize that people who set healthy boundaries tend to experience less burnout, stronger self-esteem, and more fulfilling relationships. Paradoxically, others often respect and trust boundary-setters more than chronic people-pleasers, because they know that when a person with boundaries says yes, they genuinely mean it.`,
+    domain: "daily" as const,
+    difficulty: 3,
+    wordCount: 460,
+    targetWords: ["boundaries", "accommodating", "chronic", "resentment", "finite", "conveys", "empowering", "paradoxically"],
+    questions: [
+      {
+        question: "Why do many people find it difficult to say no?",
+        options: ["A. They fear disapproval and were taught to always be accommodating", "B. They genuinely want to do everything asked of them", "C. They have too much free time and nothing else to do", "D. They are legally required to help others"],
+        correctIndex: 0,
+      },
+      {
+        question: "What does the article say about saying yes to everything?",
+        options: ["A. It is the best way to build strong relationships", "B. Every time you say yes to something unimportant, you say no to something that matters", "C. It is only a problem for people with many friends", "D. It leads to immediate physical illness"],
+        correctIndex: 1,
+      },
+      {
+        question: "What paradox about boundary-setters does the article describe?",
+        options: ["A. They always end up saying yes to everything anyway", "B. They lose all their friends and relationships", "C. Others often respect and trust them more than chronic people-pleasers", "D. They become less productive at work"],
+        correctIndex: 2,
+      },
+    ],
+  },
+  {
+    id: "art-d29",
+    title: "The Future of Urban Transportation",
+    content: `Cities around the world are undergoing a transportation revolution. As urban populations continue to grow and concerns about climate change intensify, the way people move through cities is being fundamentally reimagined. From electric bicycles and ride-sharing services to autonomous vehicles and advanced public transit systems, the future of urban transportation promises to be cleaner, smarter, and more accessible than ever before.
+
+Electric bicycles, commonly known as e-bikes, have emerged as one of the most transformative developments in urban mobility. These battery-powered bicycles allow riders to travel longer distances with less physical effort, making cycling a viable commuting option even in hilly cities or for people who might not be physically fit enough for traditional cycling. In many European and Asian cities, e-bike sales have surged dramatically, and dedicated bike lanes and parking infrastructure have expanded to accommodate this growing trend. For short to medium distances, e-bikes offer a compelling alternative to cars — they produce zero emissions, require minimal parking space, and help riders avoid traffic congestion.
+
+Ride-sharing platforms like Uber and Grab have already transformed urban transportation by making it easy to summon a car with a smartphone app. The next evolution of this model involves shared rides, where multiple passengers heading in the same direction share a single vehicle, reducing both cost and environmental impact. Some companies are developing electric and autonomous ride-sharing fleets that could dramatically lower the per-trip carbon footprint while providing affordable, on-demand transportation.
+
+Public transit systems are also innovating rapidly. Many cities are investing in electric bus fleets, expanded metro networks, and integrated payment systems that allow passengers to transfer seamlessly between different modes of transportation using a single card or app. Bus Rapid Transit systems, which give buses dedicated lanes and station-like stops, offer metro-level efficiency at a fraction of the construction cost. Some cities are experimenting with on-demand microtransit services that operate like flexible bus routes, adjusting their paths in real time based on passenger requests.
+
+The rise of autonomous vehicles represents perhaps the most dramatic potential shift in urban transportation. While fully self-driving cars are not yet commonplace on public roads, major companies continue to invest billions of dollars in developing this technology. Proponents argue that autonomous vehicles could eliminate the human errors responsible for the vast majority of traffic accidents, reduce congestion through more efficient driving patterns, and free up enormous amounts of urban space currently dedicated to parking.
+
+However, the transition to new transportation models is not without challenges. Infrastructure investments require significant public funding. Privacy concerns arise from the data collected by ride-sharing apps and connected vehicles. Labor disruptions may affect taxi drivers, delivery workers, and other transportation professionals. Ensuring that new transportation technologies are equitable and accessible to all residents, not just wealthy early adopters, remains a critical concern for urban planners.
+
+The cities that navigate these challenges most successfully will likely be those that adopt a multimodal approach, integrating multiple transportation options into a cohesive system that gives residents the flexibility to choose the best mode for each journey.`,
+    domain: "daily" as const,
+    difficulty: 3,
+    wordCount: 465,
+    targetWords: ["autonomous", "viable", "congestion", "seamlessly", "microtransit", "proponents", "equitable", "multimodal", "cohesive"],
+    questions: [
+      {
+        question: "Why have e-bikes become a transformative development in urban transportation?",
+        options: ["A. They allow longer-distance cycling with less effort and produce zero emissions", "B. They are faster than cars in all situations", "C. They are given free by city governments to all residents", "D. They can fly over traffic during rush hour"],
+        correctIndex: 0,
+      },
+      {
+        question: "What is Bus Rapid Transit?",
+        options: ["A. A new type of airplane that connects cities", "B. A system giving buses dedicated lanes and station-like stops for metro-level efficiency", "C. A private bus service only for business executives", "D. An underground tunnel system for electric buses"],
+        correctIndex: 1,
+      },
+      {
+        question: "What concern does the article raise about new transportation technologies?",
+        options: ["A. They will make cities too quiet", "B. They will cause buildings to collapse", "C. Ensuring they are equitable and accessible to all residents, not just wealthy adopters", "D. They will eliminate the need for roads entirely"],
+        correctIndex: 2,
+      },
+    ],
+  },
+  {
+    id: "art-d30",
+    title: "Building Financial Literacy for Young Adults",
+    content: `Financial literacy — the ability to understand and effectively manage personal finances — is arguably one of the most important life skills that young adults need but rarely receive formal education in. Despite spending years studying subjects like mathematics, science, and literature in school, many people enter adulthood without knowing how to create a budget, understand interest rates, or plan for long-term financial goals. This knowledge gap has real consequences, with studies showing that a lack of financial literacy contributes to higher levels of debt, lower savings rates, and increased financial stress among young people.
+
+The foundation of financial literacy begins with budgeting. A budget is simply a plan for how you will allocate your income across different categories such as housing, food, transportation, entertainment, and savings. The popular fifty-thirty-twenty rule offers a straightforward framework: allocate fifty percent of your after-tax income to needs, thirty percent to wants, and twenty percent to savings and debt repayment. While these exact percentages may need adjustment based on individual circumstances, the underlying principle of intentional spending is universally valuable.
+
+Understanding the power of compound interest is another crucial component of financial literacy. When you save or invest money, you earn interest not only on your original deposit but also on the interest that accumulates over time. This compounding effect means that even small amounts saved regularly in your twenties can grow into substantial sums by retirement age. Conversely, compound interest works against you when it comes to debt — particularly credit card debt, which often carries annual interest rates of fifteen to twenty-five percent. This is why financial advisors consistently emphasize the importance of paying off high-interest debt as quickly as possible.
+
+Investing is a topic that intimidates many young adults, but the basic principles are more accessible than most people think. Diversification — spreading your investments across different types of assets such as stocks, bonds, and real estate — helps reduce risk. Index funds, which automatically track the performance of a broad market index, offer a low-cost way for beginners to start investing without needing expert knowledge of individual companies. The key insight is that time in the market matters more than timing the market; starting to invest early, even with modest amounts, typically produces better results than waiting for the perfect moment.
+
+Emergency funds represent another essential element of financial planning. Financial experts generally recommend maintaining three to six months of living expenses in an easily accessible savings account. This safety net provides protection against unexpected events like job loss, medical emergencies, or major home repairs, preventing people from going into debt during difficult periods.
+
+The rise of financial technology applications has made managing money more convenient than ever. Budgeting apps automatically categorize expenses and provide visual reports of spending patterns. Investment platforms allow users to begin investing with as little as one hundred dollars. However, these tools are only effective when paired with genuine financial knowledge and disciplined habits.
+
+Building financial literacy is not a one-time event but an ongoing process. As your income grows, your financial situation becomes more complex, and you encounter new decisions about insurance, taxes, home ownership, and retirement planning. Committing to continuous financial education — through books, podcasts, courses, or conversations with financial professionals — ensures that you remain equipped to make informed decisions throughout every stage of your life.`,
+    domain: "daily" as const,
+    difficulty: 3,
+    wordCount: 500,
+    targetWords: ["literacy", "allocate", "compound interest", "diversification", "index funds", "emergency fund", "disciplined", "informed"],
+    questions: [
+      {
+        question: "What is the fifty-thirty-twenty budgeting rule?",
+        options: ["A. Fifty percent to needs, thirty percent to wants, twenty percent to savings", "B. Fifty percent to savings, thirty percent to food, twenty percent to rent", "C. Fifty percent to entertainment, thirty percent to needs, twenty percent to travel", "D. Fifty percent to investments, thirty percent to charity, twenty percent to personal use"],
+        correctIndex: 0,
+      },
+      {
+        question: "Why do financial advisors emphasize paying off credit card debt quickly?",
+        options: ["A. Because credit cards are illegal in some countries", "B. Because compound interest on high-rate debt causes the amount owed to grow rapidly", "C. Because banks will close your account if you carry a balance", "D. Because credit card companies charge monthly membership fees"],
+        correctIndex: 1,
+      },
+      {
+        question: "How much does the article recommend keeping in an emergency fund?",
+        options: ["A. One month of salary", "B. Exactly ten thousand dollars", "C. Three to six months of living expenses", "D. One year of total income"],
+        correctIndex: 2,
+      },
+    ],
+  }
 ];
