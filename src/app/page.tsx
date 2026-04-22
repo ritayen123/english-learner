@@ -1,65 +1,168 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import { useApp } from "../lib/context/AppContext";
+import BottomNav from "../components/ui/BottomNav";
+import ProgressRing from "../components/ui/ProgressRing";
+import StreakBadge from "../components/ui/StreakBadge";
+import { BookIcon, RepeatIcon, FileTextIcon, ClockIcon } from "../components/ui/Icons";
+import Link from "next/link";
+
+function getGreeting(): string {
+  const hour = new Date().getHours();
+  if (hour < 12) return "早安";
+  if (hour < 18) return "午安";
+  return "晚安";
+}
+
+export default function Dashboard() {
+  const { initialized, todayStats, totalLearned, dueCount, streak, settings } =
+    useApp();
+
+  if (!initialized) {
+    return (
+      <div className="flex-1 flex items-center justify-center min-h-screen">
+        <p className="text-text-muted animate-pulse">載入中...</p>
+      </div>
+    );
+  }
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+    <main className="flex-1 pb-20 px-4 pt-8 max-w-lg mx-auto w-full">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h1 className="text-2xl font-bold">{getGreeting()}</h1>
+          <p className="text-sm text-text-secondary mt-1">
+            每天 {settings.dailyNewWords} 個新字，持續累積！
           </p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+        <StreakBadge days={streak} />
+      </div>
+
+      {/* Progress Ring */}
+      <div className="flex justify-center mb-8">
+        <ProgressRing current={totalLearned} total={2000} label="學習進度" />
+      </div>
+
+      {/* Today Stats */}
+      <div className="grid grid-cols-3 gap-3 mb-8">
+        <StatCard
+          label="新學"
+          value={todayStats?.newWordsLearned ?? 0}
+          target={settings.dailyNewWords}
+        />
+        <StatCard
+          label="複習"
+          value={todayStats?.wordsReviewed ?? 0}
+          target={settings.dailyReviewCap}
+        />
+        <StatCard
+          label="閱讀"
+          value={todayStats?.articlesRead ?? 0}
+          target={1}
+        />
+      </div>
+
+      {/* Quick Actions */}
+      <div className="grid grid-cols-2 gap-3">
+        <QuickAction
+          href="/learn"
+          icon={<BookIcon size={24} />}
+          label="學新字"
+          subtitle={`還有 ${Math.max(0, 2000 - totalLearned)} 字可學`}
+          color="var(--accent)"
+        />
+        <QuickAction
+          href="/review"
+          icon={<RepeatIcon size={24} />}
+          label="複習"
+          subtitle={dueCount > 0 ? `${dueCount} 字待複習` : "目前沒有待複習"}
+          color="var(--warning)"
+          urgent={dueCount > 0}
+        />
+        <QuickAction
+          href="/read"
+          icon={<FileTextIcon size={24} />}
+          label="閱讀文章"
+          subtitle="提升閱讀力"
+          color="var(--success)"
+        />
+        <QuickAction
+          href="/me"
+          icon={<ClockIcon size={24} />}
+          label="學習紀錄"
+          subtitle="查看進度"
+          color="var(--domain-academic)"
+        />
+      </div>
+
+      <BottomNav />
+    </main>
+  );
+}
+
+function StatCard({
+  label,
+  value,
+  target,
+}: {
+  label: string;
+  value: number;
+  target: number;
+}) {
+  const percent = target > 0 ? Math.min((value / target) * 100, 100) : 0;
+  return (
+    <div className="bg-bg-card border border-border rounded-xl p-3 text-center">
+      <p className="text-xs text-text-muted mb-1">{label}</p>
+      <p className="text-xl font-bold text-text-primary">
+        {value}
+        <span className="text-sm text-text-muted font-normal">/{target}</span>
+      </p>
+      <div className="mt-2 h-1 bg-bg-input rounded-full overflow-hidden">
+        <div
+          className="h-full bg-accent rounded-full transition-all duration-500"
+          style={{ width: `${percent}%` }}
+        />
+      </div>
     </div>
+  );
+}
+
+function QuickAction({
+  href,
+  icon,
+  label,
+  subtitle,
+  color,
+  urgent,
+}: {
+  href: string;
+  icon: React.ReactNode;
+  label: string;
+  subtitle: string;
+  color: string;
+  urgent?: boolean;
+}) {
+  return (
+    <Link
+      href={href}
+      className={`bg-bg-card border rounded-xl p-4 flex flex-col gap-2 transition-transform active:scale-[0.97] ${
+        urgent ? "border-warning" : "border-border"
+      }`}
+    >
+      <div
+        className="w-10 h-10 rounded-lg flex items-center justify-center"
+        style={{
+          backgroundColor: `color-mix(in srgb, ${color} 15%, transparent)`,
+          color,
+        }}
+      >
+        {icon}
+      </div>
+      <div>
+        <p className="text-sm font-semibold text-text-primary">{label}</p>
+        <p className="text-xs text-text-muted">{subtitle}</p>
+      </div>
+    </Link>
   );
 }

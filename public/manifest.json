@@ -1,0 +1,23 @@
+{
+  "name": "English Daily — 每日英文",
+  "short_name": "English Daily",
+  "description": "2000 words in 90 days. SRS flashcards + reading practice.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f0f0f",
+  "theme_color": "#4361ee",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "categories": ["education"]
+}
