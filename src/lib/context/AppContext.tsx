@@ -38,8 +38,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     async function init() {
-      await wordService.init();
-      await articleService.init();
+      try {
+        await wordService.init();
+        await articleService.init();
+      } catch (e) {
+        console.error("DB init failed:", e);
+      }
       setInitialized(true);
     }
     init();

@@ -6,7 +6,7 @@ export const articleService = {
   async init(): Promise<void> {
     const count = await db.articles.count();
     if (count === 0) {
-      await db.articles.bulkAdd(articlesData);
+      await db.articles.bulkPut(articlesData);
     }
   },
 

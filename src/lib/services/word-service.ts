@@ -6,7 +6,7 @@ export const wordService = {
   async init(): Promise<void> {
     const count = await db.words.count();
     if (count === 0) {
-      await db.words.bulkAdd(wordsData);
+      await db.words.bulkPut(wordsData);
     }
   },
 
