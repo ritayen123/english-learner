@@ -35,6 +35,7 @@ export interface Article {
   id: string;
   title: string;
   content: string;
+  contentZh?: string;
   domain: WordDomain;
   difficulty: 1 | 2 | 3;
   wordCount: number;
@@ -46,6 +47,7 @@ export interface QuizQuestion {
   question: string;
   options: string[];
   correctIndex: number;
+  explanation?: string;
 }
 
 // ===== User reading progress =====

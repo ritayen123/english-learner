@@ -37,6 +37,20 @@ export function sm2(input: SM2Input): SM2Output {
   today.setDate(today.getDate() + interval);
   const nextReview = today.toISOString().split("T")[0];
 
+  // Easy (quality=5) → mastered immediately, never show again
+  if (quality === 5) {
+    interval = 9999;
+    const far = new Date();
+    far.setDate(far.getDate() + 9999);
+    return {
+      interval,
+      repetition,
+      easeFactor,
+      nextReview: far.toISOString().split("T")[0],
+      status: "mastered",
+    };
+  }
+
   let status: WordStatus;
   if (repetition === 0) status = "learning";
   else if (interval >= 21) status = "mastered";

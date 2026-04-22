@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useEffect, useRef, use } from "react";
+import { useState, useEffect, useRef, useCallback, use } from "react";
 import { useRouter } from "next/navigation";
 import { useApp } from "../../../lib/context/AppContext";
 import { articleService } from "../../../lib/services/article-service";
 import { wordService } from "../../../lib/services/word-service";
+import { srsService } from "../../../lib/services/srs-service";
 import { statsService } from "../../../lib/services/stats-service";
 import BottomNav from "../../../components/ui/BottomNav";
 import DomainBadge from "../../../components/ui/DomainBadge";
@@ -20,9 +21,21 @@ export default function ArticleReaderPage({
   const { id } = use(params);
   const { initialized, refreshStats } = useApp();
   const router = useRouter();
+
   const [article, setArticle] = useState<Article | null>(null);
-  const [targetWordMap, setTargetWordMap] = useState<Record<string, Word>>({});
-  const [selectedWord, setSelectedWord] = useState<Word | null>(null);
+  const [allWordsMap, setAllWordsMap] = useState<Record<string, Word>>({});
+  const [learnedWordIds, setLearnedWordIds] = useState<Set<string>>(new Set());
+
+  // Word tooltip state
+  const [selectedToken, setSelectedToken] = useState<string | null>(null);
+  const [customChinese, setCustomChinese] = useState("");
+  const [addingWord, setAddingWord] = useState(false);
+  const [justAdded, setJustAdded] = useState<Set<string>>(new Set());
+
+  // Translation toggle
+  const [showTranslation, setShowTranslation] = useState(false);
+
+  // Quiz state
   const [showQuiz, setShowQuiz] = useState(false);
   const [quizIndex, setQuizIndex] = useState(0);
   const [quizScore, setQuizScore] = useState(0);
@@ -37,42 +50,93 @@ export default function ArticleReaderPage({
       if (!a) return;
       setArticle(a);
 
-      const wordMap: Record<string, Word> = {};
-      for (const wid of a.targetWords) {
-        const w = await wordService.getById(wid);
-        if (w) wordMap[w.english.toLowerCase()] = w;
+      // Load all words into a map for lookup
+      const words = await wordService.getAll();
+      const map: Record<string, Word> = {};
+      for (const w of words) {
+        map[w.english.toLowerCase()] = w;
       }
-      setTargetWordMap(wordMap);
+      setAllWordsMap(map);
+
+      // Load which words are already being learned
+      const { db } = await import("../../../lib/db");
+      const userWords = await db.userWords.toArray();
+      setLearnedWordIds(new Set(userWords.map((uw) => uw.wordId)));
     }
     load();
   }, [initialized, id]);
 
-  async function handleQuizAnswer(optionIndex: number) {
+  const refreshLearned = useCallback(async () => {
+    const { db } = await import("../../../lib/db");
+    const userWords = await db.userWords.toArray();
+    setLearnedWordIds(new Set(userWords.map((uw) => uw.wordId)));
+  }, []);
+
+  const handleWordClick = (token: string) => {
+    const clean = token.toLowerCase().replace(/[.,!?;:'"()\[\]{}""''—–\-]/g, "");
+    if (!clean) return;
+    setSelectedToken(selectedToken === clean ? null : clean);
+    setCustomChinese("");
+  };
+
+  const handleAddToLearning = async (word: Word) => {
+    setAddingWord(true);
+    try {
+      if (learnedWordIds.has(word.id)) return;
+      await srsService.startLearning(word.id);
+      await statsService.recordNewWord();
+      await refreshStats();
+      setLearnedWordIds((prev) => new Set([...prev, word.id]));
+      setJustAdded((prev) => new Set([...prev, word.id]));
+    } finally {
+      setAddingWord(false);
+    }
+  };
+
+  const handleAddCustomWord = async (english: string) => {
+    if (!customChinese.trim()) return;
+    setAddingWord(true);
+    try {
+      await srsService.addCustomWord(english, customChinese.trim());
+      await statsService.recordNewWord();
+      await refreshStats();
+      setJustAdded((prev) => new Set([...prev, `custom_${english}`]));
+      setCustomChinese("");
+      await refreshLearned();
+    } finally {
+      setAddingWord(false);
+    }
+  };
+
+  function handleQuizAnswer(optionIndex: number) {
     if (!article || answered !== null) return;
     setAnswered(optionIndex);
 
     const isCorrect =
       optionIndex === article.questions[quizIndex].correctIndex;
     if (isCorrect) setQuizScore((s) => s + 1);
+  }
 
-    setTimeout(() => {
-      if (quizIndex + 1 < article.questions.length) {
-        setQuizIndex((i) => i + 1);
-        setAnswered(null);
-      } else {
-        const readingTime = Math.round((Date.now() - startTime.current) / 1000);
-        const finalScore = isCorrect ? quizScore + 1 : quizScore;
-        articleService.markCompleted(
-          article.id,
-          finalScore,
-          article.questions.length,
-          readingTime
-        );
-        statsService.recordArticle();
-        refreshStats();
-        setQuizDone(true);
-      }
-    }, 1200);
+  function handleNextQuestion() {
+    if (!article) return;
+    if (quizIndex + 1 < article.questions.length) {
+      setQuizIndex((i) => i + 1);
+      setAnswered(null);
+    } else {
+      const readingTime = Math.round((Date.now() - startTime.current) / 1000);
+      const isCorrect =
+        answered === article.questions[quizIndex].correctIndex;
+      const finalScore = isCorrect ? quizScore : quizScore;
+      articleService.markCompleted(
+        article.id,
+        finalScore,
+        article.questions.length,
+        readingTime
+      );
+      statsService.recordArticle();
+      refreshStats();
+      setQuizDone(true);
+    }
   }
 
   if (!initialized || !article) {
@@ -83,29 +147,53 @@ export default function ArticleReaderPage({
     );
   }
 
-  // Quiz results
+  // ── Quiz Results ──
   if (quizDone) {
+    const pct = Math.round((quizScore / article.questions.length) * 100);
     return (
       <main className="flex-1 pb-20 px-4 pt-6 max-w-lg mx-auto w-full">
-        <div className="flex flex-col items-center justify-center mt-20 gap-4">
-          <div className="text-5xl mb-2">📖</div>
+        <div className="flex flex-col items-center justify-center mt-12 gap-4">
+          <div className="text-5xl mb-2">{pct >= 80 ? "🎉" : pct >= 50 ? "📖" : "💪"}</div>
           <p className="text-xl font-bold text-text-primary">閱讀完成！</p>
-          <p className="text-text-secondary">
-            測驗成績：
-            <span className="font-bold text-accent">
+          <div className="bg-bg-card border border-border rounded-2xl p-6 w-full text-center">
+            <p className="text-4xl font-bold text-accent mb-1">
               {quizScore}/{article.questions.length}
-            </span>
-          </p>
-          <div className="flex gap-3 mt-4">
+            </p>
+            <p className="text-sm text-text-muted">
+              {pct >= 80 ? "太棒了！" : pct >= 50 ? "繼續加油！" : "多讀幾次會更好！"}
+            </p>
+          </div>
+
+          {/* Review all questions */}
+          <div className="w-full mt-4 space-y-3">
+            <p className="text-sm font-medium text-text-secondary">測驗回顧</p>
+            {article.questions.map((q, i) => (
+              <div key={i} className="bg-bg-card border border-border rounded-xl p-4">
+                <p className="text-sm font-medium text-text-primary mb-2">
+                  {i + 1}. {q.question}
+                </p>
+                <p className="text-sm text-success">
+                  ✓ {q.options[q.correctIndex]}
+                </p>
+                {q.explanation && (
+                  <p className="text-xs text-text-muted mt-2 leading-relaxed">
+                    💡 {q.explanation}
+                  </p>
+                )}
+              </div>
+            ))}
+          </div>
+
+          <div className="flex gap-3 mt-4 w-full">
             <Link
               href="/read"
-              className="px-5 py-3 bg-accent text-white rounded-xl font-medium text-sm"
+              className="flex-1 py-3 bg-accent text-white rounded-xl font-medium text-sm text-center"
             >
               更多文章
             </Link>
             <Link
               href="/"
-              className="px-5 py-3 bg-bg-card border border-border text-text-primary rounded-xl font-medium text-sm"
+              className="flex-1 py-3 bg-bg-card border border-border text-text-primary rounded-xl font-medium text-sm text-center"
             >
               回首頁
             </Link>
@@ -116,7 +204,7 @@ export default function ArticleReaderPage({
     );
   }
 
-  // Quiz
+  // ── Quiz ──
   if (showQuiz) {
     const q = article.questions[quizIndex];
     return (
@@ -158,12 +246,37 @@ export default function ArticleReaderPage({
             );
           })}
         </div>
+
+        {/* Explanation after answering */}
+        {answered !== null && (
+          <div className="mt-4 space-y-3">
+            {q.explanation && (
+              <div className="bg-bg-card border border-accent/30 rounded-xl p-4">
+                <p className="text-sm text-text-secondary leading-relaxed">
+                  💡 {q.explanation}
+                </p>
+              </div>
+            )}
+            <button
+              onClick={handleNextQuestion}
+              className="w-full py-3 bg-accent text-white rounded-xl font-medium text-sm"
+            >
+              {quizIndex + 1 < article.questions.length ? "下一題" : "查看結果"}
+            </button>
+          </div>
+        )}
         <BottomNav />
       </main>
     );
   }
 
-  // Article reader
+  // ── Article Reader ──
+  const selectedWord = selectedToken ? allWordsMap[selectedToken] : null;
+  const isTargetWord = (clean: string) =>
+    article.targetWords.some(
+      (tw) => allWordsMap[clean]?.id === tw || allWordsMap[clean]?.english.toLowerCase() === clean
+    );
+
   return (
     <main className="flex-1 pb-20 px-4 pt-6 max-w-lg mx-auto w-full">
       <div className="flex items-center justify-between mb-4">
@@ -178,47 +291,128 @@ export default function ArticleReaderPage({
         {article.title}
       </h1>
 
-      {/* Article content with highlighted words */}
-      <div className="prose-sm leading-relaxed text-text-primary mb-8">
+      {/* Article content — all words clickable */}
+      <div className="prose-sm leading-relaxed text-text-primary mb-4">
         {article.content.split(/(\s+)/).map((token, i) => {
-          const clean = token.toLowerCase().replace(/[.,!?;:'"()]/g, "");
-          const word = targetWordMap[clean];
-          if (word) {
-            return (
-              <span
-                key={i}
-                onClick={() => setSelectedWord(selectedWord?.id === word.id ? null : word)}
-                className="text-accent underline decoration-accent/30 underline-offset-2 cursor-pointer"
-              >
-                {token}
-              </span>
-            );
+          const clean = token.toLowerCase().replace(/[.,!?;:'"()\[\]{}""''—–\-]/g, "");
+          if (!clean || /^\s+$/.test(token)) {
+            return <span key={i}>{token}</span>;
           }
-          return <span key={i}>{token}</span>;
+
+          const word = allWordsMap[clean];
+          const isTarget = word && article.targetWords.includes(word.id);
+          const isSelected = selectedToken === clean;
+          const isLearned = word && (learnedWordIds.has(word.id) || justAdded.has(word.id));
+
+          let className = "cursor-pointer rounded px-px transition-colors ";
+          if (isSelected) {
+            className += "bg-accent/20 text-accent";
+          } else if (isTarget) {
+            className += "text-accent underline decoration-accent/30 underline-offset-2";
+          } else {
+            className += "hover:bg-accent/10";
+          }
+
+          return (
+            <span
+              key={i}
+              onClick={() => handleWordClick(token)}
+              className={className}
+            >
+              {token}
+            </span>
+          );
         })}
       </div>
 
+      {/* Chinese translation toggle */}
+      {article.contentZh && (
+        <div className="mb-6">
+          <button
+            onClick={() => setShowTranslation(!showTranslation)}
+            className="text-sm text-accent font-medium mb-2"
+          >
+            {showTranslation ? "▼ 隱藏中文翻譯" : "▶ 顯示中文翻譯"}
+          </button>
+          {showTranslation && (
+            <div className="bg-bg-card border border-border rounded-xl p-4">
+              <p className="text-sm text-text-secondary leading-relaxed whitespace-pre-line">
+                {article.contentZh}
+              </p>
+            </div>
+          )}
+        </div>
+      )}
+
       {/* Word tooltip */}
-      {selectedWord && (
+      {selectedToken && (
         <div className="fixed bottom-20 left-4 right-4 max-w-lg mx-auto bg-bg-card border border-accent rounded-xl p-4 shadow-lg z-40">
           <div className="flex justify-between items-start">
             <div>
-              <p className="font-bold text-accent">{selectedWord.english}</p>
-              <p className="text-sm text-text-muted">{selectedWord.phonetic}</p>
+              <p className="font-bold text-accent text-lg">{selectedToken}</p>
+              {selectedWord && (
+                <p className="text-sm text-text-muted">{selectedWord.phonetic}</p>
+              )}
             </div>
             <button
-              onClick={() => setSelectedWord(null)}
-              className="text-text-muted text-lg"
+              onClick={() => setSelectedToken(null)}
+              className="text-text-muted text-xl leading-none"
             >
               ×
             </button>
           </div>
-          <p className="text-sm font-medium text-text-primary mt-2">
-            {selectedWord.chinese}
-          </p>
-          <p className="text-xs text-text-secondary mt-1">
-            {selectedWord.exampleEn}
-          </p>
+
+          {selectedWord ? (
+            <>
+              <p className="text-sm font-medium text-text-primary mt-2">
+                <span className="text-text-muted text-xs mr-1">{selectedWord.partOfSpeech}</span>
+                {selectedWord.chinese}
+              </p>
+              <p className="text-xs text-text-secondary mt-1 leading-relaxed">
+                {selectedWord.exampleEn}
+              </p>
+              <p className="text-xs text-text-muted mt-0.5">
+                {selectedWord.exampleZh}
+              </p>
+              {learnedWordIds.has(selectedWord.id) || justAdded.has(selectedWord.id) ? (
+                <p className="text-xs text-success mt-3 font-medium">✓ 已加入學習</p>
+              ) : (
+                <button
+                  onClick={() => handleAddToLearning(selectedWord)}
+                  disabled={addingWord}
+                  className="mt-3 w-full py-2 bg-accent text-white rounded-lg text-sm font-medium disabled:opacity-50"
+                >
+                  加入學習
+                </button>
+              )}
+            </>
+          ) : (
+            <>
+              <p className="text-xs text-text-muted mt-2">
+                此字不在預設字庫中，可自行輸入中文意思加入學習
+              </p>
+              {justAdded.has(`custom_${selectedToken}`) ? (
+                <p className="text-xs text-success mt-3 font-medium">✓ 已加入學習</p>
+              ) : (
+                <div className="mt-3 flex gap-2">
+                  <input
+                    type="text"
+                    placeholder="輸入中文意思"
+                    value={customChinese}
+                    onChange={(e) => setCustomChinese(e.target.value)}
+                    className="flex-1 px-3 py-2 bg-bg-main border border-border rounded-lg text-sm text-text-primary placeholder:text-text-muted"
+                  />
+                  <button
+                    onClick={() => handleAddCustomWord(selectedToken)}
+                    disabled={addingWord || !customChinese.trim()}
+                    className="px-4 py-2 bg-accent text-white rounded-lg text-sm font-medium disabled:opacity-50 whitespace-nowrap"
+                  >
+                    加入
+                  </button>
+                </div>
+              )}
+            </>
+          )}
         </div>
       )}
 

@@ -10,7 +10,7 @@ export const srsService = {
     const dueWords = await db.userWords
       .where("nextReview")
       .belowOrEqual(today)
-      .filter((uw) => uw.status !== "new")
+      .filter((uw) => uw.status !== "new" && uw.status !== "mastered")
       .limit(limit)
       .toArray();
 
@@ -139,7 +139,7 @@ export const srsService = {
     return db.userWords
       .where("nextReview")
       .belowOrEqual(today)
-      .filter((uw) => uw.status !== "new")
+      .filter((uw) => uw.status !== "new" && uw.status !== "mastered")
       .count();
   },
 };
