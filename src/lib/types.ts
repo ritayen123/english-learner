@@ -1,4 +1,4 @@
-// ===== Word Data (pre-loaded 2000 + custom) =====
+// ===== Word Data (pre-loaded 4000 + custom) =====
 export interface Word {
   id: string;
   english: string;
@@ -86,5 +86,5 @@ export const DEFAULT_SETTINGS: UserSettings = {
 };
 
 // ===== Milestones =====
-export const WORD_MILESTONES = [100, 250, 500, 750, 1000, 1500, 2000];
+export const WORD_MILESTONES = [100, 250, 500, 750, 1000, 1500, 2000, 2500, 3000, 3500, 4000];
 export const STREAK_MILESTONES = [3, 7, 14, 30, 60, 90];

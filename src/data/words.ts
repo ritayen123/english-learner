@@ -1,7 +1,8 @@
 // @ts-nocheck
 import type { Word } from "../lib/types";
+import { advancedWordsData } from "./words-advanced";
 
-export const wordsData: Word[] = [
+const baseWords: Word[] = [
   // ===== BUSINESS / MARKETING (b001-b280, partial) =====
   { id: "b001", english: "budget", chinese: "預算", partOfSpeech: "n.", phonetic: "/ˈbʌdʒɪt/", domain: "business", difficulty: 1, exampleEn: "We need to review the marketing budget for next quarter.", exampleZh: "我們需要審查下一季的行銷預算。" },
   { id: "b002", english: "client", chinese: "客戶", partOfSpeech: "n.", phonetic: "/ˈklaɪənt/", domain: "business", difficulty: 1, exampleEn: "The client requested a meeting to discuss the project.", exampleZh: "客戶要求開會討論這個專案。" },
@@ -2024,3 +2025,5 @@ export const wordsData: Word[] = [
   { id: "a699", english: "fungibility", chinese: "可替代性", partOfSpeech: "n.", phonetic: "/fʌndʒɪˈbɪləti/", domain: "academic", difficulty: 5, exampleEn: "The fungibility of money means that any unit of currency is interchangeable with another.", exampleZh: "貨幣的可替代性意味著任何一個貨幣單位都可以與另一個互換。" },
   { id: "a700", english: "epiphenomenon", chinese: "附帶現象", partOfSpeech: "n.", phonetic: "/ˌepɪfɪˈnɑːmɪnɑːn/", domain: "academic", difficulty: 5, exampleEn: "Some philosophers argue that consciousness is merely an epiphenomenon of brain activity.", exampleZh: "一些哲學家主張意識僅僅是大腦活動的附帶現象。" },
 ];
+
+export const wordsData: Word[] = [...baseWords, ...advancedWordsData];

@@ -5,7 +5,7 @@ import { wordsData } from "../../data/words";
 export const wordService = {
   async init(): Promise<void> {
     const count = await db.words.count();
-    if (count === 0) {
+    if (count < wordsData.length) {
       await db.words.bulkPut(wordsData);
     }
   },
