@@ -116,7 +116,7 @@ export default function SettingsPage() {
       {/* App info */}
       <div className="mt-12 text-center text-xs text-text-muted space-y-1">
         <p>English Daily v1.0</p>
-        <p>每日英文 — 4000 words</p>
+        <p>每日英文 — 5000 words</p>
       </div>
 
       <BottomNav />

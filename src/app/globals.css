@@ -23,6 +23,8 @@
   --domain-business: #4361ee;
   --domain-daily: #2ecc71;
   --domain-academic: #9b59b6;
+  --domain-travel: #e67e22;
+  --domain-colloquial: #e91e63;
 }
 
 .dark {
@@ -48,6 +50,8 @@
   --domain-business: #6b82f0;
   --domain-daily: #4ade80;
   --domain-academic: #c084fc;
+  --domain-travel: #f59e0b;
+  --domain-colloquial: #f472b6;
 }
 
 @theme inline {
@@ -73,6 +77,8 @@
   --color-domain-business: var(--domain-business);
   --color-domain-daily: var(--domain-daily);
   --color-domain-academic: var(--domain-academic);
+  --color-domain-travel: var(--domain-travel);
+  --color-domain-colloquial: var(--domain-colloquial);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }

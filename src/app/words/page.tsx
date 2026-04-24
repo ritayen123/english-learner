@@ -112,19 +112,22 @@ function WordsContent() {
 
       {/* Domain filter */}
       <div className="flex gap-2 mb-4">
-        {(["all", "business", "daily", "academic"] as const).map((d) => (
-          <button
-            key={d}
-            onClick={() => setDomainFilter(d)}
-            className={`px-3 py-1 rounded-full text-xs font-medium ${
-              domainFilter === d
-                ? "bg-accent text-white"
-                : "bg-bg-card border border-border text-text-secondary"
-            }`}
-          >
-            {d === "all" ? "全部" : d === "business" ? "商業" : d === "daily" ? "日常" : "學術"}
-          </button>
-        ))}
+        {(["all", "business", "daily", "academic", "travel", "colloquial"] as const).map((d) => {
+          const labels: Record<string, string> = { all: "全部", business: "商業", daily: "日常", academic: "學術", travel: "旅行", colloquial: "口語" };
+          return (
+            <button
+              key={d}
+              onClick={() => setDomainFilter(d)}
+              className={`px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap ${
+                domainFilter === d
+                  ? "bg-accent text-white"
+                  : "bg-bg-card border border-border text-text-secondary"
+              }`}
+            >
+              {labels[d]}
+            </button>
+          );
+        })}
       </div>
 
       <p className="text-xs text-text-muted mb-3">{filtered.length} 個單字</p>

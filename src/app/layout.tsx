@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "English Daily | 每日英文",
-  description: "4000 words in 90 days. SRS flashcards + reading practice.",
+  description: "5000 words in 90 days. SRS flashcards + reading practice.",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,

@@ -6,6 +6,8 @@ const domainConfig: Record<WordDomain, { label: string; colorVar: string }> = {
   business: { label: "商業", colorVar: "var(--domain-business)" },
   daily: { label: "日常", colorVar: "var(--domain-daily)" },
   academic: { label: "學術", colorVar: "var(--domain-academic)" },
+  travel: { label: "旅行", colorVar: "var(--domain-travel)" },
+  colloquial: { label: "口語", colorVar: "var(--domain-colloquial)" },
 };
 
 interface DomainBadgeProps {

@@ -1,6 +1,7 @@
 import type { Article } from "../lib/types";
+import { extraArticlesData } from "./articles-extra";
 
-export const articlesData: Article[] = [
+const baseArticles: Article[] = [
   // ===== BUSINESS ARTICLES (30) =====
 
   // ---------- Difficulty 1: art-b01 to art-b10 ----------
@@ -4604,3 +4605,5 @@ Building financial literacy is not a one-time event but an ongoing process. As y
     ],
   }
 ];
+
+export const articlesData: Article[] = [...baseArticles, ...extraArticlesData];

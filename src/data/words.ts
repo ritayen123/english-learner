@@ -1,6 +1,8 @@
 // @ts-nocheck
 import type { Word } from "../lib/types";
 import { advancedWordsData } from "./words-advanced";
+import { travelWordsData } from "./words-travel";
+import { colloquialWordsData } from "./words-colloquial";
 
 const baseWords: Word[] = [
   // ===== BUSINESS / MARKETING (b001-b280, partial) =====
@@ -2026,4 +2028,4 @@ const baseWords: Word[] = [
   { id: "a700", english: "epiphenomenon", chinese: "附帶現象", partOfSpeech: "n.", phonetic: "/ˌepɪfɪˈnɑːmɪnɑːn/", domain: "academic", difficulty: 5, exampleEn: "Some philosophers argue that consciousness is merely an epiphenomenon of brain activity.", exampleZh: "一些哲學家主張意識僅僅是大腦活動的附帶現象。" },
 ];
 
-export const wordsData: Word[] = [...baseWords, ...advancedWordsData];
+export const wordsData: Word[] = [...baseWords, ...advancedWordsData, ...travelWordsData, ...colloquialWordsData];

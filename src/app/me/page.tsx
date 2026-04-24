@@ -108,7 +108,7 @@ export default function MePage() {
         <div className="bg-bg-card border border-border rounded-xl p-4">
           <p className="text-xs text-text-muted mb-1">已學單字</p>
           <p className="text-2xl font-bold text-accent">{totalLearned}</p>
-          <p className="text-xs text-text-muted">/ 4000</p>
+          <p className="text-xs text-text-muted">/ 5000</p>
         </div>
         <div className="bg-bg-card border border-border rounded-xl p-4">
           <p className="text-xs text-text-muted mb-1">連續天數</p>
@@ -119,7 +119,7 @@ export default function MePage() {
         <div className="bg-bg-card border border-border rounded-xl p-4">
           <p className="text-xs text-text-muted mb-1">文章已讀</p>
           <p className="text-2xl font-bold text-success">{articlesCompleted}</p>
-          <p className="text-xs text-text-muted">/ 90</p>
+          <p className="text-xs text-text-muted">/ 120</p>
         </div>
         <div className="bg-bg-card border border-border rounded-xl p-4">
           <p className="text-xs text-text-muted mb-1">總學習時間</p>

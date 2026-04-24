@@ -11,7 +11,7 @@ export interface Word {
   exampleZh: string;
 }
 
-export type WordDomain = "business" | "daily" | "academic";
+export type WordDomain = "business" | "daily" | "academic" | "travel" | "colloquial";
 
 // ===== User SRS state per word =====
 export interface UserWord {
@@ -86,5 +86,5 @@ export const DEFAULT_SETTINGS: UserSettings = {
 };
 
 // ===== Milestones =====
-export const WORD_MILESTONES = [100, 250, 500, 750, 1000, 1500, 2000, 2500, 3000, 3500, 4000];
+export const WORD_MILESTONES = [100, 250, 500, 750, 1000, 1500, 2000, 2500, 3000, 3500, 4000, 4500, 5000];
 export const STREAK_MILESTONES = [3, 7, 14, 30, 60, 90];

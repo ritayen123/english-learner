@@ -40,6 +40,8 @@ export default function ReadListPage() {
     { key: "business", label: "商業" },
     { key: "daily", label: "日常" },
     { key: "academic", label: "學術" },
+    { key: "travel", label: "旅行" },
+    { key: "colloquial", label: "口語" },
   ];
 
   return (
