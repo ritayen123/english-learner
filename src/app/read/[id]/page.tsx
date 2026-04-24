@@ -25,6 +25,7 @@ export default function ArticleReaderPage({
   const [article, setArticle] = useState<Article | null>(null);
   const [allWordsMap, setAllWordsMap] = useState<Record<string, Word>>({});
   const [learnedWordIds, setLearnedWordIds] = useState<Set<string>>(new Set());
+  const [dictMap, setDictMap] = useState<Record<string, string>>({});
 
   // Word tooltip state
   const [selectedToken, setSelectedToken] = useState<string | null>(null);
@@ -62,6 +63,15 @@ export default function ArticleReaderPage({
       const { db } = await import("../../../lib/db");
       const userWords = await db.userWords.toArray();
       setLearnedWordIds(new Set(userWords.map((uw) => uw.wordId)));
+
+      // Lazy load external dictionary for unknown words
+      try {
+        const res = await fetch("/dict.json");
+        const dict = await res.json();
+        setDictMap(dict);
+      } catch {
+        // dict.json not available, custom input fallback
+      }
     }
     load();
   }, [initialized, id]);
@@ -93,11 +103,12 @@ export default function ArticleReaderPage({
     }
   };
 
-  const handleAddCustomWord = async (english: string) => {
-    if (!customChinese.trim()) return;
+  const handleAddCustomWord = async (english: string, chineseOverride?: string) => {
+    const chinese = chineseOverride || customChinese.trim();
+    if (!chinese) return;
     setAddingWord(true);
     try {
-      await srsService.addCustomWord(english, customChinese.trim());
+      await srsService.addCustomWord(english, chinese);
       await statsService.recordNewWord();
       await refreshStats();
       setJustAdded((prev) => new Set([...prev, `custom_${english}`]));
@@ -388,28 +399,49 @@ export default function ArticleReaderPage({
             </>
           ) : (
             <>
-              <p className="text-xs text-text-muted mt-2">
-                此字不在預設字庫中，可自行輸入中文意思加入學習
-              </p>
-              {justAdded.has(`custom_${selectedToken}`) ? (
-                <p className="text-xs text-success mt-3 font-medium">✓ 已加入學習</p>
+              {dictMap[selectedToken] ? (
+                <>
+                  <p className="text-sm font-medium text-text-primary mt-2">
+                    {dictMap[selectedToken]}
+                  </p>
+                  {justAdded.has(`custom_${selectedToken}`) ? (
+                    <p className="text-xs text-success mt-3 font-medium">✓ 已加入學習</p>
+                  ) : (
+                    <button
+                      onClick={() => handleAddCustomWord(selectedToken, dictMap[selectedToken])}
+                      disabled={addingWord}
+                      className="mt-3 w-full py-2 bg-accent text-white rounded-lg text-sm font-medium disabled:opacity-50"
+                    >
+                      加入學習
+                    </button>
+                  )}
+                </>
               ) : (
-                <div className="mt-3 flex gap-2">
-                  <input
-                    type="text"
-                    placeholder="輸入中文意思"
-                    value={customChinese}
-                    onChange={(e) => setCustomChinese(e.target.value)}
-                    className="flex-1 px-3 py-2 bg-bg-main border border-border rounded-lg text-sm text-text-primary placeholder:text-text-muted"
-                  />
-                  <button
-                    onClick={() => handleAddCustomWord(selectedToken)}
-                    disabled={addingWord || !customChinese.trim()}
-                    className="px-4 py-2 bg-accent text-white rounded-lg text-sm font-medium disabled:opacity-50 whitespace-nowrap"
-                  >
-                    加入
-                  </button>
-                </div>
+                <>
+                  <p className="text-xs text-text-muted mt-2">
+                    查無此字，可自行輸入中文意思
+                  </p>
+                  {justAdded.has(`custom_${selectedToken}`) ? (
+                    <p className="text-xs text-success mt-3 font-medium">✓ 已加入學習</p>
+                  ) : (
+                    <div className="mt-3 flex gap-2">
+                      <input
+                        type="text"
+                        placeholder="輸入中文意思"
+                        value={customChinese}
+                        onChange={(e) => setCustomChinese(e.target.value)}
+                        className="flex-1 px-3 py-2 bg-bg-input border border-border rounded-lg text-sm text-text-primary placeholder:text-text-muted"
+                      />
+                      <button
+                        onClick={() => handleAddCustomWord(selectedToken)}
+                        disabled={addingWord || !customChinese.trim()}
+                        className="px-4 py-2 bg-accent text-white rounded-lg text-sm font-medium disabled:opacity-50 whitespace-nowrap"
+                      >
+                        加入
+                      </button>
+                    </div>
+                  )}
+                </>
               )}
             </>
           )}
