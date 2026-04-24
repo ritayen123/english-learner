@@ -78,7 +78,7 @@ export interface UserSettings {
 }
 
 export const DEFAULT_SETTINGS: UserSettings = {
-  dailyNewWords: 20,
+  dailyNewWords: 50,
   dailyReviewCap: 100,
   sessionMinutes: 15,
   darkMode: true,

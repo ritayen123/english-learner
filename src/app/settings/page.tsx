@@ -35,7 +35,7 @@ export default function SettingsPage() {
           <input
             type="range"
             min={5}
-            max={30}
+            max={100}
             step={5}
             value={settings.dailyNewWords}
             onChange={(e) =>
@@ -45,7 +45,7 @@ export default function SettingsPage() {
           />
           <div className="flex justify-between text-xs text-text-muted mt-1">
             <span>5</span>
-            <span>30</span>
+            <span>100</span>
           </div>
         </SettingRow>
 
