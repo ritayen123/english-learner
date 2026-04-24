@@ -95,6 +95,21 @@ export default function ReviewPage() {
           <p className="text-sm text-text-muted">
             花了 {session.formattedElapsed}
           </p>
+          <div className="w-full max-w-xs mt-2 bg-bg-card border border-border rounded-xl p-3">
+            <div className="flex justify-between text-xs text-text-muted mb-1.5">
+              <span>今日複習目標</span>
+              <span>{reviewedCount} / {settings.dailyReviewCap}</span>
+            </div>
+            <div className="h-2 bg-bg-input rounded-full overflow-hidden">
+              <div
+                className="h-full bg-warning rounded-full transition-all duration-500"
+                style={{ width: `${Math.min((reviewedCount / settings.dailyReviewCap) * 100, 100)}%` }}
+              />
+            </div>
+            {reviewedCount >= settings.dailyReviewCap && (
+              <p className="text-xs text-success mt-1.5 text-center">今日複習已達標！</p>
+            )}
+          </div>
           <div className="flex gap-3 mt-4">
             <Link
               href="/read"

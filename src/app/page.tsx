@@ -147,7 +147,7 @@ function QuickAction({
     <Link
       href={href}
       className={`bg-bg-card border rounded-xl p-4 flex flex-col gap-2 transition-transform active:scale-[0.97] ${
-        urgent ? "border-warning" : "border-border"
+        urgent ? "border-warning animate-pulse" : "border-border"
       }`}
     >
       <div

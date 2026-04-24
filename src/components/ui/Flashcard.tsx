@@ -60,10 +60,10 @@ export default function Flashcard({
         >
           <div
             className={`card-flip-inner relative ${flipped ? "flipped" : ""}`}
-            style={{ minHeight: 280 }}
+            style={{ minHeight: 320 }}
           >
-            {/* Front - English */}
-            <div className="card-front absolute inset-0 bg-bg-card border border-border rounded-2xl p-6 flex flex-col items-center justify-center gap-4 shadow-sm">
+            {/* Front - English + Example sentence */}
+            <div className="card-front absolute inset-0 bg-bg-card border border-border rounded-2xl p-6 flex flex-col items-center justify-center gap-3 shadow-sm">
               <DomainBadge domain={word.domain} />
               <h2 className="text-3xl font-bold text-text-primary">
                 {word.english}
@@ -78,20 +78,22 @@ export default function Flashcard({
               >
                 <VolumeIcon size={20} />
               </button>
-              <p className="text-xs text-text-muted mt-2">點擊翻面</p>
+              <div className="w-full border-t border-border-light mt-1 pt-3 px-1">
+                <p className="text-sm text-text-secondary leading-relaxed text-center italic">
+                  &ldquo;{word.exampleEn}&rdquo;
+                </p>
+              </div>
+              <p className="text-xs text-text-muted">點擊翻面看解答</p>
             </div>
 
-            {/* Back - Chinese + Example */}
+            {/* Back - Chinese answer */}
             <div className="card-back absolute inset-0 bg-bg-card border border-border rounded-2xl p-6 flex flex-col items-center justify-center gap-3 shadow-sm">
               <p className="text-sm text-text-muted">{word.partOfSpeech}</p>
               <h2 className="text-2xl font-bold text-accent">
                 {word.chinese}
               </h2>
-              <div className="w-full mt-3 space-y-2 px-2">
-                <p className="text-sm text-text-primary leading-relaxed">
-                  {word.exampleEn}
-                </p>
-                <p className="text-xs text-text-secondary leading-relaxed">
+              <div className="w-full border-t border-border-light mt-1 pt-3 px-2">
+                <p className="text-xs text-text-secondary leading-relaxed text-center">
                   {word.exampleZh}
                 </p>
               </div>

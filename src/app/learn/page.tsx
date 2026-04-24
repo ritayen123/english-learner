@@ -90,6 +90,21 @@ export default function LearnPage() {
           <p className="text-sm text-text-muted">
             花了 {session.formattedElapsed}
           </p>
+          <div className="w-full max-w-xs mt-2 bg-bg-card border border-border rounded-xl p-3">
+            <div className="flex justify-between text-xs text-text-muted mb-1.5">
+              <span>今日新字目標</span>
+              <span>{learnedCount} / {settings.dailyNewWords}</span>
+            </div>
+            <div className="h-2 bg-bg-input rounded-full overflow-hidden">
+              <div
+                className="h-full bg-accent rounded-full transition-all duration-500"
+                style={{ width: `${Math.min((learnedCount / settings.dailyNewWords) * 100, 100)}%` }}
+              />
+            </div>
+            {learnedCount >= settings.dailyNewWords && (
+              <p className="text-xs text-success mt-1.5 text-center">今日目標已達成！</p>
+            )}
+          </div>
           <div className="flex gap-3 mt-4">
             <Link
               href="/review"

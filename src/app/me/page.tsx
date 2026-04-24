@@ -188,7 +188,7 @@ export default function MePage() {
                   }}
                 />
                 <span className="text-[10px] text-text-muted">
-                  {d.date.slice(-2)}
+                  {["日","一","二","三","四","五","六"][new Date(d.date).getDay()]}
                 </span>
               </div>
             ))}
