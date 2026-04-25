@@ -46,7 +46,7 @@ export default function Dashboard() {
 
       {/* Progress Ring */}
       <div className="flex justify-center mb-8">
-        <ProgressRing current={totalLearned} total={5000} label="學習進度" />
+        <ProgressRing current={totalLearned} total={6000} label="學習進度" />
       </div>
 
       {/* Daily Travel Phrase */}
@@ -77,7 +77,7 @@ export default function Dashboard() {
           href="/learn"
           icon={<BookIcon size={24} />}
           label="學新字"
-          subtitle={`還有 ${Math.max(0, 5000 - totalLearned)} 字可學`}
+          subtitle={`還有 ${Math.max(0, 6000 - totalLearned)} 字可學`}
           color="var(--accent)"
         />
         <QuickAction
