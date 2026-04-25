@@ -107,7 +107,6 @@ export default function SettingsPage() {
             checked={settings.darkMode}
             onChange={(v) => {
               updateSettings({ darkMode: v });
-              document.documentElement.classList.toggle("dark", v);
             }}
           />
         </SettingRow>

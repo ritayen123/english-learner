@@ -71,6 +71,11 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setSettings(settingsService.get());
   }, []);
 
+  // Sync dark mode class with settings
+  useEffect(() => {
+    document.documentElement.classList.toggle("dark", settings.darkMode);
+  }, [settings.darkMode]);
+
   return (
     <AppContext.Provider
       value={{

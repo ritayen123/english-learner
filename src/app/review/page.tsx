@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useApp } from "../../lib/context/AppContext";
 import { srsService } from "../../lib/services/srs-service";
 import { statsService } from "../../lib/services/stats-service";
@@ -20,6 +20,7 @@ export default function ReviewPage() {
   const [completed, setCompleted] = useState(false);
   const [reviewedCount, setReviewedCount] = useState(0);
   const session = useStudySession(settings.sessionMinutes);
+  const isProcessingRef = useRef(false);
 
   useEffect(() => {
     if (!initialized) return;
@@ -32,24 +33,30 @@ export default function ReviewPage() {
 
   const handleRate = useCallback(
     async (quality: number) => {
-      const item = queue[currentIndex];
-      if (!item) return;
+      if (isProcessingRef.current) return;
+      isProcessingRef.current = true;
+      try {
+        const item = queue[currentIndex];
+        if (!item) return;
 
-      await srsService.processReview(item.wordId, quality);
-      await statsService.recordReview();
-      setReviewedCount((c) => c + 1);
+        await srsService.processReview(item.wordId, quality);
+        await statsService.recordReview();
+        setReviewedCount((c) => c + 1);
 
-      // If "Again", push card to end of queue
-      if (quality < 3) {
-        setQueue((q) => [...q, item]);
-      }
+        // If "Again", push card to end of queue
+        if (quality < 3) {
+          setQueue((q) => [...q, item]);
+        }
 
-      if (currentIndex + 1 < queue.length) {
-        setCurrentIndex((i) => i + 1);
-      } else {
-        setCompleted(true);
-        session.pause();
-        refreshStats();
+        if (currentIndex + 1 < queue.length) {
+          setCurrentIndex((i) => i + 1);
+        } else {
+          setCompleted(true);
+          session.pause();
+          refreshStats();
+        }
+      } finally {
+        isProcessingRef.current = false;
       }
     },
     [queue, currentIndex, session, refreshStats]

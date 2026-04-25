@@ -59,8 +59,7 @@ export default function Flashcard({
           onClick={handleFlip}
         >
           <div
-            className={`card-flip-inner relative ${flipped ? "flipped" : ""}`}
-            style={{ minHeight: 320 }}
+            className={`card-flip-inner relative min-h-[260px] sm:min-h-[320px] ${flipped ? "flipped" : ""}`}
           >
             {/* Front - English + Example sentence */}
             <div className="card-front absolute inset-0 bg-bg-card border border-border rounded-2xl p-6 flex flex-col items-center justify-center gap-3 shadow-sm">

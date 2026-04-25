@@ -1,101 +1,202 @@
 "use client";
 
-import { Suspense, useState, useEffect, useCallback } from "react";
-import { useSearchParams } from "next/navigation";
+import { useState, useEffect, useRef, Suspense } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import { useApp } from "../../lib/context/AppContext";
 import { wordService } from "../../lib/services/word-service";
 import { srsService } from "../../lib/services/srs-service";
-import { db } from "../../lib/db";
+import { useSpeech } from "../../hooks/useSpeech";
 import BottomNav from "../../components/ui/BottomNav";
 import DomainBadge from "../../components/ui/DomainBadge";
 import {
   ChevronLeftIcon,
+  VolumeIcon,
   SearchIcon,
   PlusIcon,
-  VolumeIcon,
-  XIcon,
 } from "../../components/ui/Icons";
-import { useSpeech } from "../../hooks/useSpeech";
 import Link from "next/link";
-import type { Word, UserWord, WordDomain } from "../../lib/types";
+import type { Word, WordDomain } from "../../lib/types";
 
 export default function WordsPage() {
   return (
-    <Suspense fallback={<div className="flex-1 flex items-center justify-center min-h-screen"><p className="text-text-muted animate-pulse">載入中...</p></div>}>
+    <Suspense
+      fallback={
+        <div className="flex-1 flex items-center justify-center min-h-screen">
+          <p className="text-text-muted animate-pulse">載入中...</p>
+        </div>
+      }
+    >
       <WordsContent />
     </Suspense>
   );
 }
 
 function WordsContent() {
-  const { initialized, refreshStats } = useApp();
+  const { initialized } = useApp();
   const searchParams = useSearchParams();
-  const showAddOnLoad = searchParams.get("add") === "1";
-  const [words, setWords] = useState<Word[]>([]);
-  const [userWords, setUserWords] = useState<Record<string, UserWord>>({});
-  const [search, setSearch] = useState("");
-  const [domainFilter, setDomainFilter] = useState<WordDomain | "all">("all");
-  const [showAddModal, setShowAddModal] = useState(showAddOnLoad);
-  const [newEnglish, setNewEnglish] = useState("");
-  const [newChinese, setNewChinese] = useState("");
-  const [newExample, setNewExample] = useState("");
+  const router = useRouter();
   const { playWord } = useSpeech();
 
-  const loadData = useCallback(async () => {
-    const allWords = await wordService.getAll();
-    setWords(allWords);
-    const uws = await db.userWords.toArray();
-    const map: Record<string, UserWord> = {};
-    for (const uw of uws) map[uw.wordId] = uw;
-    setUserWords(map);
-  }, []);
+  const [query, setQuery] = useState("");
+  const [words, setWords] = useState<Word[]>([]);
+  const [loading, setLoading] = useState(false);
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  // Add custom word state
+  const showAdd = searchParams.get("add") === "1";
+  const [customEnglish, setCustomEnglish] = useState("");
+  const [customChinese, setCustomChinese] = useState("");
+  const [customExample, setCustomExample] = useState("");
+  const [saving, setSaving] = useState(false);
+  const [saveSuccess, setSaveSuccess] = useState(false);
+
+  const filter =
+    (searchParams.get("filter") as WordDomain | "all") || "all";
+
+  const setFilter = (key: WordDomain | "all") => {
+    const params = new URLSearchParams(searchParams.toString());
+    if (key === "all") {
+      params.delete("filter");
+    } else {
+      params.set("filter", key);
+    }
+    const qs = params.toString();
+    router.replace(`/words${qs ? `?${qs}` : ""}`, { scroll: false });
+  };
+
+  const filters: { key: WordDomain | "all"; label: string }[] = [
+    { key: "all", label: "全部" },
+    { key: "business", label: "商業" },
+    { key: "daily", label: "日常" },
+    { key: "academic", label: "學術" },
+    { key: "travel", label: "旅行" },
+    { key: "colloquial", label: "口語" },
+  ];
+
+  // Load words based on search query or domain filter with 300ms debounce
   useEffect(() => {
-    if (initialized) loadData();
-  }, [initialized, loadData]);
+    if (!initialized) return;
 
-  const filtered = words.filter((w) => {
-    const matchDomain = domainFilter === "all" || w.domain === domainFilter;
-    const matchSearch =
-      !search ||
-      w.english.toLowerCase().includes(search.toLowerCase()) ||
-      w.chinese.includes(search);
-    return matchDomain && matchSearch;
-  });
+    if (debounceRef.current) {
+      clearTimeout(debounceRef.current);
+    }
 
-  async function handleAdd() {
-    if (!newEnglish.trim() || !newChinese.trim()) return;
-    await srsService.addCustomWord(newEnglish.trim(), newChinese.trim(), newExample.trim() || undefined);
-    setNewEnglish("");
-    setNewChinese("");
-    setNewExample("");
-    setShowAddModal(false);
-    loadData();
-    refreshStats();
-  }
+    // If no query and filter is "all", show nothing (prompt user)
+    if (!query && filter === "all") {
+      setWords([]);
+      return;
+    }
 
-  const statusColors: Record<string, string> = {
-    learning: "bg-accent",
-    review: "bg-warning",
-    mastered: "bg-success",
+    debounceRef.current = setTimeout(async () => {
+      setLoading(true);
+      try {
+        let results: Word[];
+        if (query) {
+          results = await wordService.search(query);
+          // Apply domain filter on top of search
+          if (filter !== "all") {
+            results = results.filter((w) => w.domain === filter);
+          }
+        } else {
+          results = await wordService.getByDomain(filter as WordDomain);
+        }
+        setWords(results.slice(0, 50));
+      } finally {
+        setLoading(false);
+      }
+    }, 300);
+
+    return () => {
+      if (debounceRef.current) {
+        clearTimeout(debounceRef.current);
+      }
+    };
+  }, [initialized, query, filter]);
+
+  const handleSaveCustomWord = async () => {
+    if (!customEnglish.trim() || !customChinese.trim()) return;
+    setSaving(true);
+    try {
+      const { db } = await import("../../lib/db");
+      await db.userWords.put({
+        wordId: `custom_${Date.now()}`,
+        interval: 0,
+        repetition: 0,
+        easeFactor: 2.5,
+        nextReview: new Date().toISOString().slice(0, 10),
+        lastReview: "",
+        status: "learning" as const,
+        isCustom: true,
+        customEnglish: customEnglish.trim(),
+        customChinese: customChinese.trim(),
+        customExample: customExample.trim() || undefined,
+      });
+      setSaveSuccess(true);
+      setCustomEnglish("");
+      setCustomChinese("");
+      setCustomExample("");
+      setTimeout(() => setSaveSuccess(false), 2000);
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
     <main className="flex-1 pb-20 px-4 pt-6 max-w-lg mx-auto w-full">
+      {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <Link href="/me" className="p-2 -ml-2 text-text-secondary">
           <ChevronLeftIcon size={24} />
         </Link>
         <h1 className="text-lg font-bold">單字庫</h1>
-        <button
-          onClick={() => setShowAddModal(true)}
-          className="p-2 text-accent"
-        >
-          <PlusIcon size={24} />
-        </button>
+        <div className="w-10" />
       </div>
 
-      {/* Search */}
+      {/* Add custom word section */}
+      {showAdd && (
+        <div className="bg-bg-card border border-border rounded-xl p-4 mb-4">
+          <h2 className="text-sm font-semibold mb-3 flex items-center gap-2">
+            <PlusIcon size={16} />
+            新增自訂單字
+          </h2>
+          <div className="space-y-2.5">
+            <input
+              type="text"
+              value={customEnglish}
+              onChange={(e) => setCustomEnglish(e.target.value)}
+              placeholder="英文單字"
+              className="w-full bg-bg-input border border-border rounded-lg px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-accent"
+            />
+            <input
+              type="text"
+              value={customChinese}
+              onChange={(e) => setCustomChinese(e.target.value)}
+              placeholder="中文意思"
+              className="w-full bg-bg-input border border-border rounded-lg px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-accent"
+            />
+            <input
+              type="text"
+              value={customExample}
+              onChange={(e) => setCustomExample(e.target.value)}
+              placeholder="例句（選填）"
+              className="w-full bg-bg-input border border-border rounded-lg px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-accent"
+            />
+            <button
+              onClick={handleSaveCustomWord}
+              disabled={saving || !customEnglish.trim() || !customChinese.trim()}
+              className="w-full bg-accent text-white rounded-lg py-2.5 text-sm font-medium transition-colors disabled:opacity-50 active:scale-[0.98]"
+            >
+              {saveSuccess
+                ? "已儲存！"
+                : saving
+                ? "儲存中..."
+                : "儲存單字"}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Search bar */}
       <div className="relative mb-4">
         <SearchIcon
           size={18}
@@ -103,117 +204,79 @@ function WordsContent() {
         />
         <input
           type="text"
-          placeholder="搜尋英��或中文..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="w-full pl-10 pr-4 py-2.5 bg-bg-input border border-border rounded-xl text-sm text-text-primary placeholder:text-text-muted outline-none focus:border-accent"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="搜尋英文或中文..."
+          className="w-full bg-bg-input border border-border rounded-xl pl-10 pr-4 py-2.5 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-accent"
         />
       </div>
 
-      {/* Domain filter */}
-      <div className="flex gap-2 mb-4">
-        {(["all", "business", "daily", "academic", "travel", "colloquial"] as const).map((d) => {
-          const labels: Record<string, string> = { all: "全部", business: "商業", daily: "日常", academic: "學術", travel: "旅行", colloquial: "口語" };
-          return (
-            <button
-              key={d}
-              onClick={() => setDomainFilter(d)}
-              className={`px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap ${
-                domainFilter === d
-                  ? "bg-accent text-white"
-                  : "bg-bg-card border border-border text-text-secondary"
-              }`}
-            >
-              {labels[d]}
-            </button>
-          );
-        })}
+      {/* Filter tabs */}
+      <div className="flex gap-2 mb-6 overflow-x-auto">
+        {filters.map((f) => (
+          <button
+            key={f.key}
+            onClick={() => setFilter(f.key)}
+            className={`px-4 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-colors ${
+              filter === f.key
+                ? "bg-accent text-white"
+                : "bg-bg-card border border-border text-text-secondary"
+            }`}
+          >
+            {f.label}
+          </button>
+        ))}
       </div>
-
-      <p className="text-xs text-text-muted mb-3">{filtered.length} 個單字</p>
 
       {/* Word list */}
-      <div className="space-y-2">
-        {filtered.slice(0, 50).map((w) => {
-          const uw = userWords[w.id];
-          return (
+      {loading ? (
+        <div className="text-center mt-12">
+          <p className="text-text-muted animate-pulse">搜尋中...</p>
+        </div>
+      ) : words.length > 0 ? (
+        <div className="space-y-2">
+          {words.map((word) => (
             <div
-              key={w.id}
-              className="bg-bg-card border border-border rounded-xl p-3 flex items-center gap-3"
+              key={word.id}
+              className="bg-bg-card border border-border rounded-xl p-3.5 flex items-center gap-3"
             >
-              <button
-                onClick={() => playWord(w.english)}
-                className="p-1.5 text-text-muted hover:text-accent"
-              >
-                <VolumeIcon size={16} />
-              </button>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-text-primary truncate">
-                  {w.english}
-                </p>
-                <p className="text-xs text-text-muted truncate">{w.chinese}</p>
+                <div className="flex items-center gap-2 mb-0.5">
+                  <span className="text-sm font-bold text-text-primary">
+                    {word.english}
+                  </span>
+                  <DomainBadge domain={word.domain} />
+                </div>
+                <p className="text-xs text-text-secondary">{word.chinese}</p>
+                {word.phonetic && (
+                  <p className="text-[11px] text-text-muted mt-0.5">
+                    {word.phonetic}
+                  </p>
+                )}
               </div>
-              <DomainBadge domain={w.domain} />
-              {uw && (
-                <span
-                  className={`w-2 h-2 rounded-full ${statusColors[uw.status] || "bg-text-muted"}`}
-                />
-              )}
-            </div>
-          );
-        })}
-      </div>
-
-      {filtered.length > 50 && (
-        <p className="text-center text-xs text-text-muted mt-4">
-          顯示前 50 個結果，請用搜尋縮小範圍
-        </p>
-      )}
-
-      {/* Add custom word modal */}
-      {showAddModal && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-end">
-          <div className="w-full max-w-lg mx-auto bg-bg-card rounded-t-2xl p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-bold">新增自訂單字</h2>
               <button
-                onClick={() => setShowAddModal(false)}
-                className="text-text-muted"
+                onClick={() => playWord(word.english)}
+                className="p-2 text-text-muted hover:text-accent transition-colors shrink-0"
+                aria-label={`播放 ${word.english} 發音`}
               >
-                <XIcon size={24} />
+                <VolumeIcon size={20} />
               </button>
             </div>
-            <div className="space-y-3">
-              <input
-                type="text"
-                placeholder="English word"
-                value={newEnglish}
-                onChange={(e) => setNewEnglish(e.target.value)}
-                className="w-full px-4 py-3 bg-bg-input border border-border rounded-xl text-sm text-text-primary placeholder:text-text-muted outline-none focus:border-accent"
-              />
-              <input
-                type="text"
-                placeholder="中文意思"
-                value={newChinese}
-                onChange={(e) => setNewChinese(e.target.value)}
-                className="w-full px-4 py-3 bg-bg-input border border-border rounded-xl text-sm text-text-primary placeholder:text-text-muted outline-none focus:border-accent"
-              />
-              <input
-                type="text"
-                placeholder="例句（選填）"
-                value={newExample}
-                onChange={(e) => setNewExample(e.target.value)}
-                className="w-full px-4 py-3 bg-bg-input border border-border rounded-xl text-sm text-text-primary placeholder:text-text-muted outline-none focus:border-accent"
-              />
-              <button
-                onClick={handleAdd}
-                disabled={!newEnglish.trim() || !newChinese.trim()}
-                className="w-full py-3 bg-accent text-white rounded-xl font-medium disabled:opacity-50"
-              >
-                新增
-              </button>
-            </div>
-          </div>
+          ))}
+        </div>
+      ) : !query && filter === "all" ? (
+        <div className="text-center mt-12">
+          <SearchIcon
+            size={40}
+            className="mx-auto text-text-muted mb-3 opacity-40"
+          />
+          <p className="text-text-muted text-sm">
+            搜尋或選擇分類來瀏覽單字
+          </p>
+        </div>
+      ) : (
+        <div className="text-center mt-12">
+          <p className="text-text-muted text-sm">找不到符合的單字</p>
         </div>
       )}
 

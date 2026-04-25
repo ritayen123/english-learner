@@ -60,6 +60,19 @@ export function useStudySession(durationMinutes: number = 15) {
       document.removeEventListener("visibilitychange", handleVisibility);
   }, [isActive, pause]);
 
+  // Save unsaved time on tab close
+  useEffect(() => {
+    function handleBeforeUnload() {
+      const unsaved = elapsedSeconds - lastSaveRef.current;
+      if (unsaved > 0 && isActive) {
+        statsService.recordStudyTime(unsaved);
+        lastSaveRef.current = elapsedSeconds;
+      }
+    }
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, [elapsedSeconds, isActive]);
+
   const formatTime = useCallback((seconds: number) => {
     const m = Math.floor(seconds / 60);
     const s = seconds % 60;

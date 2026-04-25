@@ -13,7 +13,23 @@ export default function ScenarioPlayPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = use(params);
-  const scenario = scenarioService.getById(id);
+  const [scenario, setScenario] = useState<Scenario | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    scenarioService.getById(id).then((s) => {
+      setScenario(s ?? null);
+      setLoading(false);
+    });
+  }, [id]);
+
+  if (loading) {
+    return (
+      <main className="flex-1 flex items-center justify-center min-h-screen">
+        <p className="text-text-muted animate-pulse">載入中...</p>
+      </main>
+    );
+  }
 
   if (!scenario) {
     return (
@@ -200,7 +216,7 @@ function ScenarioPlayer({ scenario }: { scenario: Scenario }) {
           if (step.speaker === "staff") {
             return (
               <div key={stepIndex} className="flex gap-2 animate-fadeIn">
-                <div className="w-8 h-8 rounded-full bg-bg-input flex items-center justify-center text-xs shrink-0">
+                <div className="w-8 h-8 rounded-full bg-bg-input flex items-center justify-center text-xs shrink-0" role="img" aria-label="服務人員">
                   🧑‍💼
                 </div>
                 <div className="flex-1">
@@ -272,7 +288,7 @@ function ScenarioPlayer({ scenario }: { scenario: Scenario }) {
                       </p>
                     )}
                   </div>
-                  <div className="w-8 h-8 rounded-full bg-accent-light flex items-center justify-center text-xs shrink-0">
+                  <div className="w-8 h-8 rounded-full bg-accent-light flex items-center justify-center text-xs shrink-0" role="img" aria-label="你">
                     🙋
                   </div>
                 </div>

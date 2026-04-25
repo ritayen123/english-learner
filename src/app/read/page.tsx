@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import { useApp } from "../../lib/context/AppContext";
 import { articleService } from "../../lib/services/article-service";
 import BottomNav from "../../components/ui/BottomNav";
@@ -10,10 +11,38 @@ import Link from "next/link";
 import type { Article, UserArticle, WordDomain } from "../../lib/types";
 
 export default function ReadListPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex-1 flex items-center justify-center min-h-screen">
+          <p className="text-text-muted animate-pulse">載入中...</p>
+        </div>
+      }
+    >
+      <ReadListContent />
+    </Suspense>
+  );
+}
+
+function ReadListContent() {
   const { initialized } = useApp();
+  const searchParams = useSearchParams();
+  const router = useRouter();
   const [articles, setArticles] = useState<Article[]>([]);
   const [completed, setCompleted] = useState<Record<string, UserArticle>>({});
-  const [filter, setFilter] = useState<WordDomain | "all">("all");
+
+  const filter = (searchParams.get("filter") as WordDomain | "all") || "all";
+
+  const setFilter = (key: WordDomain | "all") => {
+    const params = new URLSearchParams(searchParams.toString());
+    if (key === "all") {
+      params.delete("filter");
+    } else {
+      params.set("filter", key);
+    }
+    const qs = params.toString();
+    router.replace(`/read${qs ? `?${qs}` : ""}`, { scroll: false });
+  };
 
   useEffect(() => {
     if (!initialized) return;
@@ -85,7 +114,11 @@ export default function ReadListPage() {
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-1.5">
                     <DomainBadge domain={article.domain} />
-                    <span className="text-xs text-text-muted">
+                    <span
+                      className="text-xs text-text-muted"
+                      role="img"
+                      aria-label={`難度 ${article.difficulty} 星（共 3 星）`}
+                    >
                       {"★".repeat(article.difficulty)}
                       {"☆".repeat(3 - article.difficulty)}
                     </span>

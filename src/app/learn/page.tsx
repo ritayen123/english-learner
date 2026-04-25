@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useApp } from "../../lib/context/AppContext";
 import { srsService } from "../../lib/services/srs-service";
 import { statsService } from "../../lib/services/stats-service";
@@ -18,6 +18,7 @@ export default function LearnPage() {
   const [completed, setCompleted] = useState(false);
   const [learnedCount, setLearnedCount] = useState(0);
   const session = useStudySession(settings.sessionMinutes);
+  const isProcessingRef = useRef(false);
 
   useEffect(() => {
     if (!initialized) return;
@@ -30,22 +31,28 @@ export default function LearnPage() {
 
   const handleRate = useCallback(
     async (quality: number) => {
-      const word = words[currentIndex];
-      if (!word) return;
+      if (isProcessingRef.current) return;
+      isProcessingRef.current = true;
+      try {
+        const word = words[currentIndex];
+        if (!word) return;
 
-      await srsService.startLearning(word.id);
-      if (quality >= 3) {
-        await srsService.processReview(word.id, quality);
-      }
-      await statsService.recordNewWord();
-      setLearnedCount((c) => c + 1);
+        await srsService.startLearning(word.id);
+        if (quality >= 3) {
+          await srsService.processReview(word.id, quality);
+        }
+        await statsService.recordNewWord();
+        setLearnedCount((c) => c + 1);
 
-      if (currentIndex + 1 < words.length) {
-        setCurrentIndex((i) => i + 1);
-      } else {
-        setCompleted(true);
-        session.pause();
-        refreshStats();
+        if (currentIndex + 1 < words.length) {
+          setCurrentIndex((i) => i + 1);
+        } else {
+          setCompleted(true);
+          session.pause();
+          refreshStats();
+        }
+      } finally {
+        isProcessingRef.current = false;
       }
     },
     [words, currentIndex, session, refreshStats]

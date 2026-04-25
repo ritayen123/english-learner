@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import { useApp } from "../../../lib/context/AppContext";
 import { scenarioService } from "../../../lib/services/scenario-service";
 import BottomNav from "../../../components/ui/BottomNav";
@@ -20,7 +21,7 @@ const categoryConfig: Record<
   emergency: { label: "緊急", color: "var(--danger)" },
 };
 
-const filters: { key: ScenarioCategory | "all"; label: string }[] = [
+const filterOptions: { key: ScenarioCategory | "all"; label: string }[] = [
   { key: "all", label: "全部" },
   { key: "airport", label: "機場" },
   { key: "hotel", label: "住宿" },
@@ -31,13 +32,46 @@ const filters: { key: ScenarioCategory | "all"; label: string }[] = [
 ];
 
 export default function ScenariosPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex-1 flex items-center justify-center min-h-screen">
+          <p className="text-text-muted animate-pulse">載入中...</p>
+        </div>
+      }
+    >
+      <ScenariosContent />
+    </Suspense>
+  );
+}
+
+function ScenariosContent() {
   const { initialized } = useApp();
-  const [filter, setFilter] = useState<ScenarioCategory | "all">("all");
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const [scenarios, setScenarios] = useState<Scenario[]>([]);
   const [completed, setCompleted] = useState<Record<string, UserScenario>>({});
-  const scenarios = scenarioService.getAll();
+
+  const filter =
+    (searchParams.get("filter") as ScenarioCategory | "all") || "all";
+
+  const setFilter = (key: ScenarioCategory | "all") => {
+    const params = new URLSearchParams(searchParams.toString());
+    if (key === "all") {
+      params.delete("filter");
+    } else {
+      params.set("filter", key);
+    }
+    const qs = params.toString();
+    router.replace(
+      `/travel/scenarios${qs ? `?${qs}` : ""}`,
+      { scroll: false }
+    );
+  };
 
   useEffect(() => {
     if (!initialized) return;
+    scenarioService.getAll().then(setScenarios);
     scenarioService.getAllCompleted().then(setCompleted);
   }, [initialized]);
 
@@ -59,7 +93,7 @@ export default function ScenariosPage() {
 
       {/* Filter tabs */}
       <div className="flex gap-2 mb-6 overflow-x-auto">
-        {filters.map((f) => (
+        {filterOptions.map((f) => (
           <button
             key={f.key}
             onClick={() => setFilter(f.key)}
@@ -97,7 +131,11 @@ export default function ScenariosPage() {
                     >
                       {catConf.label}
                     </span>
-                    <span className="text-xs text-text-muted">
+                    <span
+                      className="text-xs text-text-muted"
+                      role="img"
+                      aria-label={`難度 ${scenario.difficulty} 星（共 3 星）`}
+                    >
                       {"★".repeat(scenario.difficulty)}
                       {"☆".repeat(3 - scenario.difficulty)}
                     </span>

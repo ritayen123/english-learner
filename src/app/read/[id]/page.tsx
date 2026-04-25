@@ -11,7 +11,10 @@ import BottomNav from "../../../components/ui/BottomNav";
 import DomainBadge from "../../../components/ui/DomainBadge";
 import { ChevronLeftIcon } from "../../../components/ui/Icons";
 import Link from "next/link";
+import { getDictMap } from "../../../lib/dict-cache";
 import type { Article, Word } from "../../../lib/types";
+
+let wordMapCache: Record<string, Word> | null = null;
 
 export default function ArticleReaderPage({
   params,
@@ -51,27 +54,25 @@ export default function ArticleReaderPage({
       if (!a) return;
       setArticle(a);
 
-      // Load all words into a map for lookup
-      const words = await wordService.getAll();
-      const map: Record<string, Word> = {};
-      for (const w of words) {
-        map[w.english.toLowerCase()] = w;
+      // Load all words into a map for lookup (cached across articles)
+      if (!wordMapCache) {
+        const words = await wordService.getAll();
+        const map: Record<string, Word> = {};
+        for (const w of words) {
+          map[w.english.toLowerCase()] = w;
+        }
+        wordMapCache = map;
       }
-      setAllWordsMap(map);
+      setAllWordsMap(wordMapCache);
 
       // Load which words are already being learned
       const { db } = await import("../../../lib/db");
       const userWords = await db.userWords.toArray();
       setLearnedWordIds(new Set(userWords.map((uw) => uw.wordId)));
 
-      // Lazy load external dictionary for unknown words
-      try {
-        const res = await fetch("/dict.json");
-        const dict = await res.json();
-        setDictMap(dict);
-      } catch {
-        // dict.json not available, custom input fallback
-      }
+      // Load dictionary (cached after first load)
+      const dict = await getDictMap();
+      setDictMap(dict);
     }
     load();
   }, [initialized, id]);
@@ -303,7 +304,7 @@ export default function ArticleReaderPage({
       </h1>
 
       {/* Article content — all words clickable */}
-      <div className="prose-sm leading-relaxed text-text-primary mb-4">
+      <div className="prose-sm leading-relaxed text-text-primary mb-4 break-words">
         {article.content.split(/(\s+)/).map((token, i) => {
           const clean = token.toLowerCase().replace(/[.,!?;:'"()\[\]{}""''—–\-]/g, "");
           if (!clean || /^\s+$/.test(token)) {

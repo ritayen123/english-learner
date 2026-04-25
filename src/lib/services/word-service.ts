@@ -1,11 +1,11 @@
 import { db } from "../db";
 import type { Word, WordDomain } from "../types";
-import { wordsData } from "../../data/words";
 
 export const wordService = {
   async init(): Promise<void> {
     const count = await db.words.count();
-    if (count < wordsData.length) {
+    if (count === 0) {
+      const { wordsData } = await import("../../data/words");
       await db.words.bulkPut(wordsData);
     }
   },
