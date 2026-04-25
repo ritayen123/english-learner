@@ -85,6 +85,41 @@ export const DEFAULT_SETTINGS: UserSettings = {
   autoPlayPronunciation: true,
 };
 
+// ===== Scenario Dialogue =====
+export interface Scenario {
+  id: string;
+  title: string;
+  titleEn: string;
+  category: ScenarioCategory;
+  difficulty: 1 | 2 | 3;
+  situation: string;
+  situationEn: string;
+  steps: DialogueStep[];
+  relatedPhraseIds: string[];
+}
+
+export type ScenarioCategory = "airport" | "hotel" | "restaurant" | "directions" | "shopping" | "emergency";
+
+export interface DialogueStep {
+  speaker: "staff" | "you";
+  line: string;
+  lineZh: string;
+  options?: DialogueOption[];
+}
+
+export interface DialogueOption {
+  text: string;
+  textZh: string;
+  isCorrect: boolean;
+  explanation?: string;
+}
+
+export interface UserScenario {
+  scenarioId: string;
+  completedAt: string;
+  mistakeCount: number;
+}
+
 // ===== Milestones =====
 export const WORD_MILESTONES = [100, 250, 500, 750, 1000, 1500, 2000, 2500, 3000, 3500, 4000, 4500, 5000];
 export const STREAK_MILESTONES = [3, 7, 14, 30, 60, 90];

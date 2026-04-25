@@ -5,6 +5,7 @@ import type {
   Article,
   UserArticle,
   DailyStats,
+  UserScenario,
 } from "../types";
 
 const db = new Dexie("EnglishLearnerDB") as Dexie & {
@@ -13,6 +14,7 @@ const db = new Dexie("EnglishLearnerDB") as Dexie & {
   articles: EntityTable<Article, "id">;
   userArticles: EntityTable<UserArticle, "articleId">;
   dailyStats: EntityTable<DailyStats, "date">;
+  userScenarios: EntityTable<UserScenario, "scenarioId">;
 };
 
 db.version(1).stores({
@@ -21,6 +23,15 @@ db.version(1).stores({
   articles: "id, domain, difficulty",
   userArticles: "articleId, completedAt",
   dailyStats: "date",
+});
+
+db.version(2).stores({
+  words: "id, domain, difficulty, [domain+difficulty]",
+  userWords: "wordId, status, nextReview, [status+nextReview], isCustom",
+  articles: "id, domain, difficulty",
+  userArticles: "articleId, completedAt",
+  dailyStats: "date",
+  userScenarios: "scenarioId, completedAt",
 });
 
 export { db };

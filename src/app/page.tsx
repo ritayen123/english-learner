@@ -1,11 +1,16 @@
 "use client";
 
+import { useState, useEffect, useCallback } from "react";
 import { useApp } from "../lib/context/AppContext";
 import BottomNav from "../components/ui/BottomNav";
 import ProgressRing from "../components/ui/ProgressRing";
 import StreakBadge from "../components/ui/StreakBadge";
-import { BookIcon, RepeatIcon, FileTextIcon, ClockIcon } from "../components/ui/Icons";
+import { BookIcon, RepeatIcon, FileTextIcon, ClockIcon, MapPinIcon, ChatBubbleIcon, VolumeIcon } from "../components/ui/Icons";
+import { useSpeech } from "../hooks/useSpeech";
+import { getDailyPhraseId, getPhraseContext } from "../lib/daily-phrase";
+import { db } from "../lib/db";
 import Link from "next/link";
+import type { Word } from "../lib/types";
 
 function getGreeting(): string {
   const hour = new Date().getHours();
@@ -43,6 +48,9 @@ export default function Dashboard() {
       <div className="flex justify-center mb-8">
         <ProgressRing current={totalLearned} total={5000} label="學習進度" />
       </div>
+
+      {/* Daily Travel Phrase */}
+      <DailyTravelPhrase />
 
       {/* Today Stats */}
       <div className="grid grid-cols-3 gap-3 mb-8">
@@ -93,6 +101,20 @@ export default function Dashboard() {
           label="學習紀錄"
           subtitle="查看進度"
           color="var(--domain-academic)"
+        />
+        <QuickAction
+          href="/travel/phrasebook"
+          icon={<MapPinIcon size={24} />}
+          label="旅遊手冊"
+          subtitle="急用短句速查"
+          color="var(--domain-travel)"
+        />
+        <QuickAction
+          href="/travel/scenarios"
+          icon={<ChatBubbleIcon size={24} />}
+          label="情境對話"
+          subtitle="模擬真實會話"
+          color="var(--domain-colloquial)"
         />
       </div>
 
@@ -164,5 +186,66 @@ function QuickAction({
         <p className="text-xs text-text-muted">{subtitle}</p>
       </div>
     </Link>
+  );
+}
+
+function DailyTravelPhrase() {
+  const [phrase, setPhrase] = useState<Word | null>(null);
+  const [flipped, setFlipped] = useState(false);
+  const { playWord } = useSpeech();
+
+  useEffect(() => {
+    const today = new Date().toISOString().split("T")[0];
+    const phraseId = getDailyPhraseId(today);
+    db.words.get(phraseId).then((w) => {
+      if (w) setPhrase(w);
+    });
+  }, []);
+
+  if (!phrase) return null;
+
+  const context = getPhraseContext(phrase.id);
+
+  return (
+    <div className="mb-6">
+      <div className="flex items-center justify-between mb-2">
+        <h2 className="text-sm font-semibold text-text-secondary">每日一句</h2>
+        <span className="text-xs" style={{ color: "var(--domain-travel)" }}>
+          旅遊情境
+        </span>
+      </div>
+      <div
+        onClick={() => setFlipped(!flipped)}
+        className="bg-bg-card border border-border rounded-xl p-4 cursor-pointer transition-transform active:scale-[0.98]"
+      >
+        <p className="text-xs text-text-muted mb-2">{context}</p>
+        <p className="text-base font-semibold text-text-primary leading-relaxed">
+          {phrase.english}
+        </p>
+        {flipped && (
+          <p className="text-sm mt-2 animate-fadeIn" style={{ color: "var(--accent)" }}>
+            {phrase.chinese}
+          </p>
+        )}
+        <div className="flex items-center justify-between mt-3">
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              playWord(phrase.english);
+            }}
+            className="p-2 rounded-full transition-colors"
+            style={{
+              backgroundColor: "color-mix(in srgb, var(--accent) 15%, transparent)",
+              color: "var(--accent)",
+            }}
+          >
+            <VolumeIcon size={18} />
+          </button>
+          <span className="text-xs text-text-muted">
+            {flipped ? "點擊收起" : "點擊看翻譯"}
+          </span>
+        </div>
+      </div>
+    </div>
   );
 }
