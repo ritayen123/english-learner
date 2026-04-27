@@ -42,10 +42,22 @@ export default function ScenarioPlayPage({
   return <ScenarioPlayer scenario={scenario} />;
 }
 
+function getInitialRevealedSteps(scenario: Scenario): number[] {
+  const steps: number[] = [0];
+  let i = 1;
+  while (i < scenario.steps.length && scenario.steps[i - 1].speaker === "staff") {
+    steps.push(i);
+    if (scenario.steps[i].speaker === "you") break;
+    i++;
+  }
+  return steps;
+}
+
 function ScenarioPlayer({ scenario }: { scenario: Scenario }) {
   const { playWord } = useSpeech();
-  const [currentStep, setCurrentStep] = useState(0);
-  const [revealedSteps, setRevealedSteps] = useState<number[]>([0]);
+  const initialSteps = getInitialRevealedSteps(scenario);
+  const [currentStep, setCurrentStep] = useState(initialSteps[initialSteps.length - 1]);
+  const [revealedSteps, setRevealedSteps] = useState<number[]>(initialSteps);
   const [selectedOptions, setSelectedOptions] = useState<
     Record<number, number>
   >({});
@@ -154,8 +166,9 @@ function ScenarioPlayer({ scenario }: { scenario: Scenario }) {
             </Link>
             <button
               onClick={() => {
-                setCurrentStep(0);
-                setRevealedSteps([0]);
+                const reset = getInitialRevealedSteps(scenario);
+                setCurrentStep(reset[reset.length - 1]);
+                setRevealedSteps(reset);
                 setSelectedOptions({});
                 setMistakeCount(0);
                 setCompleted(false);
