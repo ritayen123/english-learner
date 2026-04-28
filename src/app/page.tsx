@@ -5,7 +5,7 @@ import { useApp } from "../lib/context/AppContext";
 import BottomNav from "../components/ui/BottomNav";
 import ProgressRing from "../components/ui/ProgressRing";
 import StreakBadge from "../components/ui/StreakBadge";
-import { BookIcon, RepeatIcon, FileTextIcon, ClockIcon, MapPinIcon, ChatBubbleIcon, VolumeIcon } from "../components/ui/Icons";
+import { BookIcon, RepeatIcon, FileTextIcon, ClockIcon, ChatBubbleIcon, VolumeIcon } from "../components/ui/Icons";
 import { useSpeech } from "../hooks/useSpeech";
 import { getDailyPhraseId, getPhraseContext } from "../lib/daily-phrase";
 import { db } from "../lib/db";
@@ -101,13 +101,6 @@ export default function Dashboard() {
           label="學習紀錄"
           subtitle="查看進度"
           color="var(--domain-academic)"
-        />
-        <QuickAction
-          href="/travel/phrasebook"
-          icon={<MapPinIcon size={24} />}
-          label="旅遊手冊"
-          subtitle="急用短句速查"
-          color="var(--domain-travel)"
         />
         <QuickAction
           href="/travel/scenarios"
