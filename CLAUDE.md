@@ -16,7 +16,7 @@
 ## Content Overview
 - **6000 字** across 5 domains (business/daily/academic/travel/colloquial)
 - **120 篇文章** (business 30, daily 30, academic 30, travel 15, colloquial 15)
-- **18 情境對話** (airport 6, hotel 6, restaurant 6)
+- **30 情境對話** (airport 6, hotel 6, restaurant 6, advanced 12)
 - **28K 字典** at /public/dict.json
 
 ## Project Structure
@@ -32,7 +32,6 @@ src/
 │   ├── me/page.tsx         # Stats, charts, export
 │   ├── settings/page.tsx   # User preferences
 │   └── travel/
-│       ├── phrasebook/     # Travel phrase categories
 │       └── scenarios/      # Dialogue practice list + [id] player
 ├── components/ui/          # Flashcard, BottomNav, ProgressRing, Icons, etc.
 ├── components/providers/   # ClientProviders (ErrorBoundary + Toast + AppContext)
@@ -44,7 +43,8 @@ src/
 │   ├── words-travel-advanced.ts # t501-t700 (200 words)
 │   ├── words-colloquial.ts # c001-c500 (500 words)
 │   ├── articles.ts + articles-extra.ts  # 120 articles
-│   └── scenarios.ts        # 18 dialogues
+│   ├── scenarios.ts        # 18 base dialogues + merge
+│   └── scenarios-advanced.ts # 12 advanced dialogues (s19-s30)
 ├── hooks/                  # useSpeech, useSwipe, useStudySession, useToast
 └── lib/
     ├── db/index.ts         # Dexie schema (words, userWords, articles, etc.)

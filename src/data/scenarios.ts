@@ -1,4 +1,5 @@
 import type { Scenario } from "../lib/types";
+import { advancedScenariosData } from "./scenarios-advanced";
 
 export const scenariosData: Scenario[] = [
   {
@@ -576,4 +577,6 @@ export const scenariosData: Scenario[] = [
         { text: "Thanks. By the way, can I also report my lost appetite?", textZh: "謝謝。對了，我可以順便報告我食慾不振嗎？", isCorrect: false, explanation: "這不是開玩笑的場合，你應該留下聯絡方式以便護照被找到時通知你。" },
       ]},
     ],
-  }];
+  },
+  ...advancedScenariosData,
+];
