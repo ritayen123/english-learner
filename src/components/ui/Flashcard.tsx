@@ -68,7 +68,7 @@ function Flashcard({
             {/* Front - English + Example sentence */}
             <div className="card-front absolute inset-0 bg-bg-card border border-border rounded-2xl p-6 flex flex-col items-center justify-center gap-3 shadow-sm">
               <DomainBadge domain={word.domain} />
-              <h2 className="text-3xl font-bold text-text-primary">
+              <h2 className="text-3xl font-bold text-text-primary break-words text-center max-w-full">
                 {word.english}
               </h2>
               <p className="text-sm text-text-muted">{word.phonetic}</p>

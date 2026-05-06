@@ -5,7 +5,7 @@ import { scenarioService } from "../../../../lib/services/scenario-service";
 import { useSpeech } from "../../../../hooks/useSpeech";
 import { ChevronLeftIcon, VolumeIcon, CheckIcon } from "../../../../components/ui/Icons";
 import Link from "next/link";
-import type { Scenario } from "../../../../lib/types";
+import type { Scenario, Word } from "../../../../lib/types";
 
 export default function ScenarioPlayPage({
   params,
@@ -63,12 +63,15 @@ function ScenarioPlayer({ scenario }: { scenario: Scenario }) {
   >({});
   const [pendingCorrect, setPendingCorrect] = useState<{ step: number; option: number } | null>(null);
   const [mistakeCount, setMistakeCount] = useState(0);
+  const mistakeCountRef = useRef(0);
   const [completed, setCompleted] = useState(false);
+  const [relatedWords, setRelatedWords] = useState<Word[]>([]);
   const [showTranslation, setShowTranslation] = useState<Set<number>>(
     new Set()
   );
   const chatEndRef = useRef<HTMLDivElement>(null);
   const isFirstRender = useRef(true);
+  const timeoutRefs = useRef<ReturnType<typeof setTimeout>[]>([]);
 
   const totalUserSteps = scenario.steps.filter(
     (s) => s.speaker === "you"
@@ -81,6 +84,23 @@ function ScenarioPlayer({ scenario }: { scenario: Scenario }) {
     }
     chatEndRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
   }, [revealedSteps]);
+
+  // Fetch related words when completed
+  useEffect(() => {
+    if (!completed || !scenario.relatedPhraseIds?.length) return;
+    import("../../../../lib/db").then(({ db }) => {
+      db.words.bulkGet(scenario.relatedPhraseIds).then((words) => {
+        setRelatedWords(words.filter((w): w is Word => w !== undefined));
+      });
+    });
+  }, [completed, scenario.relatedPhraseIds]);
+
+  // Cleanup timeouts on unmount
+  useEffect(() => {
+    return () => {
+      timeoutRefs.current.forEach(clearTimeout);
+    };
+  }, []);
 
   // Auto-play staff lines
   useEffect(() => {
@@ -101,7 +121,7 @@ function ScenarioPlayer({ scenario }: { scenario: Scenario }) {
     if (option.isCorrect) {
       // Show correct feedback with green highlight
       setPendingCorrect({ step: stepIndex, option: optionIndex });
-      setTimeout(() => {
+      const tid = setTimeout(() => {
         setPendingCorrect(null);
         setSelectedOptions((prev) => ({ ...prev, [stepIndex]: optionIndex }));
         // Reveal next steps until next "you" turn or end
@@ -116,23 +136,28 @@ function ScenarioPlayer({ scenario }: { scenario: Scenario }) {
           setRevealedSteps((prev) => [...prev, ...nextSteps]);
           setCurrentStep(nextSteps[nextSteps.length - 1]);
         } else {
-          // Scenario complete
+          // Scenario complete — use ref for current mistakeCount
           setCompleted(true);
-          scenarioService.markCompleted(scenario.id, mistakeCount);
+          scenarioService.markCompleted(scenario.id, mistakeCountRef.current);
         }
       }, 600);
+      timeoutRefs.current.push(tid);
     } else {
-      setMistakeCount((prev) => prev + 1);
+      setMistakeCount((prev) => {
+        mistakeCountRef.current = prev + 1;
+        return prev + 1;
+      });
       // Show wrong feedback but don't lock
       setSelectedOptions((prev) => ({ ...prev, [stepIndex]: -optionIndex - 1 }));
       // Allow retry after longer delay
-      setTimeout(() => {
+      const tid = setTimeout(() => {
         setSelectedOptions((prev) => {
           const next = { ...prev };
           delete next[stepIndex];
           return next;
         });
       }, 3000);
+      timeoutRefs.current.push(tid);
     }
   }
 
@@ -171,17 +196,23 @@ function ScenarioPlayer({ scenario }: { scenario: Scenario }) {
           </div>
 
           {/* Related phrases */}
-          {scenario.relatedPhraseIds && scenario.relatedPhraseIds.length > 0 && (
+          {relatedWords.length > 0 && (
             <div className="bg-bg-card border border-border rounded-xl p-4 w-full">
-              <p className="text-xs text-text-muted mb-2">相關單字</p>
-              <div className="flex flex-wrap gap-1.5">
-                {scenario.relatedPhraseIds.map((pid) => (
-                  <span
-                    key={pid}
-                    className="px-2 py-1 bg-accent-light text-accent text-xs rounded-lg"
-                  >
-                    {pid}
-                  </span>
+              <p className="text-xs text-text-muted mb-2">相關旅遊用語</p>
+              <div className="space-y-2">
+                {relatedWords.map((w) => (
+                  <div key={w.id} className="flex items-center justify-between">
+                    <div>
+                      <span className="text-sm font-medium text-text-primary">{w.english}</span>
+                      <span className="text-xs text-text-muted ml-2">{w.chinese}</span>
+                    </div>
+                    <button
+                      onClick={() => playWord(w.english)}
+                      className="p-1 text-text-muted hover:text-accent"
+                    >
+                      <VolumeIcon size={14} />
+                    </button>
+                  </div>
                 ))}
               </div>
             </div>
@@ -202,9 +233,13 @@ function ScenarioPlayer({ scenario }: { scenario: Scenario }) {
                 setSelectedOptions({});
                 setPendingCorrect(null);
                 setMistakeCount(0);
+                mistakeCountRef.current = 0;
                 setCompleted(false);
+                setRelatedWords([]);
                 setShowTranslation(new Set());
                 isFirstRender.current = true;
+                timeoutRefs.current.forEach(clearTimeout);
+                timeoutRefs.current = [];
               }}
               className="px-6 py-2.5 bg-accent text-white rounded-xl text-sm font-medium"
             >

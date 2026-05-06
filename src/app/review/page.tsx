@@ -48,7 +48,9 @@ export default function ReviewPage() {
           setQueue((q) => [...q, item]);
         }
 
-        if (currentIndex + 1 < queue.length) {
+        // If "Again" was pressed, we always have more cards (the one just pushed)
+        const hasMore = quality < 3 || currentIndex + 1 < queue.length;
+        if (hasMore) {
           setCurrentIndex((i) => i + 1);
         } else {
           setCompleted(true);

@@ -144,15 +144,12 @@ export default function ArticleReaderPage({
       setAnswered(null);
     } else {
       const readingTime = Math.round((Date.now() - startTime.current) / 1000);
-      articleService.markCompleted(
-        article.id,
-        quizScore,
-        article.questions.length,
-        readingTime
-      );
-      statsService.recordArticle();
-      refreshStats();
       setQuizDone(true);
+      // Save results in background — UI shows completion immediately
+      Promise.all([
+        articleService.markCompleted(article.id, quizScore, article.questions.length, readingTime),
+        statsService.recordArticle(),
+      ]).then(() => refreshStats()).catch(console.error);
     }
   }
 

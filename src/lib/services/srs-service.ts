@@ -89,6 +89,7 @@ export const srsService = {
       repetition: existing.repetition,
       easeFactor: existing.easeFactor,
       interval: existing.interval,
+      currentStatus: existing.status,
     });
 
     const updated: UserWord = {

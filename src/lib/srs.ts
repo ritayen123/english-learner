@@ -5,6 +5,7 @@ export interface SM2Input {
   repetition: number;
   easeFactor: number;
   interval: number;
+  currentStatus?: WordStatus;
 }
 
 export interface SM2Output {
@@ -16,8 +17,8 @@ export interface SM2Output {
 }
 
 export function sm2(input: SM2Input): SM2Output {
-  let { quality, repetition, easeFactor, interval } = input;
-  const wasReviewing = repetition > 0;
+  let { quality, repetition, easeFactor, interval, currentStatus } = input;
+  const wasReviewing = repetition > 0 || currentStatus === "review" || currentStatus === "mastered";
 
   if (quality >= 3) {
     if (repetition === 0) interval = 1;
