@@ -1,12 +1,14 @@
 "use client";
 
 import { useApp } from "../../lib/context/AppContext";
+import { useToast } from "../../hooks/useToast";
 import BottomNav from "../../components/ui/BottomNav";
 import { ChevronLeftIcon } from "../../components/ui/Icons";
 import Link from "next/link";
 
 export default function SettingsPage() {
   const { initialized, settings, updateSettings } = useApp();
+  const { showToast } = useToast();
 
   if (!initialized) {
     return (
@@ -38,9 +40,10 @@ export default function SettingsPage() {
             max={100}
             step={5}
             value={settings.dailyNewWords}
-            onChange={(e) =>
-              updateSettings({ dailyNewWords: Number(e.target.value) })
-            }
+            onChange={(e) => {
+              updateSettings({ dailyNewWords: Number(e.target.value) });
+              showToast(`每日新字數量：${e.target.value}`, "success");
+            }}
             className="w-full accent-accent"
           />
           <div className="flex justify-between text-xs text-text-muted mt-1">
@@ -60,9 +63,10 @@ export default function SettingsPage() {
             max={200}
             step={25}
             value={settings.dailyReviewCap}
-            onChange={(e) =>
-              updateSettings({ dailyReviewCap: Number(e.target.value) })
-            }
+            onChange={(e) => {
+              updateSettings({ dailyReviewCap: Number(e.target.value) });
+              showToast(`每日複習上限：${e.target.value}`, "success");
+            }}
             className="w-full accent-accent"
           />
           <div className="flex justify-between text-xs text-text-muted mt-1">
@@ -80,7 +84,7 @@ export default function SettingsPage() {
             {[10, 15, 20, 25].map((m) => (
               <button
                 key={m}
-                onClick={() => updateSettings({ sessionMinutes: m })}
+                onClick={() => { updateSettings({ sessionMinutes: m }); showToast(`學習時段：${m} 分鐘`, "success"); }}
                 className={`flex-1 py-2 rounded-lg text-sm font-medium ${
                   settings.sessionMinutes === m
                     ? "bg-accent text-white"
@@ -97,7 +101,7 @@ export default function SettingsPage() {
         <SettingRow label="自動播放發音" description="翻開卡片時自動播放">
           <ToggleSwitch
             checked={settings.autoPlayPronunciation}
-            onChange={(v) => updateSettings({ autoPlayPronunciation: v })}
+            onChange={(v) => { updateSettings({ autoPlayPronunciation: v }); showToast(v ? "已開啟自動發音" : "已關閉自動發音", "success"); }}
           />
         </SettingRow>
 
@@ -107,6 +111,7 @@ export default function SettingsPage() {
             checked={settings.darkMode}
             onChange={(v) => {
               updateSettings({ darkMode: v });
+              showToast(v ? "已切換深色模式" : "已切換淺色模式", "success");
             }}
           />
         </SettingRow>
@@ -157,6 +162,9 @@ function ToggleSwitch({
   return (
     <button
       onClick={() => onChange(!checked)}
+      onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onChange(!checked); } }}
+      role="switch"
+      aria-checked={checked}
       className={`relative inline-flex h-7 w-12 items-center rounded-full transition-colors ${
         checked ? "bg-accent" : "bg-bg-input"
       }`}

@@ -14,10 +14,14 @@ export const srsService = {
       .limit(limit)
       .toArray();
 
-    const results: (UserWord & { word: Word })[] = [];
+    // Batch fetch non-custom words
+    const customWords: (UserWord & { word: Word })[] = [];
+    const nonCustomUWs: UserWord[] = [];
     for (const uw of dueWords) {
-      const word = uw.isCustom
-        ? ({
+      if (uw.isCustom) {
+        customWords.push({
+          ...uw,
+          word: {
             id: uw.wordId,
             english: uw.customEnglish || "",
             chinese: uw.customChinese || "",
@@ -27,18 +31,26 @@ export const srsService = {
             difficulty: 3 as const,
             exampleEn: uw.customExample || "",
             exampleZh: "",
-          } satisfies Word)
-        : await db.words.get(uw.wordId);
-      if (word) {
-        results.push({ ...uw, word });
+          },
+        });
+      } else {
+        nonCustomUWs.push(uw);
       }
+    }
+
+    const wordIds = nonCustomUWs.map((uw) => uw.wordId);
+    const words = await db.words.bulkGet(wordIds);
+    const results: (UserWord & { word: Word })[] = [...customWords];
+    for (let i = 0; i < nonCustomUWs.length; i++) {
+      const word = words[i];
+      if (word) results.push({ ...nonCustomUWs[i], word });
     }
     return results;
   },
 
   async getNewWords(count: number, domain?: WordDomain): Promise<Word[]> {
     const learnedIds = new Set(
-      (await db.userWords.toArray()).map((uw) => uw.wordId)
+      await db.userWords.toCollection().primaryKeys()
     );
 
     let query = domain

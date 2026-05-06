@@ -12,7 +12,7 @@ import Link from "next/link";
 import type { Word } from "../../lib/types";
 
 export default function LearnPage() {
-  const { initialized, settings, refreshStats } = useApp();
+  const { initialized, settings, refreshStats, totalLearned } = useApp();
   const [words, setWords] = useState<Word[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [completed, setCompleted] = useState(false);
@@ -67,17 +67,39 @@ export default function LearnPage() {
   }
 
   if (words.length === 0) {
+    const allLearned = totalLearned >= 6000;
     return (
       <main className="flex-1 pb-20 px-4 pt-6 max-w-lg mx-auto w-full">
         <Header remaining={session.formattedRemaining} />
         <div className="flex-1 flex flex-col items-center justify-center mt-20 gap-4">
-          <p className="text-xl font-bold text-text-primary">太棒了！</p>
-          <p className="text-text-secondary text-center">
-            目前沒有新字可學，<br />已全部加入學習囉！
-          </p>
-          <Link href="/" className="mt-4 px-6 py-3 bg-accent text-white rounded-xl font-medium">
-            回首頁
-          </Link>
+          {allLearned ? (
+            <>
+              <div className="text-5xl mb-2">🏆</div>
+              <p className="text-xl font-bold text-text-primary">恭喜！</p>
+              <p className="text-text-secondary text-center">
+                你已學完全部 6000 個單字！<br />可以去複習鞏固記憶
+              </p>
+              <Link href="/review" className="mt-4 px-6 py-3 bg-warning text-white rounded-xl font-medium">
+                去複習
+              </Link>
+            </>
+          ) : (
+            <>
+              <div className="text-5xl mb-2">👍</div>
+              <p className="text-xl font-bold text-text-primary">今日學習完成！</p>
+              <p className="text-text-secondary text-center">
+                今日新字已全部學完，<br />可以去複習或明天再來！
+              </p>
+              <div className="flex gap-3 mt-4">
+                <Link href="/review" className="px-5 py-3 bg-warning text-white rounded-xl font-medium text-sm">
+                  去複習
+                </Link>
+                <Link href="/" className="px-5 py-3 bg-bg-card border border-border text-text-primary rounded-xl font-medium text-sm">
+                  回首頁
+                </Link>
+              </div>
+            </>
+          )}
         </div>
         <BottomNav />
       </main>

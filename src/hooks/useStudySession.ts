@@ -39,6 +39,7 @@ export function useStudySession(durationMinutes: number = 15) {
 
   useEffect(() => {
     if (isActive && !isExpired) {
+      if (intervalRef.current) clearInterval(intervalRef.current);
       intervalRef.current = setInterval(() => {
         setElapsedSeconds((s) => s + 1);
       }, 1000);

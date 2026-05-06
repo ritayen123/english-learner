@@ -15,6 +15,7 @@ import {
   PlusIcon,
 } from "../../components/ui/Icons";
 import Link from "next/link";
+import { useToast } from "../../hooks/useToast";
 import type { Word, WordDomain } from "../../lib/types";
 
 export default function WordsPage() {
@@ -36,9 +37,11 @@ function WordsContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const { playWord } = useSpeech();
+  const { showToast } = useToast();
 
   const [query, setQuery] = useState("");
   const [words, setWords] = useState<Word[]>([]);
+  const [displayCount, setDisplayCount] = useState(50);
   const [loading, setLoading] = useState(false);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -100,7 +103,8 @@ function WordsContent() {
         } else {
           results = await wordService.getByDomain(filter as WordDomain);
         }
-        setWords(results.slice(0, 50));
+        setWords(results);
+        setDisplayCount(50);
       } finally {
         setLoading(false);
       }
@@ -118,6 +122,15 @@ function WordsContent() {
     setSaving(true);
     try {
       const { db } = await import("../../lib/db");
+      // Check for duplicate
+      const existing = await db.userWords
+        .filter((uw) => uw.customEnglish?.toLowerCase() === customEnglish.trim().toLowerCase())
+        .first();
+      if (existing) {
+        showToast("此單字已存在", "error");
+        setSaving(false);
+        return;
+      }
       await db.userWords.put({
         wordId: `custom_${Date.now()}`,
         interval: 0,
@@ -235,7 +248,7 @@ function WordsContent() {
         </div>
       ) : words.length > 0 ? (
         <div className="space-y-2">
-          {words.map((word) => (
+          {words.slice(0, displayCount).map((word) => (
             <div
               key={word.id}
               className="bg-bg-card border border-border rounded-xl p-3.5 flex items-center gap-3"
@@ -263,6 +276,14 @@ function WordsContent() {
               </button>
             </div>
           ))}
+          {displayCount < words.length && (
+            <button
+              onClick={() => setDisplayCount((c) => c + 50)}
+              className="w-full py-3 bg-bg-card border border-border rounded-xl text-sm font-medium text-accent mt-2"
+            >
+              載入更多（還有 {words.length - displayCount} 個）
+            </button>
+          )}
         </div>
       ) : !query && filter === "all" ? (
         <div className="text-center mt-12">

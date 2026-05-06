@@ -5,7 +5,7 @@ import { scenarioService } from "../../../../lib/services/scenario-service";
 import { useSpeech } from "../../../../hooks/useSpeech";
 import { ChevronLeftIcon, VolumeIcon, CheckIcon } from "../../../../components/ui/Icons";
 import Link from "next/link";
-import type { Scenario, DialogueStep } from "../../../../lib/types";
+import type { Scenario } from "../../../../lib/types";
 
 export default function ScenarioPlayPage({
   params,
@@ -61,19 +61,25 @@ function ScenarioPlayer({ scenario }: { scenario: Scenario }) {
   const [selectedOptions, setSelectedOptions] = useState<
     Record<number, number>
   >({});
+  const [pendingCorrect, setPendingCorrect] = useState<{ step: number; option: number } | null>(null);
   const [mistakeCount, setMistakeCount] = useState(0);
   const [completed, setCompleted] = useState(false);
   const [showTranslation, setShowTranslation] = useState<Set<number>>(
     new Set()
   );
   const chatEndRef = useRef<HTMLDivElement>(null);
+  const isFirstRender = useRef(true);
 
   const totalUserSteps = scenario.steps.filter(
     (s) => s.speaker === "you"
   ).length;
 
   useEffect(() => {
-    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+    chatEndRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
   }, [revealedSteps]);
 
   // Auto-play staff lines
@@ -86,41 +92,47 @@ function ScenarioPlayer({ scenario }: { scenario: Scenario }) {
 
   function handleSelect(stepIndex: number, optionIndex: number) {
     if (selectedOptions[stepIndex] !== undefined) return;
+    if (pendingCorrect?.step === stepIndex) return;
 
     const step = scenario.steps[stepIndex];
     const option = step.options?.[optionIndex];
     if (!option) return;
 
     if (option.isCorrect) {
-      setSelectedOptions((prev) => ({ ...prev, [stepIndex]: optionIndex }));
-      // Reveal next steps until next "you" turn or end
-      const nextSteps: number[] = [];
-      let i = stepIndex + 1;
-      while (i < scenario.steps.length) {
-        nextSteps.push(i);
-        if (scenario.steps[i].speaker === "you") break;
-        i++;
-      }
-      if (nextSteps.length > 0) {
-        setRevealedSteps((prev) => [...prev, ...nextSteps]);
-        setCurrentStep(nextSteps[nextSteps.length - 1]);
-      } else {
-        // Scenario complete
-        setCompleted(true);
-        scenarioService.markCompleted(scenario.id, mistakeCount);
-      }
+      // Show correct feedback with green highlight
+      setPendingCorrect({ step: stepIndex, option: optionIndex });
+      setTimeout(() => {
+        setPendingCorrect(null);
+        setSelectedOptions((prev) => ({ ...prev, [stepIndex]: optionIndex }));
+        // Reveal next steps until next "you" turn or end
+        const nextSteps: number[] = [];
+        let i = stepIndex + 1;
+        while (i < scenario.steps.length) {
+          nextSteps.push(i);
+          if (scenario.steps[i].speaker === "you") break;
+          i++;
+        }
+        if (nextSteps.length > 0) {
+          setRevealedSteps((prev) => [...prev, ...nextSteps]);
+          setCurrentStep(nextSteps[nextSteps.length - 1]);
+        } else {
+          // Scenario complete
+          setCompleted(true);
+          scenarioService.markCompleted(scenario.id, mistakeCount);
+        }
+      }, 600);
     } else {
       setMistakeCount((prev) => prev + 1);
       // Show wrong feedback but don't lock
       setSelectedOptions((prev) => ({ ...prev, [stepIndex]: -optionIndex - 1 }));
-      // Allow retry after brief delay
+      // Allow retry after longer delay
       setTimeout(() => {
         setSelectedOptions((prev) => {
           const next = { ...prev };
           delete next[stepIndex];
           return next;
         });
-      }, 1500);
+      }, 3000);
     }
   }
 
@@ -157,6 +169,24 @@ function ScenarioPlayer({ scenario }: { scenario: Scenario }) {
               <p className="text-xs text-success mt-1">完美通關！</p>
             )}
           </div>
+
+          {/* Related phrases */}
+          {scenario.relatedPhraseIds && scenario.relatedPhraseIds.length > 0 && (
+            <div className="bg-bg-card border border-border rounded-xl p-4 w-full">
+              <p className="text-xs text-text-muted mb-2">相關單字</p>
+              <div className="flex flex-wrap gap-1.5">
+                {scenario.relatedPhraseIds.map((pid) => (
+                  <span
+                    key={pid}
+                    className="px-2 py-1 bg-accent-light text-accent text-xs rounded-lg"
+                  >
+                    {pid}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
           <div className="flex gap-3 mt-4">
             <Link
               href="/travel/scenarios"
@@ -170,9 +200,11 @@ function ScenarioPlayer({ scenario }: { scenario: Scenario }) {
                 setCurrentStep(reset[reset.length - 1]);
                 setRevealedSteps(reset);
                 setSelectedOptions({});
+                setPendingCorrect(null);
                 setMistakeCount(0);
                 setCompleted(false);
                 setShowTranslation(new Set());
+                isFirstRender.current = true;
               }}
               className="px-6 py-2.5 bg-accent text-white rounded-xl text-sm font-medium"
             >
@@ -265,6 +297,7 @@ function ScenarioPlayer({ scenario }: { scenario: Scenario }) {
           // User turn
           const selected = selectedOptions[stepIndex];
           const hasAnswered = selected !== undefined && selected >= 0;
+          const isPending = pendingCorrect?.step === stepIndex;
 
           return (
             <div key={stepIndex} className="animate-fadeIn">
@@ -312,15 +345,18 @@ function ScenarioPlayer({ scenario }: { scenario: Scenario }) {
                   {step.options?.map((opt, oi) => {
                     const isWrong =
                       selected !== undefined && selected === -oi - 1;
+                    const isCorrectPending = isPending && pendingCorrect?.option === oi;
                     return (
                       <button
                         key={oi}
                         onClick={() => handleSelect(stepIndex, oi)}
-                        disabled={selected !== undefined}
+                        disabled={selected !== undefined || isPending}
                         className={`w-full text-left p-3 rounded-xl text-sm transition-colors ${
-                          isWrong
-                            ? "bg-danger-light border border-danger text-danger"
-                            : "bg-bg-card border border-border text-text-primary hover:border-accent"
+                          isCorrectPending
+                            ? "bg-success-light border border-success text-success"
+                            : isWrong
+                              ? "bg-danger-light border border-danger text-danger"
+                              : "bg-bg-card border border-border text-text-primary hover:border-accent"
                         }`}
                       >
                         <p className="leading-relaxed">{opt.text}</p>
@@ -330,6 +366,11 @@ function ScenarioPlayer({ scenario }: { scenario: Scenario }) {
                         {isWrong && opt.explanation && (
                           <p className="text-xs text-danger mt-1 animate-fadeIn">
                             {opt.explanation}
+                          </p>
+                        )}
+                        {isCorrectPending && (
+                          <p className="text-xs text-success mt-1 animate-fadeIn">
+                            正確！
                           </p>
                         )}
                       </button>

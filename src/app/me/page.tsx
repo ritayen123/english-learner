@@ -1,15 +1,15 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useApp } from "../../lib/context/AppContext";
 import { srsService } from "../../lib/services/srs-service";
 import { statsService } from "../../lib/services/stats-service";
 import { articleService } from "../../lib/services/article-service";
+import { useToast } from "../../hooks/useToast";
 import { db } from "../../lib/db";
 import BottomNav from "../../components/ui/BottomNav";
 import StreakBadge from "../../components/ui/StreakBadge";
 import {
-  BookIcon,
   SearchIcon,
   SettingsIcon,
   BarChartIcon,
@@ -19,7 +19,9 @@ import Link from "next/link";
 import type { DailyStats } from "../../lib/types";
 
 export default function MePage() {
-  const { initialized, totalLearned, streak } = useApp();
+  const { initialized, totalLearned, streak, refreshStats } = useApp();
+  const { showToast } = useToast();
+  const importRef = useRef<HTMLInputElement>(null);
   const [wordStats, setWordStats] = useState({
     new: 0,
     learning: 0,
@@ -36,10 +38,8 @@ export default function MePage() {
     daysActive: 0,
   });
   const [articlesCompleted, setArticlesCompleted] = useState(0);
-  const [exportStatus, setExportStatus] = useState<"idle" | "copying" | "copied">("idle");
 
   const handleExport = useCallback(async () => {
-    setExportStatus("copying");
     const [userWords, userArticles, dailyStats] = await Promise.all([
       db.userWords.toArray(),
       db.userArticles.toArray(),
@@ -54,7 +54,7 @@ export default function MePage() {
     const json = JSON.stringify(data, null, 2);
     try {
       await navigator.clipboard.writeText(json);
-      setExportStatus("copied");
+      showToast("已複製到剪貼簿", "success");
     } catch {
       // Fallback: download as file
       const blob = new Blob([json], { type: "application/json" });
@@ -64,10 +64,33 @@ export default function MePage() {
       a.download = `learning-data-${new Date().toISOString().slice(0, 10)}.json`;
       a.click();
       URL.revokeObjectURL(url);
-      setExportStatus("copied");
+      showToast("已下載 JSON 檔案", "success");
     }
-    setTimeout(() => setExportStatus("idle"), 2000);
-  }, []);
+  }, [showToast]);
+
+  const handleImport = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    try {
+      const text = await file.text();
+      const data = JSON.parse(text);
+      if (data.userWords && Array.isArray(data.userWords)) {
+        await db.userWords.bulkPut(data.userWords);
+      }
+      if (data.userArticles && Array.isArray(data.userArticles)) {
+        await db.userArticles.bulkPut(data.userArticles);
+      }
+      if (data.dailyStats && Array.isArray(data.dailyStats)) {
+        await db.dailyStats.bulkPut(data.dailyStats);
+      }
+      await refreshStats();
+      showToast("匯入成功", "success");
+    } catch {
+      showToast("匯入失敗，請確認檔案格式", "error");
+    }
+    // Reset file input
+    if (importRef.current) importRef.current.value = "";
+  }, [showToast, refreshStats]);
 
   useEffect(() => {
     if (!initialized) return;
@@ -215,16 +238,33 @@ export default function MePage() {
         />
         <button
           onClick={handleExport}
-          disabled={exportStatus !== "idle"}
           className="w-full flex items-center gap-3 bg-bg-card border border-border rounded-xl p-3.5 transition-transform active:scale-[0.98] text-left"
         >
           <span className="text-text-secondary">
             <BarChartIcon size={20} />
           </span>
           <span className="text-sm font-medium text-text-primary">
-            {exportStatus === "copied" ? "已複製到剪貼簿！" : "匯出學習資料"}
+            匯出學習資料
           </span>
         </button>
+        <button
+          onClick={() => importRef.current?.click()}
+          className="w-full flex items-center gap-3 bg-bg-card border border-border rounded-xl p-3.5 transition-transform active:scale-[0.98] text-left"
+        >
+          <span className="text-text-secondary">
+            <BarChartIcon size={20} />
+          </span>
+          <span className="text-sm font-medium text-text-primary">
+            匯入學習資料
+          </span>
+        </button>
+        <input
+          ref={importRef}
+          type="file"
+          accept=".json"
+          onChange={handleImport}
+          className="hidden"
+        />
       </div>
 
       <BottomNav />

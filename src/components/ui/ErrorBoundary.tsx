@@ -32,7 +32,7 @@ export default class ErrorBoundary extends Component<Props, State> {
   render() {
     if (this.state.hasError) {
       return (
-        <div className="flex-1 flex flex-col items-center justify-center min-h-screen gap-4 px-4">
+        <div className="flex-1 flex flex-col items-center justify-center min-h-screen gap-4 px-4" role="alert">
           <p className="text-xl font-bold text-text-primary">出了點問題</p>
           <p className="text-sm text-text-muted text-center">
             {this.state.error?.message || "發生未知錯誤"}

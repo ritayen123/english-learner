@@ -17,6 +17,7 @@ export interface SM2Output {
 
 export function sm2(input: SM2Input): SM2Output {
   let { quality, repetition, easeFactor, interval } = input;
+  const wasReviewing = repetition > 0;
 
   if (quality >= 3) {
     if (repetition === 0) interval = 1;
@@ -33,32 +34,28 @@ export function sm2(input: SM2Input): SM2Output {
     easeFactor + (0.1 - (5 - quality) * (0.08 + (5 - quality) * 0.02))
   );
 
-  const today = new Date();
-  today.setDate(today.getDate() + interval);
-  const nextReview = today.toISOString().split("T")[0];
-
-  // Easy (quality=5) → mastered immediately, never show again
-  if (quality === 5) {
-    interval = 9999;
-    const far = new Date();
-    far.setDate(far.getDate() + 9999);
-    return {
-      interval,
-      repetition,
-      easeFactor,
-      nextReview: far.toISOString().split("T")[0],
-      status: "mastered",
-    };
-  }
+  const next = new Date();
+  next.setDate(next.getDate() + interval);
+  const nextReview = formatLocalDate(next);
 
   let status: WordStatus;
-  if (repetition === 0) status = "learning";
-  else if (interval >= 21) status = "mastered";
-  else status = "review";
+  if (quality < 3 && wasReviewing) {
+    status = "review";
+  } else if (repetition === 0) {
+    status = "learning";
+  } else if (interval >= 21) {
+    status = "mastered";
+  } else {
+    status = "review";
+  }
 
   return { interval, repetition, easeFactor, nextReview, status };
 }
 
+function formatLocalDate(d: Date): string {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+
 export function getToday(): string {
-  return new Date().toISOString().split("T")[0];
+  return formatLocalDate(new Date());
 }

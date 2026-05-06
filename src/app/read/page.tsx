@@ -49,10 +49,11 @@ function ReadListContent() {
     async function load() {
       const all = await articleService.getAll();
       setArticles(all);
+      const { db } = await import("../../lib/db");
+      const allUA = await db.userArticles.toArray();
       const records: Record<string, UserArticle> = {};
-      for (const a of all) {
-        const ua = await articleService.getUserArticle(a.id);
-        if (ua) records[a.id] = ua;
+      for (const ua of allUA) {
+        records[ua.articleId] = ua;
       }
       setCompleted(records);
     }

@@ -6,6 +6,7 @@ import {
   useState,
   useEffect,
   useCallback,
+  useMemo,
   type ReactNode,
 } from "react";
 import { wordService } from "../services/word-service";
@@ -17,6 +18,7 @@ import type { UserSettings, DailyStats } from "../types";
 
 interface AppState {
   initialized: boolean;
+  initError: string | null;
   settings: UserSettings;
   todayStats: DailyStats | null;
   totalLearned: number;
@@ -30,6 +32,7 @@ const AppContext = createContext<AppState | null>(null);
 
 export function AppProvider({ children }: { children: ReactNode }) {
   const [initialized, setInitialized] = useState(false);
+  const [initError, setInitError] = useState<string | null>(null);
   const [settings, setSettings] = useState(settingsService.get());
   const [todayStats, setTodayStats] = useState<DailyStats | null>(null);
   const [totalLearned, setTotalLearned] = useState(0);
@@ -39,12 +42,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     async function init() {
       try {
-        await wordService.init();
-        await articleService.init();
+        await Promise.all([wordService.init(), articleService.init()]);
+        setInitialized(true);
       } catch (e) {
         console.error("DB init failed:", e);
+        setInitError(e instanceof Error ? e.message : "初始化失敗");
       }
-      setInitialized(true);
     }
     init();
   }, []);
@@ -76,19 +79,38 @@ export function AppProvider({ children }: { children: ReactNode }) {
     document.documentElement.classList.toggle("dark", settings.darkMode);
   }, [settings.darkMode]);
 
+  const value = useMemo(
+    () => ({
+      initialized,
+      initError,
+      settings,
+      todayStats,
+      totalLearned,
+      dueCount,
+      streak,
+      refreshStats,
+      updateSettings,
+    }),
+    [initialized, initError, settings, todayStats, totalLearned, dueCount, streak, refreshStats, updateSettings]
+  );
+
+  if (initError) {
+    return (
+      <div className="flex-1 flex flex-col items-center justify-center min-h-screen gap-4 px-4" role="alert">
+        <p className="text-xl font-bold text-text-primary">初始化失敗</p>
+        <p className="text-sm text-text-muted text-center">{initError}</p>
+        <button
+          onClick={() => window.location.reload()}
+          className="px-6 py-3 bg-accent text-white rounded-xl font-medium text-sm"
+        >
+          重新載入
+        </button>
+      </div>
+    );
+  }
+
   return (
-    <AppContext.Provider
-      value={{
-        initialized,
-        settings,
-        todayStats,
-        totalLearned,
-        dueCount,
-        streak,
-        refreshStats,
-        updateSettings,
-      }}
-    >
+    <AppContext.Provider value={value}>
       {children}
     </AppContext.Provider>
   );

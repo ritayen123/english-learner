@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import React, { useState, useRef } from "react";
 import { useSwipe } from "../../hooks/useSwipe";
 import { useSpeech } from "../../hooks/useSpeech";
 import { VolumeIcon } from "./Icons";
@@ -13,7 +13,7 @@ interface FlashcardProps {
   showButtons?: boolean;
 }
 
-export default function Flashcard({
+function Flashcard({
   word,
   onRate,
   showButtons = true,
@@ -57,6 +57,10 @@ export default function Flashcard({
         <div
           className="card-flip cursor-pointer"
           onClick={handleFlip}
+          onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); handleFlip(); } }}
+          role="button"
+          tabIndex={0}
+          aria-label={flipped ? `${word.chinese} — 點擊翻回正面` : `${word.english} — 點擊翻面看解答`}
         >
           <div
             className={`card-flip-inner relative min-h-[260px] sm:min-h-[320px] ${flipped ? "flipped" : ""}`}
@@ -133,3 +137,5 @@ export default function Flashcard({
     </div>
   );
 }
+
+export default React.memo(Flashcard);

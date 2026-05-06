@@ -2,61 +2,111 @@ import { db } from "../db";
 import type { DailyStats } from "../types";
 import { getToday } from "../srs";
 
-async function getOrCreateToday(): Promise<DailyStats> {
+async function ensureToday(): Promise<void> {
   const today = getToday();
   const existing = await db.dailyStats.get(today);
-  if (existing) return existing;
-
-  const stats: DailyStats = {
-    date: today,
-    newWordsLearned: 0,
-    wordsReviewed: 0,
-    articlesRead: 0,
-    studyTimeSeconds: 0,
-  };
-  await db.dailyStats.put(stats);
-  return stats;
+  if (!existing) {
+    await db.dailyStats.put({
+      date: today,
+      newWordsLearned: 0,
+      wordsReviewed: 0,
+      articlesRead: 0,
+      studyTimeSeconds: 0,
+    });
+  }
 }
 
 export const statsService = {
   async recordNewWord(): Promise<void> {
-    const stats = await getOrCreateToday();
-    stats.newWordsLearned += 1;
-    await db.dailyStats.put(stats);
+    const today = getToday();
+    const count = await db.dailyStats
+      .where("date")
+      .equals(today)
+      .modify((s) => {
+        s.newWordsLearned += 1;
+      });
+    if (count === 0) {
+      await db.dailyStats.put({
+        date: today,
+        newWordsLearned: 1,
+        wordsReviewed: 0,
+        articlesRead: 0,
+        studyTimeSeconds: 0,
+      });
+    }
   },
 
   async recordReview(): Promise<void> {
-    const stats = await getOrCreateToday();
-    stats.wordsReviewed += 1;
-    await db.dailyStats.put(stats);
+    const today = getToday();
+    const count = await db.dailyStats
+      .where("date")
+      .equals(today)
+      .modify((s) => {
+        s.wordsReviewed += 1;
+      });
+    if (count === 0) {
+      await db.dailyStats.put({
+        date: today,
+        newWordsLearned: 0,
+        wordsReviewed: 1,
+        articlesRead: 0,
+        studyTimeSeconds: 0,
+      });
+    }
   },
 
   async recordArticle(): Promise<void> {
-    const stats = await getOrCreateToday();
-    stats.articlesRead += 1;
-    await db.dailyStats.put(stats);
+    const today = getToday();
+    const count = await db.dailyStats
+      .where("date")
+      .equals(today)
+      .modify((s) => {
+        s.articlesRead += 1;
+      });
+    if (count === 0) {
+      await db.dailyStats.put({
+        date: today,
+        newWordsLearned: 0,
+        wordsReviewed: 0,
+        articlesRead: 1,
+        studyTimeSeconds: 0,
+      });
+    }
   },
 
   async recordStudyTime(seconds: number): Promise<void> {
-    const stats = await getOrCreateToday();
-    stats.studyTimeSeconds += seconds;
-    await db.dailyStats.put(stats);
+    const today = getToday();
+    const count = await db.dailyStats
+      .where("date")
+      .equals(today)
+      .modify((s) => {
+        s.studyTimeSeconds += seconds;
+      });
+    if (count === 0) {
+      await db.dailyStats.put({
+        date: today,
+        newWordsLearned: 0,
+        wordsReviewed: 0,
+        articlesRead: 0,
+        studyTimeSeconds: seconds,
+      });
+    }
   },
 
   async getToday(): Promise<DailyStats> {
-    return getOrCreateToday();
+    await ensureToday();
+    return (await db.dailyStats.get(getToday()))!;
   },
 
   async getWeekly(): Promise<DailyStats[]> {
-    const today = new Date();
-    const weekAgo = new Date(today);
+    const today = getToday();
+    const weekAgo = new Date();
     weekAgo.setDate(weekAgo.getDate() - 6);
-    const startDate = weekAgo.toISOString().split("T")[0];
-    const endDate = today.toISOString().split("T")[0];
+    const startDate = `${weekAgo.getFullYear()}-${String(weekAgo.getMonth() + 1).padStart(2, "0")}-${String(weekAgo.getDate()).padStart(2, "0")}`;
 
     return db.dailyStats
       .where("date")
-      .between(startDate, endDate, true, true)
+      .between(startDate, today, true, true)
       .toArray();
   },
 
@@ -69,12 +119,11 @@ export const statsService = {
     if (allStats.length === 0) return 0;
 
     let streak = 0;
-    const today = new Date();
+    const now = new Date();
 
     for (let i = 0; i < allStats.length; i++) {
-      const expected = new Date(today);
-      expected.setDate(expected.getDate() - i);
-      const expectedDate = expected.toISOString().split("T")[0];
+      const expected = new Date(now.getFullYear(), now.getMonth(), now.getDate() - i);
+      const expectedDate = `${expected.getFullYear()}-${String(expected.getMonth() + 1).padStart(2, "0")}-${String(expected.getDate()).padStart(2, "0")}`;
 
       if (allStats[i].date === expectedDate) {
         const s = allStats[i];

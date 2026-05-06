@@ -23,7 +23,7 @@ export default function ProgressRing({
   return (
     <div className="flex flex-col items-center gap-2">
       <div className="relative" style={{ width: size, height: size }}>
-        <svg width={size} height={size} className="-rotate-90">
+        <svg width={size} height={size} className="-rotate-90" role="img" aria-label={`${label || "進度"} ${Math.round(percent * 100)}%`}>
           <circle
             cx={size / 2}
             cy={size / 2}

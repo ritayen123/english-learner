@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback, use } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo, use } from "react";
 import { useRouter } from "next/navigation";
 import { useApp } from "../../../lib/context/AppContext";
 import { articleService } from "../../../lib/services/article-service";
@@ -13,6 +13,9 @@ import { ChevronLeftIcon } from "../../../components/ui/Icons";
 import Link from "next/link";
 import { getDictMap } from "../../../lib/dict-cache";
 import type { Article, Word } from "../../../lib/types";
+
+const PUNCTUATION_RE = /^[.,!?;:'"()\[\]{}""''—–\-…]+$/;
+const CLEAN_RE = /[.,!?;:'"()\[\]{}""''—–\-]/g;
 
 let wordMapCache: Record<string, Word> | null = null;
 
@@ -83,8 +86,13 @@ export default function ArticleReaderPage({
     setLearnedWordIds(new Set(userWords.map((uw) => uw.wordId)));
   }, []);
 
+  const tokens = useMemo(
+    () => (article ? article.content.split(/(\s+)/) : []),
+    [article?.content]
+  );
+
   const handleWordClick = (token: string) => {
-    const clean = token.toLowerCase().replace(/[.,!?;:'"()\[\]{}""''—–\-]/g, "");
+    const clean = token.toLowerCase().replace(CLEAN_RE, "");
     if (!clean) return;
     setSelectedToken(selectedToken === clean ? null : clean);
     setCustomChinese("");
@@ -136,12 +144,9 @@ export default function ArticleReaderPage({
       setAnswered(null);
     } else {
       const readingTime = Math.round((Date.now() - startTime.current) / 1000);
-      const isCorrect =
-        answered === article.questions[quizIndex].correctIndex;
-      const finalScore = isCorrect ? quizScore : quizScore;
       articleService.markCompleted(
         article.id,
-        finalScore,
+        quizScore,
         article.questions.length,
         readingTime
       );
@@ -305,8 +310,8 @@ export default function ArticleReaderPage({
 
       {/* Article content — all words clickable */}
       <div className="prose-sm leading-relaxed text-text-primary mb-4 break-words">
-        {article.content.split(/(\s+)/).map((token, i) => {
-          const clean = token.toLowerCase().replace(/[.,!?;:'"()\[\]{}""''—–\-]/g, "");
+        {tokens.map((token, i) => {
+          const clean = token.toLowerCase().replace(CLEAN_RE, "");
           if (!clean || /^\s+$/.test(token)) {
             return <span key={i}>{token}</span>;
           }
@@ -451,7 +456,7 @@ export default function ArticleReaderPage({
 
       {/* Take quiz button */}
       <button
-        onClick={() => setShowQuiz(true)}
+        onClick={() => { setShowQuiz(true); window.scrollTo(0, 0); }}
         className="w-full py-4 bg-accent text-white rounded-xl font-medium text-base mb-4"
       >
         開始測驗 ({article.questions.length} 題)
