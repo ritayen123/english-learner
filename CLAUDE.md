@@ -18,6 +18,13 @@
 - **120 篇文章** (business 30, daily 30, academic 30, travel 15, colloquial 15)
 - **30 情境對話** (airport 6, hotel 6, restaurant 6, advanced 12)
 - **28K 字典** at /public/dict.json
+- **TOEIC 衝刺模式**（2026-06 新增，目標 9/1 考試 700→950）：
+  - Part 5 題庫 200 題（`data/toeic-part5.ts`，8 分類，20 秒/題計時）
+  - Part 2 聽力 90 題（`data/toeic-part2.ts`，TTS 朗讀、0.85/1.0/1.2 變速、間接回應 30 題）
+  - 同義替換 300 組（`data/toeic-vocab.ts`，Part 7 paraphrase 訓練）
+  - 錯題本：答錯隔天到期、答對間隔翻倍、≥16 天畢業（`toeicWrong` table，DB v3）
+  - 頁面：`/toeic`（倒數＋每日任務）、`/toeic/part5`、`/toeic/part2`、`/toeic/vocab`、`/toeic/mistakes`
+  - Service：`lib/services/toeic-service.ts`（批次抽題「到期錯題優先」）
 
 ## Project Structure
 ```

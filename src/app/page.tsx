@@ -38,7 +38,7 @@ export default function Dashboard() {
         <div>
           <h1 className="text-2xl font-bold">{getGreeting()}</h1>
           <p className="text-sm text-text-secondary mt-1">
-            每天 {settings.dailyNewWords} 個新字，持續累積！
+            Level {settings.placementLevel} · 每天 {settings.dailyNewWords} 個新字
           </p>
         </div>
         <StreakBadge days={streak} />

@@ -6,6 +6,8 @@ import type {
   UserArticle,
   DailyStats,
   UserScenario,
+  ToeicWrong,
+  ToeicDaily,
 } from "../types";
 
 const db = new Dexie("EnglishLearnerDB") as Dexie & {
@@ -15,6 +17,8 @@ const db = new Dexie("EnglishLearnerDB") as Dexie & {
   userArticles: EntityTable<UserArticle, "articleId">;
   dailyStats: EntityTable<DailyStats, "date">;
   userScenarios: EntityTable<UserScenario, "scenarioId">;
+  toeicWrong: EntityTable<ToeicWrong, "qid">;
+  toeicDaily: EntityTable<ToeicDaily, "date">;
 };
 
 db.version(1).stores({
@@ -32,6 +36,17 @@ db.version(2).stores({
   userArticles: "articleId, completedAt",
   dailyStats: "date",
   userScenarios: "scenarioId, completedAt",
+});
+
+db.version(3).stores({
+  words: "id, domain, difficulty, [domain+difficulty]",
+  userWords: "wordId, status, nextReview, [status+nextReview], isCustom",
+  articles: "id, domain, difficulty",
+  userArticles: "articleId, completedAt",
+  dailyStats: "date",
+  userScenarios: "scenarioId, completedAt",
+  toeicWrong: "qid, qtype, nextReview, [qtype+nextReview]",
+  toeicDaily: "date",
 });
 
 export { db };

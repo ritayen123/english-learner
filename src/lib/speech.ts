@@ -1,10 +1,10 @@
-export function speak(text: string, lang: string = "en-US"): void {
+export function speak(text: string, lang: string = "en-US", rate: number = 0.85): void {
   if (typeof window === "undefined" || !window.speechSynthesis) return;
 
   window.speechSynthesis.cancel();
   const utterance = new SpeechSynthesisUtterance(text);
   utterance.lang = lang;
-  utterance.rate = 0.85;
+  utterance.rate = rate;
 
   const voices = window.speechSynthesis.getVoices();
   const englishVoice = voices.find(

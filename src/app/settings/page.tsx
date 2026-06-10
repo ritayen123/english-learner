@@ -115,6 +115,19 @@ export default function SettingsPage() {
             }}
           />
         </SettingRow>
+
+        {/* Placement test */}
+        <SettingRow
+          label="語言程度"
+          description={`目前：Level ${settings.placementLevel} — ${settings.placementLevel === 1 ? "基礎" : settings.placementLevel === 2 ? "初中級" : settings.placementLevel === 3 ? "中級" : settings.placementLevel === 4 ? "中高級" : "高級"}`}
+        >
+          <Link
+            href="/placement"
+            className="block w-full py-2.5 bg-accent text-white rounded-xl font-medium text-sm text-center"
+          >
+            {settings.placementCompleted ? "重新測驗" : "開始分級測驗"}
+          </Link>
+        </SettingRow>
       </div>
 
       {/* App info */}

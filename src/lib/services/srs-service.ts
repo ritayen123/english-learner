@@ -48,7 +48,7 @@ export const srsService = {
     return results;
   },
 
-  async getNewWords(count: number, domain?: WordDomain): Promise<Word[]> {
+  async getNewWords(count: number, domain?: WordDomain, minDifficulty: number = 1): Promise<Word[]> {
     const learnedIds = new Set(
       await db.userWords.toCollection().primaryKeys()
     );
@@ -59,7 +59,7 @@ export const srsService = {
 
     const allWords = await query.toArray();
     return allWords
-      .filter((w) => !learnedIds.has(w.id))
+      .filter((w) => !learnedIds.has(w.id) && w.difficulty >= minDifficulty)
       .sort((a, b) => a.difficulty - b.difficulty)
       .slice(0, count);
   },

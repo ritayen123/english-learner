@@ -2,12 +2,13 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { HomeIcon, BookIcon, FileTextIcon, UserIcon } from "./Icons";
+import { HomeIcon, BookIcon, FileTextIcon, UserIcon, TargetIcon } from "./Icons";
 import { useApp } from "../../lib/context/AppContext";
 
 const tabs = [
   { href: "/", label: "首頁", icon: HomeIcon },
   { href: "/learn", label: "學習", icon: BookIcon },
+  { href: "/toeic", label: "TOEIC", icon: TargetIcon },
   { href: "/read", label: "閱讀", icon: FileTextIcon },
   { href: "/me", label: "我的", icon: UserIcon },
 ];

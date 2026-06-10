@@ -46,7 +46,7 @@ export default function ScenariosPage() {
 }
 
 function ScenariosContent() {
-  const { initialized } = useApp();
+  const { initialized, settings } = useApp();
   const searchParams = useSearchParams();
   const router = useRouter();
   const [scenarios, setScenarios] = useState<Scenario[]>([]);
@@ -75,10 +75,12 @@ function ScenariosContent() {
     scenarioService.getAllCompleted().then(setCompleted);
   }, [initialized]);
 
-  const filtered =
+  const minDiff = Math.min(settings.placementLevel, 3);
+  const filtered = (
     filter === "all"
       ? scenarios
-      : scenarios.filter((s) => s.category === filter);
+      : scenarios.filter((s) => s.category === filter)
+  ).filter((s) => s.difficulty >= minDiff);
 
   return (
     <main className="flex-1 pb-20 px-4 pt-6 max-w-lg mx-auto w-full">

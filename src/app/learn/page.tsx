@@ -12,7 +12,7 @@ import Link from "next/link";
 import type { Word } from "../../lib/types";
 
 export default function LearnPage() {
-  const { initialized, settings, refreshStats, totalLearned } = useApp();
+  const { initialized, settings, refreshStats, totalLearned, updateSettings } = useApp();
   const [words, setWords] = useState<Word[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [completed, setCompleted] = useState(false);
@@ -22,12 +22,12 @@ export default function LearnPage() {
 
   useEffect(() => {
     if (!initialized) return;
-    srsService.getNewWords(settings.dailyNewWords).then((w) => {
+    srsService.getNewWords(settings.dailyNewWords, undefined, settings.placementLevel).then((w) => {
       setWords(w);
       if (w.length > 0) session.start();
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [initialized, settings.dailyNewWords]);
+  }, [initialized, settings.dailyNewWords, settings.placementLevel]);
 
   const handleRate = useCallback(
     async (quality: number) => {
@@ -63,6 +63,41 @@ export default function LearnPage() {
       <div className="flex-1 flex items-center justify-center min-h-screen">
         <p className="text-text-muted animate-pulse">載入中...</p>
       </div>
+    );
+  }
+
+  if (!settings.placementCompleted && words.length > 0) {
+    return (
+      <main className="flex-1 pb-20 px-4 pt-6 max-w-lg mx-auto w-full">
+        <Header remaining={session.formattedRemaining} />
+        <div className="flex-1 flex flex-col items-center justify-center mt-16 gap-4">
+          <div className="text-5xl mb-2">📝</div>
+          <p className="text-xl font-bold text-text-primary">先做個分級測驗？</p>
+          <p className="text-sm text-text-secondary text-center px-4">
+            20 題快速測驗，幫你找到適合的學習起點，<br />避免學太簡單或太難的單字
+          </p>
+          <p className="text-xs text-text-muted">
+            目前等級：Level {settings.placementLevel} — {settings.placementLevel === 1 ? "基礎" : settings.placementLevel === 2 ? "初中級" : settings.placementLevel === 3 ? "中級" : settings.placementLevel === 4 ? "中高級" : "高級"}
+          </p>
+          <div className="flex gap-3 mt-4">
+            <button
+              onClick={() => {
+                updateSettings({ placementCompleted: true });
+              }}
+              className="px-5 py-3 bg-bg-card border border-border text-text-primary rounded-xl font-medium text-sm"
+            >
+              跳過，直接學
+            </button>
+            <Link
+              href="/placement"
+              className="px-6 py-3 bg-accent text-white rounded-xl font-medium text-sm"
+            >
+              開始測驗
+            </Link>
+          </div>
+        </div>
+        <BottomNav />
+      </main>
     );
   }
 

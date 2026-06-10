@@ -25,7 +25,7 @@ export default function ReadListPage() {
 }
 
 function ReadListContent() {
-  const { initialized } = useApp();
+  const { initialized, settings } = useApp();
   const searchParams = useSearchParams();
   const router = useRouter();
   const [articles, setArticles] = useState<Article[]>([]);
@@ -60,10 +60,12 @@ function ReadListContent() {
     load();
   }, [initialized]);
 
-  const filtered =
+  const minDiff = Math.min(settings.placementLevel, 3);
+  const filtered = (
     filter === "all"
       ? articles
-      : articles.filter((a) => a.domain === filter);
+      : articles.filter((a) => a.domain === filter)
+  ).filter((a) => a.difficulty >= minDiff);
 
   const filters: { key: WordDomain | "all"; label: string }[] = [
     { key: "all", label: "全部" },

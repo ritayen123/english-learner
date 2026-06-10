@@ -75,6 +75,8 @@ export interface UserSettings {
   sessionMinutes: number;
   darkMode: boolean;
   autoPlayPronunciation: boolean;
+  placementLevel: number;
+  placementCompleted: boolean;
 }
 
 export const DEFAULT_SETTINGS: UserSettings = {
@@ -83,6 +85,8 @@ export const DEFAULT_SETTINGS: UserSettings = {
   sessionMinutes: 15,
   darkMode: true,
   autoPlayPronunciation: true,
+  placementLevel: 2,
+  placementCompleted: false,
 };
 
 // ===== Scenario Dialogue =====
@@ -123,3 +127,26 @@ export interface UserScenario {
 // ===== Milestones =====
 export const WORD_MILESTONES = [100, 250, 500, 750, 1000, 1500, 2000, 2500, 3000, 3500, 4000, 4500, 5000, 5500, 6000];
 export const STREAK_MILESTONES = [3, 7, 14, 30, 60, 90];
+
+// ===== TOEIC 衝刺模式 =====
+export type ToeicQType = "part5" | "part2" | "vocab";
+
+export interface ToeicWrong {
+  qid: string;
+  qtype: ToeicQType;
+  category: string;
+  wrongCount: number;
+  interval: number; // 天數，答對翻倍，>=16 畢業（刪除）
+  nextReview: string; // "2026-06-11"
+  lastWrong: string;
+}
+
+export interface ToeicDaily {
+  date: string;
+  part5Done: number;
+  part2Done: number;
+  vocabDone: number;
+}
+
+export const TOEIC_EXAM_DATE = "2026-09-01";
+export const TOEIC_DAILY_GOALS = { part5: 30, part2: 25, vocab: 20 } as const;
