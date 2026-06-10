@@ -5,7 +5,7 @@ import Link from "next/link";
 import BottomNav from "../../components/ui/BottomNav";
 import { useApp } from "../../lib/context/AppContext";
 import { toeicService } from "../../lib/services/toeic-service";
-import { TOEIC_EXAM_DATE, TOEIC_DAILY_GOALS, type ToeicDaily } from "../../lib/types";
+import { TOEIC_EXAM_DATE, type ToeicDaily } from "../../lib/types";
 
 interface Phase {
   until: string;
@@ -20,15 +20,20 @@ const PHASES: Phase[] = [
   { until: "2026-08-31", name: "第四階段：錯題清算", focus: "只做錯題本，不碰新題，考前歸零" },
 ];
 
+const REVIEW_GOAL = 50;
+const READ_GOAL = 2;
+
 export default function ToeicPage() {
-  const { initialized } = useApp();
+  const { initialized, settings, todayStats } = useApp();
   const [daily, setDaily] = useState<ToeicDaily | null>(null);
+  const [week, setWeek] = useState<ToeicDaily[]>([]);
   const [dueWrong, setDueWrong] = useState(0);
   const [totalWrong, setTotalWrong] = useState(0);
 
   useEffect(() => {
     if (!initialized) return;
     toeicService.getDaily().then(setDaily);
+    toeicService.getLast7Days().then(setWeek);
     toeicService.getDueWrong().then((w) => setDueWrong(w.length));
     toeicService.getAllWrong().then((w) => setTotalWrong(w.length));
   }, [initialized]);
@@ -39,11 +44,43 @@ export default function ToeicPage() {
   const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
   const phase = PHASES.find((p) => todayStr <= p.until) ?? PHASES[PHASES.length - 1];
 
-  const tasks = [
-    { href: "/toeic/part5", label: "Part 5 文法", done: daily?.part5Done ?? 0, goal: TOEIC_DAILY_GOALS.part5, unit: "題", time: "約 20 分", color: "bg-accent" },
-    { href: "/toeic/part2", label: "Part 2 聽力", done: daily?.part2Done ?? 0, goal: TOEIC_DAILY_GOALS.part2, unit: "題", time: "約 25 分", color: "bg-success" },
-    { href: "/toeic/vocab", label: "同義替換字", done: daily?.vocabDone ?? 0, goal: TOEIC_DAILY_GOALS.vocab, unit: "組", time: "約 15 分", color: "bg-warning" },
+  const acc = (correct: number, done: number) => (done > 0 ? Math.round((correct / done) * 100) : null);
+
+  const drills = [
+    {
+      href: "/toeic/part5", label: "Part 5 文法",
+      done: daily?.part5Done ?? 0, goal: settings.toeicGoalPart5, unit: "題", time: "約 20 分",
+      color: "bg-accent", accuracy: acc(daily?.part5Correct ?? 0, daily?.part5Done ?? 0),
+    },
+    {
+      href: "/toeic/part2", label: "Part 2 聽力",
+      done: daily?.part2Done ?? 0, goal: settings.toeicGoalPart2, unit: "題", time: "約 25 分",
+      color: "bg-success", accuracy: acc(daily?.part2Correct ?? 0, daily?.part2Done ?? 0),
+    },
+    {
+      href: "/toeic/vocab", label: "同義替換字",
+      done: daily?.vocabDone ?? 0, goal: settings.toeicGoalVocab, unit: "組", time: "約 15 分",
+      color: "bg-warning", accuracy: acc(daily?.vocabCorrect ?? 0, daily?.vocabDone ?? 0),
+    },
+    {
+      href: "/review", label: "單字複習（SRS）",
+      done: todayStats?.wordsReviewed ?? 0, goal: REVIEW_GOAL, unit: "字", time: "約 30 分",
+      color: "bg-accent", accuracy: null,
+    },
+    {
+      href: "/read?domain=business", label: "限時閱讀（Part 7 體感）",
+      done: todayStats?.articlesRead ?? 0, goal: READ_GOAL, unit: "篇", time: "約 30 分",
+      color: "bg-success", accuracy: null,
+    },
   ];
+
+  // 近 7 日整體正確率（三類合計）
+  const weekTrend = week.map((d) => {
+    const done = d.part5Done + d.part2Done + d.vocabDone;
+    const correct = d.part5Correct + d.part2Correct + d.vocabCorrect;
+    return { date: d.date.slice(5).replace("-", "/"), pct: done > 0 ? Math.round((correct / done) * 100) : null, done };
+  });
+  const hasTrend = weekTrend.some((d) => d.done > 0);
 
   return (
     <main className="flex-1 pb-20 px-4 pt-6 max-w-lg mx-auto w-full">
@@ -78,7 +115,7 @@ export default function ToeicPage() {
       {/* 每日任務 */}
       <p className="text-sm font-bold text-text-primary mb-2">今日任務（每天 2 小時）</p>
       <div className="flex flex-col gap-3">
-        {tasks.map((t) => {
+        {drills.map((t) => {
           const pct = Math.min((t.done / t.goal) * 100, 100);
           const finished = t.done >= t.goal;
           return (
@@ -86,6 +123,11 @@ export default function ToeicPage() {
               <div className="flex justify-between items-center mb-2">
                 <span className="text-sm font-medium text-text-primary">
                   {finished ? "✅ " : ""}{t.label}
+                  {t.accuracy !== null && (
+                    <span className={`ml-2 text-xs ${t.accuracy >= 90 ? "text-success" : "text-text-muted"}`}>
+                      正確率 {t.accuracy}%
+                    </span>
+                  )}
                 </span>
                 <span className="text-xs text-text-muted">{t.done}/{t.goal} {t.unit}・{t.time}</span>
               </div>
@@ -95,21 +137,29 @@ export default function ToeicPage() {
             </Link>
           );
         })}
-        {/* 單字複習走既有 SRS */}
-        <Link href="/review" className="block bg-bg-card border border-border rounded-2xl p-4">
-          <div className="flex justify-between items-center">
-            <span className="text-sm font-medium text-text-primary">單字複習（SRS）</span>
-            <span className="text-xs text-text-muted">約 30 分・用「學習」分頁排程</span>
-          </div>
-        </Link>
-        {/* 限時閱讀 */}
-        <Link href="/read?domain=business" className="block bg-bg-card border border-border rounded-2xl p-4">
-          <div className="flex justify-between items-center">
-            <span className="text-sm font-medium text-text-primary">限時閱讀（Part 7 體感）</span>
-            <span className="text-xs text-text-muted">約 30 分・商務文章 ×2 篇</span>
-          </div>
-        </Link>
       </div>
+
+      {/* 近 7 日正確率 */}
+      {hasTrend && (
+        <div className="bg-bg-card border border-border rounded-2xl p-4 mt-4">
+          <p className="text-sm font-bold text-text-primary mb-3">近 7 日正確率</p>
+          <div className="flex items-end justify-between gap-1.5 h-24">
+            {weekTrend.map((d) => (
+              <div key={d.date} className="flex-1 flex flex-col items-center gap-1">
+                <span className="text-[10px] text-text-muted">{d.pct !== null ? `${d.pct}` : ""}</span>
+                <div className="w-full bg-bg-input rounded-t-md overflow-hidden flex items-end" style={{ height: "60px" }}>
+                  <div
+                    className={`w-full rounded-t-md ${d.pct !== null && d.pct >= 90 ? "bg-success" : "bg-accent"}`}
+                    style={{ height: d.pct !== null ? `${d.pct}%` : "0%" }}
+                  />
+                </div>
+                <span className="text-[10px] text-text-muted">{d.date}</span>
+              </div>
+            ))}
+          </div>
+          <p className="text-[11px] text-text-muted mt-2 text-center">綠色 = 達到 90% 考試水準線</p>
+        </div>
+      )}
 
       <p className="text-xs text-text-muted mt-4 text-center">
         模考週（8月）請用實體題本計時模考，App 負責日常訓練與錯題管理

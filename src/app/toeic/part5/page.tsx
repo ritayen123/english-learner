@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, Suspense } from "react";
 import Link from "next/link";
+import { useSearchParams, useRouter } from "next/navigation";
 import BottomNav from "../../../components/ui/BottomNav";
 import { ChevronLeftIcon } from "../../../components/ui/Icons";
 import { useApp } from "../../../lib/context/AppContext";
@@ -12,7 +13,23 @@ const SECONDS_PER_Q = 20;
 const BATCH = 30;
 
 export default function Part5Page() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex-1 flex items-center justify-center min-h-screen">
+          <p className="text-text-muted animate-pulse">載入中...</p>
+        </div>
+      }
+    >
+      <Part5Inner />
+    </Suspense>
+  );
+}
+
+function Part5Inner() {
   const { initialized } = useApp();
+  const router = useRouter();
+  const category = useSearchParams().get("category") ?? undefined;
   const [questions, setQuestions] = useState<Part5Question[]>([]);
   const [idx, setIdx] = useState(0);
   const [picked, setPicked] = useState<number | null>(null); // -1 = 逾時
@@ -20,11 +37,22 @@ export default function Part5Page() {
   const [results, setResults] = useState<{ q: Part5Question; correct: boolean }[]>([]);
   const [finished, setFinished] = useState(false);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const vibratedRef = useRef(false);
+
+  const loadBatch = useCallback(async () => {
+    setQuestions([]);
+    setIdx(0);
+    setPicked(null);
+    setResults([]);
+    setFinished(false);
+    const batch = await toeicService.getPart5Batch(BATCH, category);
+    setQuestions(batch);
+  }, [category]);
 
   useEffect(() => {
     if (!initialized) return;
-    toeicService.getPart5Batch(BATCH).then(setQuestions);
-  }, [initialized]);
+    loadBatch();
+  }, [initialized, loadBatch]);
 
   const stopTimer = useCallback(() => {
     if (timerRef.current) {
@@ -42,27 +70,37 @@ export default function Part5Page() {
       setPicked(choice);
       setResults((r) => [...r, { q, correct }]);
       toeicService.recordResult(q.id, "part5", q.category, correct);
-      toeicService.bumpDaily("part5Done");
+      toeicService.recordDaily("part5", correct);
     },
     [questions, idx, stopTimer]
   );
 
-  // 每題計時
+  // 每題計時：interval 只負責倒數，逾時判定交給下面的 effect
   useEffect(() => {
     if (questions.length === 0 || finished || picked !== null) return;
     setTimeLeft(SECONDS_PER_Q);
+    vibratedRef.current = false;
     timerRef.current = setInterval(() => {
-      setTimeLeft((t) => {
-        if (t <= 1) {
-          answer(-1); // 逾時算錯
-          return 0;
-        }
-        return t - 1;
-      });
+      setTimeLeft((t) => Math.max(0, t - 1));
     }, 1000);
     return stopTimer;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [idx, questions.length, finished]);
+
+  // 逾時 → 算錯（獨立 effect，避免在 setState updater 內做副作用）
+  useEffect(() => {
+    if (timeLeft === 0 && picked === null && questions.length > 0 && !finished) {
+      answer(-1);
+    }
+  }, [timeLeft, picked, questions.length, finished, answer]);
+
+  // 最後 5 秒震動提醒
+  useEffect(() => {
+    if (timeLeft === 5 && picked === null && !vibratedRef.current) {
+      vibratedRef.current = true;
+      navigator.vibrate?.(100);
+    }
+  }, [timeLeft, picked]);
 
   const next = () => {
     setPicked(null);
@@ -89,7 +127,7 @@ export default function Part5Page() {
     });
     return (
       <main className="flex-1 pb-20 px-4 pt-6 max-w-lg mx-auto w-full">
-        <Header timeLeft={null} />
+        <Header timeLeft={null} category={category} />
         <div className="text-center mt-8 mb-6">
           <div className="text-5xl mb-3">{score >= results.length * 0.9 ? "🏆" : score >= results.length * 0.7 ? "💪" : "📚"}</div>
           <p className="text-2xl font-bold text-text-primary">{score} / {results.length}</p>
@@ -98,17 +136,31 @@ export default function Part5Page() {
         <div className="bg-bg-card border border-border rounded-2xl p-4 mb-4">
           <p className="text-sm font-bold text-text-primary mb-2">弱點分析</p>
           {[...byCategory.entries()].sort((a, b) => b[1].wrong - a[1].wrong).map(([cat, c]) => (
-            <div key={cat} className="flex justify-between text-sm py-1">
+            <div key={cat} className="flex justify-between items-center text-sm py-1.5">
               <span className="text-text-secondary">{cat}</span>
-              <span className={c.wrong > 0 ? "text-danger font-medium" : "text-success"}>
-                {c.wrong > 0 ? `錯 ${c.wrong}/${c.total}` : `全對 ${c.total} 題`}
+              <span className="flex items-center gap-2">
+                <span className={c.wrong > 0 ? "text-danger font-medium" : "text-success"}>
+                  {c.wrong > 0 ? `錯 ${c.wrong}/${c.total}` : `全對 ${c.total} 題`}
+                </span>
+                {c.wrong > 0 && (
+                  <button
+                    onClick={() => {
+                      router.replace(`/toeic/part5?category=${encodeURIComponent(cat)}`);
+                    }}
+                    className="text-xs px-2 py-1 bg-accent/15 text-accent rounded-lg font-medium"
+                  >
+                    專練
+                  </button>
+                )}
               </span>
             </div>
           ))}
         </div>
         <p className="text-xs text-text-muted text-center mb-4">錯題已自動加入錯題本，明天到期複習</p>
         <div className="flex gap-3 justify-center">
-          <button onClick={() => location.reload()} className="px-5 py-3 bg-accent text-white rounded-xl font-medium text-sm">再來 30 題</button>
+          <button onClick={loadBatch} className="px-5 py-3 bg-accent text-white rounded-xl font-medium text-sm">
+            再來 {BATCH} 題
+          </button>
           <Link href="/toeic" className="px-5 py-3 bg-bg-card border border-border text-text-primary rounded-xl font-medium text-sm">回 TOEIC</Link>
         </div>
         <BottomNav />
@@ -121,7 +173,7 @@ export default function Part5Page() {
 
   return (
     <main className="flex-1 pb-20 px-4 pt-6 max-w-lg mx-auto w-full">
-      <Header timeLeft={answered ? null : timeLeft} />
+      <Header timeLeft={answered ? null : timeLeft} category={category} />
 
       {/* 進度與計時條 */}
       <div className="mb-4">
@@ -184,13 +236,13 @@ export default function Part5Page() {
   );
 }
 
-function Header({ timeLeft }: { timeLeft: number | null }) {
+function Header({ timeLeft, category }: { timeLeft: number | null; category?: string }) {
   return (
     <div className="flex items-center justify-between mb-4">
       <Link href="/toeic" className="p-2 -ml-2 text-text-secondary">
         <ChevronLeftIcon size={24} />
       </Link>
-      <h1 className="text-lg font-bold">Part 5 文法</h1>
+      <h1 className="text-lg font-bold">Part 5 文法{category ? `・${category}` : ""}</h1>
       <span className={`text-sm font-bold w-10 text-right ${timeLeft !== null && timeLeft <= 5 ? "text-danger" : "text-text-muted"}`}>
         {timeLeft !== null ? `${timeLeft}s` : ""}
       </span>

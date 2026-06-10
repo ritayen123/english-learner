@@ -41,7 +41,11 @@ export default function MistakesPage() {
         m.set(q.id, { question: q.question, answer: q.options[q.answer], explanation: q.explanation })
       );
       vocab.forEach((q: ToeicVocab) =>
-        m.set(q.id, { question: `${q.word}（${q.meaning}）`, answer: q.synonyms.join("、"), explanation: q.example })
+        m.set(q.id, {
+          question: `${q.word}（${q.meaning}）`,
+          answer: `同義詞：${q.synonyms.join("、")}`,
+          explanation: `例句：${q.example}`,
+        })
       );
       setDetails(m);
     });

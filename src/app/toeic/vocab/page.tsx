@@ -28,9 +28,19 @@ export default function VocabPage() {
   const [score, setScore] = useState(0);
   const [finished, setFinished] = useState(false);
 
+  const loadBatch = () => {
+    setItems([]);
+    setIdx(0);
+    setPicked(null);
+    setScore(0);
+    setFinished(false);
+    toeicService.getVocabBatch(BATCH).then(setItems);
+  };
+
   useEffect(() => {
     if (!initialized) return;
-    toeicService.getVocabBatch(BATCH).then(setItems);
+    loadBatch();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialized]);
 
   const v = items[idx];
@@ -52,7 +62,7 @@ export default function VocabPage() {
     setPicked(i);
     if (correct) setScore((s) => s + 1);
     toeicService.recordResult(v.id, "vocab", "同義替換", correct);
-    toeicService.bumpDaily("vocabDone");
+    toeicService.recordDaily("vocab", correct);
   };
 
   const next = () => {
@@ -79,7 +89,7 @@ export default function VocabPage() {
           <p className="text-sm text-text-muted mt-1">Part 7 同義替換是 950 的必修課</p>
         </div>
         <div className="flex gap-3 justify-center">
-          <button onClick={() => location.reload()} className="px-5 py-3 bg-accent text-white rounded-xl font-medium text-sm">再來 20 組</button>
+          <button onClick={loadBatch} className="px-5 py-3 bg-accent text-white rounded-xl font-medium text-sm">再來 20 組</button>
           <Link href="/toeic" className="px-5 py-3 bg-bg-card border border-border text-text-primary rounded-xl font-medium text-sm">回 TOEIC</Link>
         </div>
         <BottomNav />

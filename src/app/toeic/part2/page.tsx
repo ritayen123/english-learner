@@ -20,11 +20,24 @@ export default function Part2Page() {
   const [speed, setSpeed] = useState<number>(1.0);
   const [results, setResults] = useState<{ q: Part2Question; correct: boolean }[]>([]);
   const [finished, setFinished] = useState(false);
+  // iOS/Safari 的 TTS 必須由使用者手勢觸發第一次播放，之後才能自動播
+  const [audioUnlocked, setAudioUnlocked] = useState(false);
+
+  const loadBatch = useCallback(async () => {
+    window.speechSynthesis?.cancel();
+    setQuestions([]);
+    setIdx(0);
+    setPicked(null);
+    setResults([]);
+    setFinished(false);
+    const batch = await toeicService.getPart2Batch(BATCH);
+    setQuestions(batch);
+  }, []);
 
   useEffect(() => {
     if (!initialized) return;
-    toeicService.getPart2Batch(BATCH).then(setQuestions);
-  }, [initialized]);
+    loadBatch();
+  }, [initialized, loadBatch]);
 
   const q = questions[idx];
 
@@ -34,13 +47,18 @@ export default function Part2Page() {
     speak(text, "en-US", speed);
   }, [q, speed]);
 
-  // 換題自動播放
+  // 音訊解鎖後，換題自動播放
   useEffect(() => {
-    if (!q || picked !== null || finished) return;
+    if (!q || !audioUnlocked || picked !== null || finished) return;
     const t = setTimeout(play, 400);
     return () => clearTimeout(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [idx, questions.length]);
+  }, [idx, questions.length, audioUnlocked]);
+
+  const startFirstQuestion = () => {
+    setAudioUnlocked(true);
+    play(); // 在使用者手勢的呼叫棧內觸發，解鎖 iOS TTS
+  };
 
   const answer = (choice: number) => {
     if (!q || picked !== null) return;
@@ -49,7 +67,7 @@ export default function Part2Page() {
     setPicked(choice);
     setResults((r) => [...r, { q, correct }]);
     toeicService.recordResult(q.id, "part2", q.type, correct);
-    toeicService.bumpDaily("part2Done");
+    toeicService.recordDaily("part2", correct);
   };
 
   const next = () => {
@@ -81,8 +99,42 @@ export default function Part2Page() {
         </div>
         <p className="text-xs text-text-muted text-center mb-4">錯題已自動加入錯題本</p>
         <div className="flex gap-3 justify-center">
-          <button onClick={() => location.reload()} className="px-5 py-3 bg-accent text-white rounded-xl font-medium text-sm">再來 25 題</button>
+          <button onClick={loadBatch} className="px-5 py-3 bg-accent text-white rounded-xl font-medium text-sm">再來 {BATCH} 題</button>
           <Link href="/toeic" className="px-5 py-3 bg-bg-card border border-border text-text-primary rounded-xl font-medium text-sm">回 TOEIC</Link>
+        </div>
+        <BottomNav />
+      </main>
+    );
+  }
+
+  // 第一題前的開始畫面（取得音訊手勢授權）
+  if (!audioUnlocked) {
+    return (
+      <main className="flex-1 pb-20 px-4 pt-6 max-w-lg mx-auto w-full">
+        <Header />
+        <div className="flex flex-col items-center justify-center mt-16 gap-5">
+          <div className="flex gap-1 items-center">
+            {SPEEDS.map((s) => (
+              <button
+                key={s}
+                onClick={() => setSpeed(s)}
+                className={`text-xs px-2.5 py-1 rounded-full border ${speed === s ? "bg-accent text-white border-accent" : "bg-bg-card text-text-muted border-border"}`}
+              >
+                {s}x
+              </button>
+            ))}
+          </div>
+          <button
+            onClick={startFirstQuestion}
+            className="w-28 h-28 rounded-full bg-accent text-white flex items-center justify-center shadow-lg active:scale-95 transition-transform"
+            aria-label="開始第一題"
+          >
+            <VolumeIcon size={48} />
+          </button>
+          <div className="text-center">
+            <p className="text-base font-bold text-text-primary">點擊開始播放第一題</p>
+            <p className="text-xs text-text-muted mt-1">共 {questions.length} 題・聽題目選出最合適的回應<br />之後每題會自動播放</p>
+          </div>
         </div>
         <BottomNav />
       </main>

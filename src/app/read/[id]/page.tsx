@@ -50,6 +50,18 @@ export default function ArticleReaderPage({
   const [answered, setAnswered] = useState<number | null>(null);
   const startTime = useRef(Date.now());
 
+  // 限時閱讀：閱讀計時（不含測驗時間），結算 WPM
+  const [elapsed, setElapsed] = useState(0);
+  const readSecondsRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    if (showQuiz || quizDone) return;
+    const t = setInterval(() => {
+      setElapsed(Math.round((Date.now() - startTime.current) / 1000));
+    }, 1000);
+    return () => clearInterval(t);
+  }, [showQuiz, quizDone]);
+
   useEffect(() => {
     if (!initialized) return;
     async function load() {
@@ -176,6 +188,21 @@ export default function ArticleReaderPage({
             <p className="text-sm text-text-muted">
               {pct >= 80 ? "太棒了！" : pct >= 50 ? "繼續加油！" : "多讀幾次會更好！"}
             </p>
+            {readSecondsRef.current !== null && readSecondsRef.current > 0 && (
+              <div className="mt-3 pt-3 border-t border-border">
+                {(() => {
+                  const wpm = Math.round(article.wordCount / (readSecondsRef.current / 60));
+                  return (
+                    <p className="text-sm">
+                      <span className="font-bold text-text-primary">{wpm} WPM</span>
+                      <span className={`ml-2 text-xs ${wpm >= 200 ? "text-success" : "text-warning"}`}>
+                        {wpm >= 200 ? "已達 TOEIC 950 閱讀速度 ✓" : "TOEIC 950 目標：200 WPM"}
+                      </span>
+                    </p>
+                  );
+                })()}
+              </div>
+            )}
           </div>
 
           {/* Review all questions */}
@@ -298,7 +325,9 @@ export default function ArticleReaderPage({
           <ChevronLeftIcon size={24} />
         </Link>
         <DomainBadge domain={article.domain} size="md" />
-        <div className="w-10" />
+        <span className="text-xs font-medium text-text-muted tabular-nums w-12 text-right">
+          {Math.floor(elapsed / 60)}:{String(elapsed % 60).padStart(2, "0")}
+        </span>
       </div>
 
       <h1 className="text-xl font-bold text-text-primary mb-4">
@@ -453,7 +482,11 @@ export default function ArticleReaderPage({
 
       {/* Take quiz button */}
       <button
-        onClick={() => { setShowQuiz(true); window.scrollTo(0, 0); }}
+        onClick={() => {
+          readSecondsRef.current = Math.round((Date.now() - startTime.current) / 1000);
+          setShowQuiz(true);
+          window.scrollTo(0, 0);
+        }}
         className="w-full py-4 bg-accent text-white rounded-xl font-medium text-base mb-4"
       >
         開始測驗 ({article.questions.length} 題)

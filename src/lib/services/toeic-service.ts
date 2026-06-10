@@ -22,9 +22,10 @@ function addDays(dateStr: string, days: number): string {
 
 export const toeicService = {
   // ===== 題庫批次（到期錯題優先，其餘隨機補滿）=====
-  async getPart5Batch(n: number = 30): Promise<Part5Question[]> {
+  async getPart5Batch(n: number = 30, category?: string): Promise<Part5Question[]> {
     const { part5Questions } = await import("../../data/toeic-part5");
-    return pickBatch(part5Questions, "part5", n);
+    const pool = category ? part5Questions.filter((q) => q.category === category) : part5Questions;
+    return pickBatch(pool, "part5", n);
   },
 
   async getPart2Batch(n: number = 25): Promise<Part2Question[]> {
@@ -86,16 +87,40 @@ export const toeicService = {
     return db.toeicWrong.toArray();
   },
 
-  // ===== 每日進度 =====
-  async getDaily(): Promise<ToeicDaily> {
-    const today = getToday();
-    const row = await db.toeicDaily.get(today);
-    return row ?? { date: today, part5Done: 0, part2Done: 0, vocabDone: 0 };
+  // ===== 每日進度（含正確率）=====
+  async getDaily(date?: string): Promise<ToeicDaily> {
+    const d = date ?? getToday();
+    const row = await db.toeicDaily.get(d);
+    return {
+      date: d,
+      part5Done: 0,
+      part2Done: 0,
+      vocabDone: 0,
+      part5Correct: 0,
+      part2Correct: 0,
+      vocabCorrect: 0,
+      ...row,
+    };
   },
 
-  async bumpDaily(field: "part5Done" | "part2Done" | "vocabDone", by: number = 1): Promise<void> {
-    const row = await this.getDaily();
-    await db.toeicDaily.put({ ...row, [field]: row[field] + by });
+  async recordDaily(qtype: ToeicQType, correct: boolean): Promise<void> {
+    await db.transaction("rw", db.toeicDaily, async () => {
+      const row = await this.getDaily();
+      const doneKey = (qtype + "Done") as "part5Done" | "part2Done" | "vocabDone";
+      const correctKey = (qtype + "Correct") as "part5Correct" | "part2Correct" | "vocabCorrect";
+      await db.toeicDaily.put({
+        ...row,
+        [doneKey]: row[doneKey] + 1,
+        [correctKey]: row[correctKey] + (correct ? 1 : 0),
+      });
+    });
+  },
+
+  async getLast7Days(): Promise<ToeicDaily[]> {
+    const today = getToday();
+    const dates: string[] = [];
+    for (let i = 6; i >= 0; i--) dates.push(addDays(today, -i));
+    return Promise.all(dates.map((d) => this.getDaily(d)));
   },
 
   // ===== 錯題本用：依 id 取回原題 =====

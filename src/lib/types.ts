@@ -77,6 +77,9 @@ export interface UserSettings {
   autoPlayPronunciation: boolean;
   placementLevel: number;
   placementCompleted: boolean;
+  toeicGoalPart5: number;
+  toeicGoalPart2: number;
+  toeicGoalVocab: number;
 }
 
 export const DEFAULT_SETTINGS: UserSettings = {
@@ -87,6 +90,9 @@ export const DEFAULT_SETTINGS: UserSettings = {
   autoPlayPronunciation: true,
   placementLevel: 2,
   placementCompleted: false,
+  toeicGoalPart5: 30,
+  toeicGoalPart2: 25,
+  toeicGoalVocab: 20,
 };
 
 // ===== Scenario Dialogue =====
@@ -146,6 +152,9 @@ export interface ToeicDaily {
   part5Done: number;
   part2Done: number;
   vocabDone: number;
+  part5Correct: number;
+  part2Correct: number;
+  vocabCorrect: number;
 }
 
 export const TOEIC_EXAM_DATE = "2026-09-01";

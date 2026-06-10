@@ -10,6 +10,7 @@ import { useSpeech } from "../hooks/useSpeech";
 import { getDailyPhraseId, getPhraseContext } from "../lib/daily-phrase";
 import { db } from "../lib/db";
 import Link from "next/link";
+import { TOEIC_EXAM_DATE, type ToeicDaily } from "../lib/types";
 import type { Word } from "../lib/types";
 
 function getGreeting(): string {
@@ -43,6 +44,9 @@ export default function Dashboard() {
         </div>
         <StreakBadge days={streak} />
       </div>
+
+      {/* TOEIC 衝刺卡 */}
+      <ToeicCard />
 
       {/* Progress Ring */}
       <div className="flex justify-center mb-8">
@@ -177,6 +181,57 @@ function QuickAction({
       <div>
         <p className="text-sm font-semibold text-text-primary">{label}</p>
         <p className="text-xs text-text-muted">{subtitle}</p>
+      </div>
+    </Link>
+  );
+}
+
+function ToeicCard() {
+  const { initialized, settings, todayStats } = useApp();
+  const [daily, setDaily] = useState<ToeicDaily | null>(null);
+
+  useEffect(() => {
+    if (!initialized) return;
+    import("../lib/services/toeic-service").then(({ toeicService }) =>
+      toeicService.getDaily().then(setDaily)
+    );
+  }, [initialized]);
+
+  const now = new Date();
+  const exam = new Date(TOEIC_EXAM_DATE + "T00:00:00");
+  const daysLeft = Math.max(0, Math.ceil((exam.getTime() - now.getTime()) / 86400000));
+  if (daysLeft === 0) return null;
+
+  const dots = [
+    { done: (daily?.part5Done ?? 0) >= settings.toeicGoalPart5, label: "P5" },
+    { done: (daily?.part2Done ?? 0) >= settings.toeicGoalPart2, label: "P2" },
+    { done: (daily?.vocabDone ?? 0) >= settings.toeicGoalVocab, label: "字" },
+    { done: (todayStats?.wordsReviewed ?? 0) >= 50, label: "複" },
+    { done: (todayStats?.articlesRead ?? 0) >= 2, label: "讀" },
+  ];
+  const doneCount = dots.filter((d) => d.done).length;
+
+  return (
+    <Link href="/toeic" className="block bg-bg-card border border-accent/40 rounded-xl p-4 mb-6 transition-transform active:scale-[0.98]">
+      <div className="flex items-center justify-between">
+        <div>
+          <p className="text-sm font-bold text-text-primary">TOEIC 衝刺 <span className="text-accent">D-{daysLeft}</span></p>
+          <p className="text-xs text-text-muted mt-0.5">
+            {doneCount === dots.length ? "今日任務全數完成 🎉" : `今日任務 ${doneCount}/${dots.length}`}
+          </p>
+        </div>
+        <div className="flex gap-1.5">
+          {dots.map((d) => (
+            <span
+              key={d.label}
+              className={`w-7 h-7 rounded-full text-[10px] font-bold flex items-center justify-center ${
+                d.done ? "bg-success text-white" : "bg-bg-input text-text-muted"
+              }`}
+            >
+              {d.done ? "✓" : d.label}
+            </span>
+          ))}
+        </div>
       </div>
     </Link>
   );

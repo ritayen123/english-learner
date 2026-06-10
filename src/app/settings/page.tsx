@@ -116,6 +116,39 @@ export default function SettingsPage() {
           />
         </SettingRow>
 
+        {/* TOEIC daily goals */}
+        <SettingRow
+          label="TOEIC 每日目標"
+          description={`Part 5：${settings.toeicGoalPart5} 題・Part 2：${settings.toeicGoalPart2} 題・同義字：${settings.toeicGoalVocab} 組`}
+        >
+          <div className="space-y-3">
+            {([
+              { key: "toeicGoalPart5", label: "Part 5", min: 10, max: 60, step: 5 },
+              { key: "toeicGoalPart2", label: "Part 2", min: 10, max: 50, step: 5 },
+              { key: "toeicGoalVocab", label: "同義字", min: 10, max: 50, step: 5 },
+            ] as const).map((g) => (
+              <div key={g.key}>
+                <div className="flex justify-between text-xs text-text-muted mb-1">
+                  <span>{g.label}</span>
+                  <span>{settings[g.key]}</span>
+                </div>
+                <input
+                  type="range"
+                  min={g.min}
+                  max={g.max}
+                  step={g.step}
+                  value={settings[g.key]}
+                  onChange={(e) => {
+                    updateSettings({ [g.key]: Number(e.target.value) });
+                    showToast(`${g.label} 每日目標：${e.target.value}`, "success");
+                  }}
+                  className="w-full accent-accent"
+                />
+              </div>
+            ))}
+          </div>
+        </SettingRow>
+
         {/* Placement test */}
         <SettingRow
           label="語言程度"
