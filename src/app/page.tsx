@@ -10,7 +10,7 @@ import { useSpeech } from "../hooks/useSpeech";
 import { getDailyPhraseId, getPhraseContext } from "../lib/daily-phrase";
 import { db } from "../lib/db";
 import Link from "next/link";
-import { TOEIC_EXAM_DATE, type ToeicDaily } from "../lib/types";
+import { TOEIC_EXAM_DATE, TOEIC_DAILY_GOALS, type ToeicDaily } from "../lib/types";
 import type { Word } from "../lib/types";
 
 function getGreeting(): string {
@@ -207,7 +207,8 @@ function ToeicCard() {
     { done: (daily?.part2Done ?? 0) >= settings.toeicGoalPart2, label: "P2" },
     { done: (daily?.vocabDone ?? 0) >= settings.toeicGoalVocab, label: "字" },
     { done: (todayStats?.wordsReviewed ?? 0) >= settings.dailyReviewCap, label: "複" },
-    { done: (todayStats?.articlesRead ?? 0) >= 2, label: "讀" },
+    { done: (daily?.part6Done ?? 0) >= TOEIC_DAILY_GOALS.part6, label: "P6" },
+    { done: (daily?.part7Done ?? 0) >= TOEIC_DAILY_GOALS.part7, label: "P7" },
   ];
   const doneCount = dots.filter((d) => d.done).length;
 

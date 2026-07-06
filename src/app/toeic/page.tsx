@@ -5,7 +5,7 @@ import Link from "next/link";
 import BottomNav from "../../components/ui/BottomNav";
 import { useApp } from "../../lib/context/AppContext";
 import { toeicService } from "../../lib/services/toeic-service";
-import { TOEIC_EXAM_DATE, type ToeicDaily } from "../../lib/types";
+import { TOEIC_EXAM_DATE, TOEIC_DAILY_GOALS, type ToeicDaily } from "../../lib/types";
 
 interface Phase {
   until: string;
@@ -19,8 +19,6 @@ const PHASES: Phase[] = [
   { until: "2026-08-24", name: "第三階段：限時閱讀＋模考", focus: "每週 2 次實體模考，Part 7 限時訓練" },
   { until: "2026-08-31", name: "第四階段：錯題清算", focus: "只做錯題本，不碰新題，考前歸零" },
 ];
-
-const READ_GOAL = 2;
 
 export default function ToeicPage() {
   const { initialized, settings, todayStats } = useApp();
@@ -62,21 +60,26 @@ export default function ToeicPage() {
       color: "bg-warning", accuracy: acc(daily?.vocabCorrect ?? 0, daily?.vocabDone ?? 0),
     },
     {
+      href: "/toeic/part6", label: "Part 6 段落填空",
+      done: daily?.part6Done ?? 0, goal: TOEIC_DAILY_GOALS.part6, unit: "題", time: "約 10 分",
+      color: "bg-accent", accuracy: acc(daily?.part6Correct ?? 0, daily?.part6Done ?? 0),
+    },
+    {
+      href: "/toeic/part7", label: "Part 7 閱讀題組",
+      done: daily?.part7Done ?? 0, goal: TOEIC_DAILY_GOALS.part7, unit: "題", time: "約 30 分",
+      color: "bg-success", accuracy: acc(daily?.part7Correct ?? 0, daily?.part7Done ?? 0),
+    },
+    {
       href: "/review", label: "單字複習（SRS）",
       done: todayStats?.wordsReviewed ?? 0, goal: settings.dailyReviewCap, unit: "字", time: "約 30 分",
       color: "bg-accent", accuracy: null,
     },
-    {
-      href: "/read?domain=business", label: "限時閱讀（Part 7 體感）",
-      done: todayStats?.articlesRead ?? 0, goal: READ_GOAL, unit: "篇", time: "約 30 分",
-      color: "bg-success", accuracy: null,
-    },
   ];
 
-  // 近 7 日整體正確率（三類合計）
+  // 近 7 日整體正確率（五類合計）
   const weekTrend = week.map((d) => {
-    const done = d.part5Done + d.part2Done + d.vocabDone;
-    const correct = d.part5Correct + d.part2Correct + d.vocabCorrect;
+    const done = d.part5Done + d.part2Done + d.vocabDone + d.part6Done + d.part7Done;
+    const correct = d.part5Correct + d.part2Correct + d.vocabCorrect + d.part6Correct + d.part7Correct;
     return { date: d.date.slice(5).replace("-", "/"), pct: done > 0 ? Math.round((correct / done) * 100) : null, done };
   });
   const hasTrend = weekTrend.some((d) => d.done > 0);

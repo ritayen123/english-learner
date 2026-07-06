@@ -12,13 +12,14 @@ import type { Part5Question } from "../../../data/toeic-part5";
 import type { Part2Question } from "../../../data/toeic-part2";
 import type { ToeicVocab } from "../../../data/toeic-vocab";
 
-const TYPE_LABEL = { part5: "Part 5", part2: "Part 2", vocab: "同義字" } as const;
-const TYPE_HREF = { part5: "/toeic/part5", part2: "/toeic/part2", vocab: "/toeic/vocab" } as const;
+const TYPE_LABEL = { part5: "Part 5", part2: "Part 2", vocab: "同義字", part6: "Part 6", part7: "Part 7" } as const;
+const TYPE_HREF = { part5: "/toeic/part5", part2: "/toeic/part2", vocab: "/toeic/vocab", part6: "/toeic/part6", part7: "/toeic/part7" } as const;
 
 interface Detail {
   question: string;
   answer: string;
   explanation: string;
+  passage?: string; // Part 6/7 展開時可看的原文
 }
 
 export default function MistakesPage() {
@@ -32,7 +33,7 @@ export default function MistakesPage() {
     if (!initialized) return;
     toeicService.getAllWrong().then(async (w) => {
       setWrongs(w.sort((a, b) => a.nextReview.localeCompare(b.nextReview)));
-      const { part5, part2, vocab } = await toeicService.getQuestionsByIds(w.map((x) => x.qid));
+      const { part5, part2, vocab, part6, part7 } = await toeicService.getQuestionsByIds(w.map((x) => x.qid));
       const m = new Map<string, Detail>();
       part5.forEach((q: Part5Question) =>
         m.set(q.id, { question: q.sentence, answer: q.options[q.answer], explanation: q.explanation })
@@ -47,6 +48,25 @@ export default function MistakesPage() {
           explanation: `例句：${q.example}`,
         })
       );
+      // Part 6/7 為子題：顯示所屬篇標題＋子題，展開可看原文
+      part6.forEach(({ set, questionIndex }) => {
+        const q = set.questions[questionIndex];
+        m.set(`${set.id}-q${questionIndex + 1}`, {
+          question: `《${set.title}》空格 [${questionIndex + 1}]`,
+          answer: q.options[q.answer],
+          explanation: q.explanation,
+          passage: set.text,
+        });
+      });
+      part7.forEach(({ set, questionIndex }) => {
+        const q = set.questions[questionIndex];
+        m.set(`${set.id}-q${questionIndex + 1}`, {
+          question: `《${set.title}》${q.question}`,
+          answer: q.options[q.answer],
+          explanation: q.explanation,
+          passage: set.passages.map((p) => `【${p.label}】\n${p.text}`).join("\n\n"),
+        });
+      });
       setDetails(m);
     });
   }, [initialized]);
@@ -86,7 +106,7 @@ export default function MistakesPage() {
             <div className="bg-bg-card border border-danger/40 rounded-2xl p-4 mb-4">
               <p className="text-sm font-bold text-danger mb-2">今日到期 {due.length} 題</p>
               <div className="flex gap-2">
-                {(["part5", "part2", "vocab"] as const).map((t) =>
+                {(["part5", "part2", "vocab", "part6", "part7"] as const).map((t) =>
                   byType(t) > 0 ? (
                     <Link key={t} href={TYPE_HREF[t]} className="text-xs px-3 py-2 bg-danger text-white rounded-lg font-medium">
                       重練 {TYPE_LABEL[t]}（{byType(t)}）
@@ -124,6 +144,11 @@ export default function MistakesPage() {
                   )}
                   {isOpen && d && (
                     <div className="mt-2 pt-2 border-t border-border">
+                      {d.passage && (
+                        <div className="mb-2 max-h-48 overflow-y-auto bg-bg-input rounded-lg p-2.5">
+                          <p className="text-xs text-text-secondary leading-relaxed whitespace-pre-wrap">{d.passage}</p>
+                        </div>
+                      )}
                       <p className="text-sm text-success font-medium">答案：{d.answer}</p>
                       <p className="text-xs text-text-secondary mt-1 leading-relaxed">{d.explanation}</p>
                     </div>

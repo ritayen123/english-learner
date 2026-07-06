@@ -4,6 +4,8 @@ import type { ToeicWrong, ToeicQType, ToeicDaily } from "../types";
 import type { Part5Question } from "../../data/toeic-part5";
 import type { Part2Question } from "../../data/toeic-part2";
 import type { ToeicVocab } from "../../data/toeic-vocab";
+import type { Part6Set } from "../../data/toeic-part6";
+import type { Part7Set } from "../../data/toeic-part7";
 
 function shuffle<T>(arr: T[]): T[] {
   const a = [...arr];
@@ -36,6 +38,17 @@ export const toeicService = {
   async getVocabBatch(n: number = 20): Promise<ToeicVocab[]> {
     const { toeicVocab } = await import("../../data/toeic-vocab");
     return pickBatch(toeicVocab, "vocab", n);
+  },
+
+  // Part 6 / Part 7 以「篇（組）」為單位抽題：含到期錯題子題的篇優先，不足隨機補滿
+  async getPart6Batch(nSets: number = 2): Promise<Part6Set[]> {
+    const { part6Sets } = await import("../../data/toeic-part6");
+    return pickSetBatch(part6Sets, "part6", nSets);
+  },
+
+  async getPart7Batch(nSets: number = 2): Promise<Part7Set[]> {
+    const { part7Sets } = await import("../../data/toeic-part7");
+    return pickSetBatch(part7Sets, "part7", nSets);
   },
 
   // ===== 作答結果：錯 → 進錯題本（隔天到期）；對 → 間隔翻倍，>=16 天畢業 =====
@@ -96,18 +109,22 @@ export const toeicService = {
       part5Done: 0,
       part2Done: 0,
       vocabDone: 0,
+      part6Done: 0,
+      part7Done: 0,
       part5Correct: 0,
       part2Correct: 0,
       vocabCorrect: 0,
-      ...row,
+      part6Correct: 0,
+      part7Correct: 0,
+      ...row, // 舊資料列缺新欄位時由上方預設值補 0
     };
   },
 
   async recordDaily(qtype: ToeicQType, correct: boolean): Promise<void> {
     await db.transaction("rw", db.toeicDaily, async () => {
       const row = await this.getDaily();
-      const doneKey = (qtype + "Done") as "part5Done" | "part2Done" | "vocabDone";
-      const correctKey = (qtype + "Correct") as "part5Correct" | "part2Correct" | "vocabCorrect";
+      const doneKey = (qtype + "Done") as `${ToeicQType}Done`;
+      const correctKey = (qtype + "Correct") as `${ToeicQType}Correct`;
       await db.toeicDaily.put({
         ...row,
         [doneKey]: row[doneKey] + 1,
@@ -124,22 +141,72 @@ export const toeicService = {
   },
 
   // ===== 錯題本用：依 id 取回原題 =====
+  // Part 6 / Part 7 的子題 qid 格式為 "p6-001-q1"、"p7-001-q3"，
+  // 解析出所屬篇（set）與題號後回傳 { set, questionIndex }
   async getQuestionsByIds(
     ids: string[]
-  ): Promise<{ part5: Part5Question[]; part2: Part2Question[]; vocab: ToeicVocab[] }> {
+  ): Promise<{
+    part5: Part5Question[];
+    part2: Part2Question[];
+    vocab: ToeicVocab[];
+    part6: { set: Part6Set; questionIndex: number }[];
+    part7: { set: Part7Set; questionIndex: number }[];
+  }> {
     const idSet = new Set(ids);
-    const [{ part5Questions }, { part2Questions }, { toeicVocab }] = await Promise.all([
-      import("../../data/toeic-part5"),
-      import("../../data/toeic-part2"),
-      import("../../data/toeic-vocab"),
-    ]);
+    const [{ part5Questions }, { part2Questions }, { toeicVocab }, { part6Sets }, { part7Sets }] =
+      await Promise.all([
+        import("../../data/toeic-part5"),
+        import("../../data/toeic-part2"),
+        import("../../data/toeic-vocab"),
+        import("../../data/toeic-part6"),
+        import("../../data/toeic-part7"),
+      ]);
+    const part6: { set: Part6Set; questionIndex: number }[] = [];
+    const part7: { set: Part7Set; questionIndex: number }[] = [];
+    for (const id of ids) {
+      const parsed = parseSubQid(id);
+      if (!parsed) continue;
+      if (id.startsWith("p6-")) {
+        const set = part6Sets.find((s) => s.id === parsed.setId);
+        if (set && parsed.questionIndex < set.questions.length)
+          part6.push({ set, questionIndex: parsed.questionIndex });
+      } else if (id.startsWith("p7-")) {
+        const set = part7Sets.find((s) => s.id === parsed.setId);
+        if (set && parsed.questionIndex < set.questions.length)
+          part7.push({ set, questionIndex: parsed.questionIndex });
+      }
+    }
     return {
       part5: part5Questions.filter((q) => idSet.has(q.id)),
       part2: part2Questions.filter((q) => idSet.has(q.id)),
       vocab: toeicVocab.filter((q) => idSet.has(q.id)),
+      part6,
+      part7,
     };
   },
 };
+
+// 子題 qid（如 "p6-001-q2"）→ { setId: "p6-001", questionIndex: 1 }
+function parseSubQid(qid: string): { setId: string; questionIndex: number } | null {
+  const m = qid.match(/^(p[67]-\d+)-q(\d+)$/);
+  if (!m) return null;
+  return { setId: m[1], questionIndex: parseInt(m[2], 10) - 1 };
+}
+
+// 以「篇」為單位的批次抽題：含到期錯題子題的篇優先，其餘隨機補滿
+async function pickSetBatch<T extends { id: string }>(
+  pool: T[],
+  qtype: ToeicQType,
+  nSets: number
+): Promise<T[]> {
+  const due = await toeicService.getDueWrong(qtype);
+  const dueSetIds = new Set(
+    due.map((w) => parseSubQid(w.qid)?.setId).filter((s): s is string => s !== undefined && s !== null)
+  );
+  const dueSets = pool.filter((s) => dueSetIds.has(s.id));
+  const rest = shuffle(pool.filter((s) => !dueSetIds.has(s.id)));
+  return [...shuffle(dueSets), ...rest].slice(0, nSets);
+}
 
 async function pickBatch<T extends { id: string }>(
   pool: T[],

@@ -135,7 +135,7 @@ export const WORD_MILESTONES = [100, 250, 500, 750, 1000, 1500, 2000, 2500, 3000
 export const STREAK_MILESTONES = [3, 7, 14, 30, 60, 90];
 
 // ===== TOEIC 衝刺模式 =====
-export type ToeicQType = "part5" | "part2" | "vocab";
+export type ToeicQType = "part5" | "part2" | "vocab" | "part6" | "part7";
 
 export interface ToeicWrong {
   qid: string;
@@ -152,10 +152,14 @@ export interface ToeicDaily {
   part5Done: number;
   part2Done: number;
   vocabDone: number;
+  part6Done: number;
+  part7Done: number;
   part5Correct: number;
   part2Correct: number;
   vocabCorrect: number;
+  part6Correct: number;
+  part7Correct: number;
 }
 
 export const TOEIC_EXAM_DATE = "2026-09-01";
-export const TOEIC_DAILY_GOALS = { part5: 30, part2: 25, vocab: 20 } as const;
+export const TOEIC_DAILY_GOALS = { part5: 30, part2: 25, vocab: 20, part6: 8, part7: 8 } as const;
