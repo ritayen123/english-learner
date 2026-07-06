@@ -21,6 +21,8 @@ export default function ReviewPage() {
   const [reviewedCount, setReviewedCount] = useState(0);
   const session = useStudySession(settings.sessionMinutes);
   const isProcessingRef = useRef(false);
+  // 本次 session 已計入統計的 wordId：答錯重推佇列的字，第二次以後作答不重複累計 wordsReviewed
+  const countedRef = useRef<Set<string>>(new Set());
 
   useEffect(() => {
     if (!initialized) return;
@@ -40,8 +42,11 @@ export default function ReviewPage() {
         if (!item) return;
 
         await srsService.processReview(item.wordId, quality);
-        await statsService.recordReview();
-        setReviewedCount((c) => c + 1);
+        if (!countedRef.current.has(item.wordId)) {
+          countedRef.current.add(item.wordId);
+          await statsService.recordReview();
+          setReviewedCount((c) => c + 1);
+        }
 
         // If "Again", push card to end of queue
         if (quality < 3) {
@@ -80,7 +85,7 @@ export default function ReviewPage() {
           <div className="text-5xl mb-2">✅</div>
           <p className="text-xl font-bold text-text-primary">複習完成！</p>
           <p className="text-text-secondary text-center">
-            目前沒有待複習的字��<br />明天再來吧！
+            目前沒有待複習的字，<br />明天再來吧！
           </p>
           <Link href="/" className="mt-4 px-6 py-3 bg-accent text-white rounded-xl font-medium">
             回首頁

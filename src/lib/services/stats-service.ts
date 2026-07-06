@@ -2,6 +2,30 @@ import { db } from "../db";
 import type { DailyStats } from "../types";
 import { getToday } from "../srs";
 
+function formatDate(d: Date): string {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+
+// 活躍日期集合：dailyStats 有學習/複習/閱讀，或 toeicDaily 同日有任何作答，都算當天有活動
+async function getActiveDates(): Promise<Set<string>> {
+  const [allStats, allToeic] = await Promise.all([
+    db.dailyStats.toArray(),
+    db.toeicDaily.toArray(),
+  ]);
+  const active = new Set<string>();
+  for (const s of allStats) {
+    if (s.newWordsLearned > 0 || s.wordsReviewed > 0 || s.articlesRead > 0) {
+      active.add(s.date);
+    }
+  }
+  for (const t of allToeic) {
+    if ((t.part5Done ?? 0) > 0 || (t.part2Done ?? 0) > 0 || (t.vocabDone ?? 0) > 0) {
+      active.add(t.date);
+    }
+  }
+  return active;
+}
+
 async function ensureToday(): Promise<void> {
   const today = getToday();
   const existing = await db.dailyStats.get(today);
@@ -111,27 +135,18 @@ export const statsService = {
   },
 
   async getStreak(): Promise<number> {
-    const allStats = await db.dailyStats
-      .orderBy("date")
-      .reverse()
-      .toArray();
+    const activeDates = await getActiveDates();
+    if (activeDates.size === 0) return 0;
 
-    if (allStats.length === 0) return 0;
+    const now = new Date();
+    // 今天有活動則從今天起算；今天還沒學則從昨天起算（昨天為止的連續天數照顯示，不歸零）
+    const startOffset = activeDates.has(formatDate(now)) ? 0 : 1;
 
     let streak = 0;
-    const now = new Date();
-
-    for (let i = 0; i < allStats.length; i++) {
-      const expected = new Date(now.getFullYear(), now.getMonth(), now.getDate() - i);
-      const expectedDate = `${expected.getFullYear()}-${String(expected.getMonth() + 1).padStart(2, "0")}-${String(expected.getDate()).padStart(2, "0")}`;
-
-      if (allStats[i].date === expectedDate) {
-        const s = allStats[i];
-        if (s.newWordsLearned > 0 || s.wordsReviewed > 0 || s.articlesRead > 0) {
-          streak++;
-        } else {
-          break;
-        }
+    for (let i = startOffset; ; i++) {
+      const d = new Date(now.getFullYear(), now.getMonth(), now.getDate() - i);
+      if (activeDates.has(formatDate(d))) {
+        streak++;
       } else {
         break;
       }
@@ -147,15 +162,16 @@ export const statsService = {
     totalArticles: number;
     daysActive: number;
   }> {
-    const all = await db.dailyStats.toArray();
+    const [all, activeDates] = await Promise.all([
+      db.dailyStats.toArray(),
+      getActiveDates(),
+    ]);
     return {
       totalStudySeconds: all.reduce((s, d) => s + d.studyTimeSeconds, 0),
       totalNewWords: all.reduce((s, d) => s + d.newWordsLearned, 0),
       totalReviews: all.reduce((s, d) => s + d.wordsReviewed, 0),
       totalArticles: all.reduce((s, d) => s + d.articlesRead, 0),
-      daysActive: all.filter(
-        (d) => d.newWordsLearned > 0 || d.wordsReviewed > 0 || d.articlesRead > 0
-      ).length,
+      daysActive: activeDates.size,
     };
   },
 };

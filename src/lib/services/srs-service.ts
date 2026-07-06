@@ -10,7 +10,8 @@ export const srsService = {
     const dueWords = await db.userWords
       .where("nextReview")
       .belowOrEqual(today)
-      .filter((uw) => uw.status !== "new" && uw.status !== "mastered")
+      // mastered 字依 nextReview 到期照常回到複習佇列（SM-2 本意），只排除尚未開始學的字
+      .filter((uw) => uw.status !== "new")
       .limit(limit)
       .toArray();
 
@@ -58,10 +59,18 @@ export const srsService = {
       : db.words.toCollection();
 
     const allWords = await query.toArray();
-    return allWords
-      .filter((w) => !learnedIds.has(w.id) && w.difficulty >= minDifficulty)
-      .sort((a, b) => a.difficulty - b.difficulty)
-      .slice(0, count);
+    const unlearned = allWords.filter((w) => !learnedIds.has(w.id));
+
+    // 優先抽符合分級門檻的字；不足額時用低難度未學字補滿（由接近門檻者優先），確保 6000 字進度可達成
+    const preferred = unlearned
+      .filter((w) => w.difficulty >= minDifficulty)
+      .sort((a, b) => a.difficulty - b.difficulty);
+    if (preferred.length >= count) return preferred.slice(0, count);
+
+    const fallback = unlearned
+      .filter((w) => w.difficulty < minDifficulty)
+      .sort((a, b) => b.difficulty - a.difficulty);
+    return [...preferred, ...fallback].slice(0, count);
   },
 
   async startLearning(wordId: string): Promise<UserWord> {
@@ -152,7 +161,7 @@ export const srsService = {
     return db.userWords
       .where("nextReview")
       .belowOrEqual(today)
-      .filter((uw) => uw.status !== "new" && uw.status !== "mastered")
+      .filter((uw) => uw.status !== "new")
       .count();
   },
 };

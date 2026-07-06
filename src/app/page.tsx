@@ -206,7 +206,7 @@ function ToeicCard() {
     { done: (daily?.part5Done ?? 0) >= settings.toeicGoalPart5, label: "P5" },
     { done: (daily?.part2Done ?? 0) >= settings.toeicGoalPart2, label: "P2" },
     { done: (daily?.vocabDone ?? 0) >= settings.toeicGoalVocab, label: "字" },
-    { done: (todayStats?.wordsReviewed ?? 0) >= 50, label: "複" },
+    { done: (todayStats?.wordsReviewed ?? 0) >= settings.dailyReviewCap, label: "複" },
     { done: (todayStats?.articlesRead ?? 0) >= 2, label: "讀" },
   ];
   const doneCount = dots.filter((d) => d.done).length;

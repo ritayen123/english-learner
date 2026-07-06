@@ -62,15 +62,16 @@ function Part5Inner() {
   }, []);
 
   const answer = useCallback(
-    (choice: number) => {
+    async (choice: number) => {
       stopTimer();
       const q = questions[idx];
       if (!q) return;
       const correct = choice === q.answer;
+      // 先更新 UI（選項變色），再等待寫入完成，避免快速離開頁面時紀錄遺失
       setPicked(choice);
       setResults((r) => [...r, { q, correct }]);
-      toeicService.recordResult(q.id, "part5", q.category, correct);
-      toeicService.recordDaily("part5", correct);
+      await toeicService.recordResult(q.id, "part5", q.category, correct);
+      await toeicService.recordDaily("part5", correct);
     },
     [questions, idx, stopTimer]
   );

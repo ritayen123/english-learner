@@ -60,14 +60,15 @@ export default function Part2Page() {
     play(); // 在使用者手勢的呼叫棧內觸發，解鎖 iOS TTS
   };
 
-  const answer = (choice: number) => {
+  const answer = async (choice: number) => {
     if (!q || picked !== null) return;
     window.speechSynthesis?.cancel();
     const correct = choice === q.answer;
+    // 先更新 UI（顯示答案），再等待寫入完成，避免快速離開頁面時紀錄遺失
     setPicked(choice);
     setResults((r) => [...r, { q, correct }]);
-    toeicService.recordResult(q.id, "part2", q.type, correct);
-    toeicService.recordDaily("part2", correct);
+    await toeicService.recordResult(q.id, "part2", q.type, correct);
+    await toeicService.recordDaily("part2", correct);
   };
 
   const next = () => {

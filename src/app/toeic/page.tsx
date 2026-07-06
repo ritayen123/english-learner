@@ -20,7 +20,6 @@ const PHASES: Phase[] = [
   { until: "2026-08-31", name: "第四階段：錯題清算", focus: "只做錯題本，不碰新題，考前歸零" },
 ];
 
-const REVIEW_GOAL = 50;
 const READ_GOAL = 2;
 
 export default function ToeicPage() {
@@ -64,7 +63,7 @@ export default function ToeicPage() {
     },
     {
       href: "/review", label: "單字複習（SRS）",
-      done: todayStats?.wordsReviewed ?? 0, goal: REVIEW_GOAL, unit: "字", time: "約 30 分",
+      done: todayStats?.wordsReviewed ?? 0, goal: settings.dailyReviewCap, unit: "字", time: "約 30 分",
       color: "bg-accent", accuracy: null,
     },
     {

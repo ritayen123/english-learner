@@ -56,13 +56,14 @@ export default function VocabPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [v?.id]);
 
-  const answer = (i: number) => {
+  const answer = async (i: number) => {
     if (!v || picked !== null) return;
     const correct = options[i].isCorrect;
+    // 先更新 UI（選項變色），再等待寫入完成，避免快速離開頁面時紀錄遺失
     setPicked(i);
     if (correct) setScore((s) => s + 1);
-    toeicService.recordResult(v.id, "vocab", "同義替換", correct);
-    toeicService.recordDaily("vocab", correct);
+    await toeicService.recordResult(v.id, "vocab", "同義替換", correct);
+    await toeicService.recordDaily("vocab", correct);
   };
 
   const next = () => {

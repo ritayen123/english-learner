@@ -8,7 +8,6 @@ import { articleService } from "../../lib/services/article-service";
 import { useToast } from "../../hooks/useToast";
 import { db } from "../../lib/db";
 import BottomNav from "../../components/ui/BottomNav";
-import StreakBadge from "../../components/ui/StreakBadge";
 import {
   SearchIcon,
   SettingsIcon,
@@ -135,9 +134,9 @@ export default function MePage() {
         </div>
         <div className="bg-bg-card border border-border rounded-xl p-4">
           <p className="text-xs text-text-muted mb-1">連續天數</p>
-          <div className="mt-1">
-            <StreakBadge days={streak} />
-          </div>
+          {/* 不用 StreakBadge（它在 0 天時不顯示），直接顯示數字與單位，與其他卡片一致 */}
+          <p className="text-2xl font-bold text-streak">{streak}</p>
+          <p className="text-xs text-text-muted">天</p>
         </div>
         <div className="bg-bg-card border border-border rounded-xl p-4">
           <p className="text-xs text-text-muted mb-1">文章已讀</p>
