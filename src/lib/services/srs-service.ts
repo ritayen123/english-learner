@@ -1,6 +1,16 @@
 import { db } from "../db";
 import { sm2, getToday } from "../srs";
 import type { Word, UserWord, WordDomain } from "../types";
+import { TOEIC_EXAM_DATE } from "../types";
+
+// TOEIC 衝刺期（考前）抽新字的領域優先序：商業/學術最貼近考試，旅遊/口語最後
+const TOEIC_DOMAIN_PRIORITY: Record<WordDomain, number> = {
+  business: 0,
+  academic: 1,
+  daily: 2,
+  travel: 3,
+  colloquial: 4,
+};
 
 export const srsService = {
   async getDueReviews(
@@ -61,10 +71,17 @@ export const srsService = {
     const allWords = await query.toArray();
     const unlearned = allWords.filter((w) => !learnedIds.has(w.id));
 
+    // TOEIC 衝刺期且未指定領域時，優先抽商業/學術字，衝刺時間不花在旅遊/口語字上
+    const inToeicSprint = !domain && getToday() <= TOEIC_EXAM_DATE;
+    const byPriority = (a: Word, b: Word) =>
+      inToeicSprint && TOEIC_DOMAIN_PRIORITY[a.domain] !== TOEIC_DOMAIN_PRIORITY[b.domain]
+        ? TOEIC_DOMAIN_PRIORITY[a.domain] - TOEIC_DOMAIN_PRIORITY[b.domain]
+        : a.difficulty - b.difficulty;
+
     // 優先抽符合分級門檻的字；不足額時用低難度未學字補滿（由接近門檻者優先），確保 6000 字進度可達成
     const preferred = unlearned
       .filter((w) => w.difficulty >= minDifficulty)
-      .sort((a, b) => a.difficulty - b.difficulty);
+      .sort(byPriority);
     if (preferred.length >= count) return preferred.slice(0, count);
 
     const fallback = unlearned

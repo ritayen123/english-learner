@@ -48,6 +48,9 @@ export default function Dashboard() {
       {/* TOEIC 衝刺卡 */}
       <ToeicCard />
 
+      {/* 備份提醒：資料只存本機 IndexedDB，超過 7 天未匯出就提醒 */}
+      <BackupReminder hasData={totalLearned > 0} />
+
       {/* Progress Ring */}
       <div className="flex justify-center mb-8">
         <ProgressRing current={totalLearned} total={6000} label="學習進度" />
@@ -117,6 +120,65 @@ export default function Dashboard() {
 
       <BottomNav />
     </main>
+  );
+}
+
+const BACKUP_INTERVAL_DAYS = 7;
+
+function daysSince(dateStr: string | null): number {
+  if (!dateStr) return Infinity;
+  const then = new Date(dateStr + "T00:00:00").getTime();
+  if (Number.isNaN(then)) return Infinity;
+  return Math.floor((Date.now() - then) / 86400000);
+}
+
+function BackupReminder({ hasData }: { hasData: boolean }) {
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    if (!hasData) return;
+    const lastBackup = localStorage.getItem("english_learner_last_backup");
+    const snoozed = localStorage.getItem("english_learner_backup_snooze");
+    if (
+      daysSince(lastBackup) >= BACKUP_INTERVAL_DAYS &&
+      daysSince(snoozed) >= BACKUP_INTERVAL_DAYS
+    ) {
+      setVisible(true);
+    }
+  }, [hasData]);
+
+  const snooze = () => {
+    localStorage.setItem(
+      "english_learner_backup_snooze",
+      new Date().toISOString().slice(0, 10)
+    );
+    setVisible(false);
+  };
+
+  if (!visible) return null;
+
+  return (
+    <div className="flex items-center gap-3 bg-bg-card border border-warning/40 rounded-xl px-4 py-3 mb-4">
+      <div className="flex-1 min-w-0">
+        <p className="text-sm text-text-primary">超過 7 天沒備份了</p>
+        <p className="text-xs text-text-muted mt-0.5">
+          學習資料只存在這台裝置的瀏覽器裡，換機或清資料就會消失
+        </p>
+      </div>
+      <Link
+        href="/me"
+        className="shrink-0 text-sm font-medium text-accent px-3 py-1.5 rounded-lg border border-accent/40"
+      >
+        去匯出
+      </Link>
+      <button
+        onClick={snooze}
+        aria-label="7 天內不再提醒"
+        className="shrink-0 text-text-muted text-lg leading-none px-1"
+      >
+        ✕
+      </button>
+    </div>
   );
 }
 

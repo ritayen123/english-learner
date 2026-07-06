@@ -39,18 +39,24 @@ export default function MePage() {
   const [articlesCompleted, setArticlesCompleted] = useState(0);
 
   const handleExport = useCallback(async () => {
-    const [userWords, userArticles, dailyStats] = await Promise.all([
+    const [userWords, userArticles, dailyStats, toeicWrong, toeicDaily] = await Promise.all([
       db.userWords.toArray(),
       db.userArticles.toArray(),
       db.dailyStats.toArray(),
+      db.toeicWrong.toArray(),
+      db.toeicDaily.toArray(),
     ]);
     const data = {
       exportedAt: new Date().toISOString(),
       userWords,
       userArticles,
       dailyStats,
+      toeicWrong,
+      toeicDaily,
     };
     const json = JSON.stringify(data, null, 2);
+    // 記錄備份時間，首頁的備份提醒據此判斷是否超過 7 天
+    localStorage.setItem("english_learner_last_backup", new Date().toISOString().slice(0, 10));
     try {
       await navigator.clipboard.writeText(json);
       showToast("已複製到剪貼簿", "success");
@@ -81,6 +87,12 @@ export default function MePage() {
       }
       if (data.dailyStats && Array.isArray(data.dailyStats)) {
         await db.dailyStats.bulkPut(data.dailyStats);
+      }
+      if (data.toeicWrong && Array.isArray(data.toeicWrong)) {
+        await db.toeicWrong.bulkPut(data.toeicWrong);
+      }
+      if (data.toeicDaily && Array.isArray(data.toeicDaily)) {
+        await db.toeicDaily.bulkPut(data.toeicDaily);
       }
       await refreshStats();
       showToast("匯入成功", "success");
